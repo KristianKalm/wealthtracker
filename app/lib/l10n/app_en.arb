@@ -1,0 +1,446 @@
+{
+  "@@locale": "en",
+
+  "enterPin": "Enter PIN",
+  "@enterPin": {
+    "description": "Prompt shown when user needs to enter their PIN"
+  },
+
+  "wrongPin": "Wrong PIN",
+  "@wrongPin": {
+    "description": "Error shown when an incorrect PIN is entered"
+  },
+
+  "useBiometrics": "Use Biometrics",
+  "@useBiometrics": {
+    "description": "Button label to switch to biometric authentication"
+  },
+
+  "appIsLocked": "Wealthtracker is Locked",
+  "@appIsLocked": {
+    "description": "Message shown on the lock screen"
+  },
+
+  "unlock": "Unlock",
+  "@unlock": {
+    "description": "Button label to unlock the app via biometrics"
+  },
+
+  "somethingWentWrong": "Something went wrong",
+  "@somethingWentWrong": {
+    "description": "Generic error message shown when an operation fails"
+  },
+
+  "appNotSupported": "App not supported",
+  "@appNotSupported": {"description": "Error when the app version is not supported"},
+
+  "invalidToken": "Invalid token",
+  "@invalidToken": {"description": "Error when the auth token is invalid"},
+
+  "userAlreadyExists": "User already exists",
+  "@userAlreadyExists": {"description": "Error when registering with an existing username"},
+
+  "userNotFound": "User not found",
+  "@userNotFound": {"description": "Error when the user account is not found"},
+
+  "pinIsRequired": "PIN is required",
+  "@pinIsRequired": {"description": "Error when a PIN is required but not provided"},
+
+  "invalidCredentials": "Invalid credentials",
+  "@invalidCredentials": {"description": "Error when login credentials are wrong"},
+
+  "tokenNotFound": "Token not found",
+  "@tokenNotFound": {"description": "Error when the token is not found"},
+
+  "fileNotFound": "File not found",
+  "@fileNotFound": {"description": "Error when a file is not found"},
+
+  "fileSaved": "File saved",
+  "@fileSaved": {"description": "Success message when a file is saved"},
+
+  "fileDeleted": "File deleted",
+  "@fileDeleted": {"description": "Success message when a file is deleted"},
+
+  "otaAlreadySetUp": "Authenticator already set up",
+  "@otaAlreadySetUp": {"description": "Error when OTA authenticator is already configured"},
+
+  "otaNoOngoingSetup": "No ongoing authenticator setup",
+  "@otaNoOngoingSetup": {"description": "Error when there is no active OTA setup session"},
+
+  "otaWrongPin": "Wrong authenticator PIN",
+  "@otaWrongPin": {"description": "Error when the OTA PIN is incorrect"},
+
+  "otaConfirmed": "Authenticator confirmed",
+  "@otaConfirmed": {"description": "Success when OTA authenticator is confirmed"},
+
+  "otaNotSetUp": "Authenticator not set up",
+  "@otaNotSetUp": {"description": "Error when OTA authenticator has not been configured"},
+
+  "otaRemoved": "Authenticator removed",
+  "@otaRemoved": {"description": "Success when OTA authenticator is removed"},
+
+  "accountDeleted": "Account deleted",
+  "@accountDeleted": {"description": "Success when the account is deleted"},
+
+  "accountUpdated": "Account updated",
+  "@accountUpdated": {"description": "Success when the account is updated"},
+
+  "invalidPath": "Invalid path",
+  "@invalidPath": {"description": "Error when a file path is invalid"},
+
+  "timestampExpired": "Request expired",
+  "@timestampExpired": {"description": "Error when the request timestamp has expired"},
+
+  "tooManyRequests": "Too many requests",
+  "@tooManyRequests": {"description": "Error when the rate limit is exceeded"},
+
+  "cancel": "Cancel",
+  "save": "Save",
+  "delete": "Delete",
+  "back": "Back",
+  "ok": "OK",
+  "error": "Error",
+  "confirm": "Confirm",
+  "on": "On",
+  "off": "Off",
+  "pleaseWait": "Please wait...",
+  "settingsTitle": "Settings",
+  "account": "Account",
+  "user": "User",
+  "storage": "Storage",
+  "preferences": "Preferences",
+  "theme": "Theme",
+  "language": "Language",
+  "appLock": "App Lock",
+  "pinLock": "PIN Lock",
+  "syncSection": "Sync",
+  "syncNow": "Sync Now",
+  "setOneTimePassword": "Set one time password",
+  "tokens": "Tokens",
+  "changePasswordSetting": "Change password",
+  "deleteMyAccount": "Delete my account",
+  "logOutSetting": "Log out",
+  "localBackup": "Local Backup",
+  "exportBackup": "Export backup",
+  "importBackup": "Import backup",
+  "changePinLabel": "Change PIN",
+  "removePinLabel": "Remove PIN",
+  "setPinTitle": "Set PIN",
+  "confirmPinTitle": "Confirm PIN",
+  "pinsDidNotMatch": "PINs did not match. Try again.",
+  "pinSetSuccessfully": "PIN set successfully",
+  "logOutTitle": "Log Out",
+  "logOutConfirmLoggedIn": "This will delete all local data and log you out. Your data is saved on the server and can be recovered by logging in again.",
+  "logOutConfirmNotLoggedIn": "This will delete all local data. This action cannot be undone.\n\nAre you sure you want to continue?",
+  "logOutButton": "Log Out",
+  "changePasswordTitle": "Change Password",
+  "currentPassword": "Current password",
+  "newPassword": "New password",
+  "confirmNewPassword": "Confirm new password",
+  "allFieldsRequired": "All fields are required.",
+  "newPasswordsDoNotMatch": "New passwords do not match.",
+  "changeButton": "Change",
+  "passwordChangedSuccessfully": "Password changed successfully.",
+  "failedToChangePassword": "Failed to change password. Check your current password.",
+  "accountDataNotFound": "Account data not found.",
+  "deleteAccountTitle": "Delete Account",
+  "deleteAccountMessage": "This will permanently delete your account and all data stored on the server. This action cannot be undone.\n\nEnter your password to confirm:",
+  "failedToDeleteAccount": "Failed to delete account. Check your password.",
+  "themeSystem": "System",
+  "themeDark": "Dark",
+  "themeLight": "Light",
+  "debugTitle": "Debug",
+  "apiTester": "API Tester",
+  "syncLastLessMinuteAgo": "Less than a minute ago",
+  "syncLastMinutesAgo": "{count, plural, one{{count} minute ago} other{{count} minutes ago}}",
+  "@syncLastMinutesAgo": {
+    "description": "Shows how many minutes ago the last sync happened",
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "syncLastHoursAgo": "{count, plural, one{{count} hour ago} other{{count} hours ago}}",
+  "@syncLastHoursAgo": {
+    "description": "Shows how many hours ago the last sync happened",
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "creatingAccount": "Creating Account",
+  "signingIn": "Signing In",
+  "syncingTitle": "Syncing",
+  "downloadingData": "Downloading your data...",
+  "signedInSuccessfully": "Successfully signed in!",
+  "accountCreatedSuccessfully": "Account created successfully!",
+  "keyGenerationFailed": "Key generation failed",
+  "backupYourSeed": "Backup Your Seed",
+  "backupSeedMessage": "Make sure to backup this seed, this is the only way to recover your account!",
+  "seedCopied": "Seed copied to clipboard",
+  "oneTimePasswordTitle": "One-Time Password",
+  "oneTimePasswordLabel": "One time password",
+  "serverLabel": "Server",
+  "loginButton": "Login",
+  "registerButton": "Register",
+  "useWithoutAccount": "Use without account",
+  "usernameLabel": "Username",
+  "usernameTooShort": "Username must be at least {min} characters.",
+  "@usernameTooShort": {
+    "description": "Error when username is too short",
+    "placeholders": {
+      "min": {"type": "int"}
+    }
+  },
+  "usernameTooLong": "Username must be at most {max} characters.",
+  "@usernameTooLong": {
+    "description": "Error when username is too long",
+    "placeholders": {
+      "max": {"type": "int"}
+    }
+  },
+  "passwordLabel": "Password",
+  "passwordTooShort": "Password must be at least {min} characters.",
+  "@passwordTooShort": {
+    "description": "Error when password is too short",
+    "placeholders": {
+      "min": {"type": "int"}
+    }
+  },
+  "passwordTooLong": "Password must be at most {max} characters.",
+  "@passwordTooLong": {
+    "description": "Error when password is too long",
+    "placeholders": {
+      "max": {"type": "int"}
+    }
+  },
+  "passwordHelperText": "Password should be between {min} and {max} characters.",
+  "@passwordHelperText": {
+    "description": "Helper text below the password field during registration",
+    "placeholders": {
+      "min": {"type": "int"},
+      "max": {"type": "int"}
+    }
+  },
+  "navMonth": "Month",
+  "navGraph": "Graph",
+  "navSettings": "Settings",
+  "assetGroups": "Asset Groups",
+  "importLegacyJson": "Import legacy JSON",
+  "importLegacySubtitle": "Exported data from wealthtracker.app/legacy",
+  "hideLabel": "Hide",
+
+  "retry": "Retry",
+  "tags": "Tags",
+
+  "failedToFetchTokens": "Failed to fetch tokens",
+  "tokenDeletedSuccessfully": "Token deleted successfully",
+  "failedToDeleteToken": "Failed to delete token",
+  "deleteTokenTitle": "Delete Token",
+  "deleteTokenConfirm": "Are you sure you want to delete {name}?",
+  "@deleteTokenConfirm": {
+    "description": "Confirmation dialog for deleting a token",
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "thisToken": "this token",
+  "noTokensFound": "No tokens found",
+  "unnamedToken": "Unnamed Token",
+  "currentToken": "(current)",
+  "tokenCreatedAt": "Created: {timestamp}",
+  "@tokenCreatedAt": {
+    "description": "Shows when a token was created",
+    "placeholders": {
+      "timestamp": {"type": "String"}
+    }
+  },
+  "tokenLastUsedAt": "Last used: {timestamp}",
+  "@tokenLastUsedAt": {
+    "description": "Shows when a token was last used",
+    "placeholders": {
+      "timestamp": {"type": "String"}
+    }
+  },
+
+  "importedLegacyItems": "Imported {count} items from legacy backup",
+  "@importedLegacyItems": {
+    "description": "Success message after importing legacy data",
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "backupShareSubject": "Wealthtracker Backup",
+  "backupShareText": "Your Wealthtracker backup from {date}",
+  "@backupShareText": {
+    "description": "Share text for the backup file",
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+
+  "otaEnabled": "One time password enabled",
+  "otaInvalidCode": "Invalid code, please try again",
+  "otaPasswordRemoved": "One time password removed",
+  "otaFailedToRemove": "Failed to remove. Check your password.",
+  "otaIsEnabled": "One time password is enabled",
+  "otaTwoFactorProtected": "Your account is protected with two-factor authentication.",
+  "otaEnterPasswordToRemove": "Enter your password to remove:",
+  "otaRemoveButton": "Remove one time password",
+  "otaScanQrCode": "Scan this QR code with your authenticator app",
+  "otaOrEnterManually": "Or enter this key manually:",
+  "otaKeyCopied": "Key copied to clipboard",
+  "otaEnterCode": "Enter the 6-digit code to confirm:",
+  "otaFailedToGetSecret": "Failed to get OTA secret",
+
+  "registrationFailed": "Registration failed: {error}",
+  "@registrationFailed": {
+    "description": "Error when user registration fails",
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+  "anErrorOccurred": "An error occurred: {error}",
+  "@anErrorOccurred": {
+    "description": "Generic error message with error details",
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+
+  "assets": "Assets",
+  "groups": "Groups",
+  "liabilities": "Liabilities",
+  "graphFrom": "From {date}",
+  "@graphFrom": {
+    "description": "Graph start date selector label",
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+  "graphTo": "To {date}",
+  "@graphTo": {
+    "description": "Graph end date selector label",
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+  "noAssetsThisMonth": "No assets this month",
+  "noLiabilitiesThisMonth": "No liabilities this month",
+  "noGroupsThisMonth": "No groups this month",
+
+  "previousMonth": "Previous month",
+  "nextMonth": "Next month",
+  "commentTooltip": "Comment",
+  "addAssetTooltip": "Add Asset",
+  "noAssets": "No Assets",
+  "noAssetsSubtitle": "Click + to add an asset or liability for this month",
+  "changeValue": "Change: {value}",
+  "@changeValue": {
+    "description": "Shows the change in asset value with a label",
+    "placeholders": {
+      "value": {"type": "String"}
+    }
+  },
+  "previousMonthValue": "previous month: {value}",
+  "@previousMonthValue": {
+    "description": "Shows the previous month value for an asset suggestion",
+    "placeholders": {
+      "value": {"type": "String"}
+    }
+  },
+  "tapToAdd": "Tap to add",
+
+  "commentForDate": "Comment for {date}",
+  "@commentForDate": {
+    "description": "Dialog title for the comment popup",
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+  "commentLabel": "Comment",
+  "addComment": "Add comment",
+
+  "addTag": "Add Tag",
+  "noTagsYet": "No Tags Yet",
+  "noTagsSubtitle": "Create tags to organize and categorize your assets",
+  "editTag": "Edit Tag",
+  "tagName": "Tag Name",
+  "enterTagName": "Enter tag name",
+  "tagNameEmpty": "Tag name cannot be empty",
+
+  "addGroup": "Add Group",
+  "noGroupsYet": "No Asset Groups Yet",
+  "noGroupsSubtitle": "Create groups to organize related assets together",
+  "editGroup": "Edit Group",
+  "groupName": "Group Name",
+  "enterGroupName": "Enter group name",
+  "groupNameEmpty": "Group name cannot be empty",
+
+  "addNewAsset": "Add new asset",
+  "addAssetToMonth": "Add {name} to this month",
+  "@addAssetToMonth": {
+    "description": "Dialog title when adding an asset suggestion to the current month",
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "editAsset": "Edit {name}",
+  "@editAsset": {
+    "description": "Dialog title when editing an existing asset",
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "liability": "Liability",
+  "asset": "Asset",
+  "nameLabel": "Name",
+  "groupLabel": "Group",
+  "enterOrSelectGroup": "Enter or select group",
+  "valueLabel": "Value",
+  "changeFieldLabel": "Change",
+  "valueFieldRequired": "Value field must be filled",
+
+  "deleteMonthValueOnly": "Delete {month} value only",
+  "@deleteMonthValueOnly": {
+    "description": "Option to delete only the selected month's asset value",
+    "placeholders": {
+      "month": {"type": "String"}
+    }
+  },
+  "deleteAllAssetValues": "Delete all {name} values",
+  "@deleteAllAssetValues": {
+    "description": "Option to delete all monthly values for the asset",
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "discard": "Discard",
+
+  "autofill": "Autofill",
+  "autofillFixed": "Fixed",
+  "autofillPercentage": "% / Month",
+  "autofillPercentageYearly": "% / Year",
+  "autofillLoan": "Loan",
+  "autofillAmountPerMonth": "Amount per month",
+  "autofillRatePerMonth": "Rate per month (%)",
+  "autofillRatePerYear": "Rate per year (%)",
+  "autofillLoanRate": "Annual interest rate (%)",
+  "autofillNumberOfMonths": "Number of months",
+  "autofillMonthsApplied": "{count} months autofilled",
+  "@autofillMonthsApplied": {
+    "description": "Label shown on autofill button when months have been configured",
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+
+  "serverNotFound": "Not found",
+  "serverVersionLabel": "Version {version}",
+  "@serverVersionLabel": {
+    "description": "Shows the server version number",
+    "placeholders": {
+      "version": {"type": "String"}
+    }
+  },
+  "checkServer": "Check Server",
+  "continueButton": "Continue"
+}

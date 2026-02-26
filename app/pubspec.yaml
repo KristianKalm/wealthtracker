@@ -1,0 +1,80 @@
+name: wealthtracker
+description: "Private"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.8.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  kryptic_ui:
+    path: ../../kryptic-core/ui
+
+  kryptic_core:
+    path: ../../kryptic-core/business
+
+  http: ^1.4.0
+
+  json_annotation: ^4.9.0
+
+  provider: ^6.1.5 # ChangeHandler for configuration changes
+  flutter_secure_storage: ^9.2.4 # Prefs
+
+  intl: ^0.20.2 # Date Formats
+
+  drift: ^2.22.1 # Local DB
+  sqlcipher_flutter_libs: ^0.6.5 # Encrypted SQLite for mobile
+  path: ^1.9.0
+
+
+  #Crypto
+  cryptography: ^2.0.0
+  convert: ^3.0.0
+  crypto: ^3.0.6
+  bip39: ^1.0.6
+  encrypt: ^5.0.3
+  openpgp: 3.10.6
+  pointycastle: ^3.9.1
+
+  #Device Info
+  device_info_plus: ^11.1.1
+
+  #DI
+  flutter_riverpod: ^2.6.1
+
+  #ImportExport
+  permission_handler: ^11.3.0
+  local_auth: ^2.3.0
+  file_picker: ^8.0.6
+  archive: 4.0.7
+  file_saver: ^0.3.1
+  share_plus: ^10.1.4
+  path_provider: ^2.1.5
+
+
+  #UI
+  cupertino_icons: ^1.0.8
+  fl_chart: ^0.70.2
+  month_picker_dialog: ^5.0.0
+  url_launcher: ^6.3.1
+  qr_flutter: ^4.1.0
+
+dev_dependencies:
+  build_runner: ^2.4.14 # dart run build_runner build
+  json_serializable: ^6.8.0
+  drift_dev: ^2.22.1
+
+flutter:
+  generate: true
+  uses-material-design: true
+  assets:
+    - assets/
+    - assets/icon/
+    - packages/openpgp/web/assets/worker.js
+    - packages/openpgp/web/assets/wasm_exec.js
+    - packages/openpgp/web/assets/openpgp.wasm
