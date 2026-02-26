@@ -13,10 +13,10 @@ dependencies:
     sdk: flutter
 
   kryptic_ui:
-    path: ../../kryptic-core/ui
+    path: ../core/ui
 
   kryptic_core:
-    path: ../../kryptic-core/business
+    path: ../core/business
 
   http: ^1.4.0
 

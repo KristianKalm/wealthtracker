@@ -683,14 +683,14 @@ packages:
   kryptic_core:
     dependency: "direct main"
     description:
-      path: "../../kryptic-core/business"
+      path: "../core/business"
       relative: true
     source: path
     version: "0.0.1"
   kryptic_ui:
     dependency: "direct main"
     description:
-      path: "../../kryptic-core/ui"
+      path: "../core/ui"
       relative: true
     source: path
     version: "0.0.1"

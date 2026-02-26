@@ -16,15 +16,55 @@ jobs:
         with:
           flutter-version: '3.35.0'
 
+      - name: Increment patch version
+        run: |
+          cd app
+          # Extract current version (e.g., 0.0.1)
+          VERSION=$(grep 'version:' pubspec.yaml | awk '{print $2}')
+          # Split into major, minor, patch
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+          # Increment patch
+          NEW_PATCH=$((PATCH + 1))
+          NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
+          # Update pubspec.yaml
+          sed -i "s/version: $VERSION/version: $NEW_VERSION/" pubspec.yaml
+          # Commit the change
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add pubspec.yaml
+          git commit -m "Bump version to $NEW_VERSION"
+          git push
+
       - name: Build web
         run: |
           cd app
           flutter pub get
           flutter build web --release
 
+      - name: Extract app version
+        id: version
+        run: |
+          cd app
+          VERSION=$(grep 'version:' pubspec.yaml | awk '{print $2}')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create release zip
+        run: |
+          cd app/build/web
+          zip -r ../../../web${{ steps.version.outputs.version }}.zip .
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          files: web${{ steps.version.outputs.version }}.zip
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy wealthtracker/build/web --project-name=wealthtracker
+          command: pages deploy app/build/web --project-name=wealthtracker
