@@ -2,7 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:kryptic_ui/kryptic_ui.dart';
+import 'package:kryptic_core/kryptic_core.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 
 import '../../core/models/AssetGroup.dart';

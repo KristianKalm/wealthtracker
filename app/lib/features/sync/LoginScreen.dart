@@ -15,7 +15,6 @@ import '../../l10n/l10n.dart';
 import '../../core/prefs/WealthtrackerPrefs.dart';
 import '../../core/sync/WealthtrackerSync.dart' as WealthtrackerSync;
 import '../../main.dart';
-import 'package:kryptic_ui/kryptic_ui.dart';
 import '../Providers.dart';
 import 'ServerScreen.dart';
 

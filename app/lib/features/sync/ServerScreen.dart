@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kryptic_core/kryptic_core.dart';
 import '../../core/api_config.dart';
-import 'package:kryptic_ui/kryptic_ui.dart';
 import '../../l10n/l10n.dart';
 import 'LoginScreen.dart';
 

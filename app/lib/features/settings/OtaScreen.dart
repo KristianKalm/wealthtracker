@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-import 'package:kryptic_ui/kryptic_ui.dart';
+import 'package:kryptic_core/kryptic_core.dart';
 import '../../l10n/l10n.dart';
 import '../Providers.dart';
 

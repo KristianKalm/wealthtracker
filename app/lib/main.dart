@@ -9,7 +9,6 @@ import 'package:kryptic_core/kryptic_core.dart';
 import 'core/prefs/WealthtrackerPrefs.dart';
 import 'features/settings/PinEntryWidget.dart';
 import 'features/sync/LoginScreen.dart';
-import 'package:kryptic_ui/kryptic_ui.dart';
 import 'l10n/l10n.dart';
 
 class GlobalNotifier extends Notifier<ThemeMode> {

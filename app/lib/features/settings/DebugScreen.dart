@@ -6,7 +6,6 @@ import 'package:kryptic_core/kryptic_core.dart';
 import '../../core/api_config.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/prefs/WealthtrackerPrefs.dart';
-import 'package:kryptic_ui/kryptic_ui.dart';
 import '../Providers.dart';
 
 class DebugScreen extends ConsumerStatefulWidget {

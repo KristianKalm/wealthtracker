@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wealthtracker/features/asset/AssetListScreen.dart';
 import 'package:wealthtracker/features/graph/GraphScreen.dart';
 import 'package:wealthtracker/features/settings/SettingsScreen.dart';
-import 'package:kryptic_ui/kryptic_ui.dart';
+import 'package:kryptic_core/kryptic_core.dart';
 
 Widget WealthtrackerBottomNav(BuildContext context, int selected) {
   return KrypticBottomNav(

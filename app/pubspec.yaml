@@ -12,11 +12,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  kryptic_ui:
-    path: ../core/ui
-
   kryptic_core:
-    path: ../core/business
+    path: ../core
 
   http: ^1.4.0
 

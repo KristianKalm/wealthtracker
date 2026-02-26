@@ -13,7 +13,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wealthtracker/features/settings/OtaScreen.dart';
 import 'package:wealthtracker/features/settings/AssetGroupListScreen.dart';
 import 'package:wealthtracker/features/settings/TagListScreen.dart';
-import 'package:wealthtracker/features/settings/TokenListScreen.dart';
 
 import '../../l10n/l10n.dart';
 import '../../core/prefs/WealthtrackerPrefs.dart';
@@ -21,7 +20,6 @@ import '../../core/sync/WealthtrackerBackup.dart';
 import '../../core/sync/WealthtrackerSync.dart' as WealthtrackerSync;
 import '../../main.dart';
 import '../navigation/WealthtrackerBottomNav.dart';
-import 'package:kryptic_ui/kryptic_ui.dart';
 import 'package:kryptic_core/kryptic_core.dart';
 import '../Providers.dart';
 import '../sync/LoginScreen.dart';
@@ -924,7 +922,30 @@ class _SettingsScreen extends ConsumerState<SettingsScreen> {
                   showChevron: true,
                   onTap: () => Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => TokenListScreen()),
+                    MaterialPageRoute(builder: (context) => TokenListScreen(
+                      sessionApiProvider: wealthtrackerSessionApiProvider.future,
+                      prefsProvider: wealthtrackerPrefsProvider,
+                      pgpProvider: pgpProvider.future,
+                      strings: TokenListStrings(
+                        title: context.l10n.tokens,
+                        back: context.l10n.back,
+                        failedToFetchTokens: context.l10n.failedToFetchTokens,
+                        anErrorOccurred: context.l10n.anErrorOccurred,
+                        retry: context.l10n.retry,
+                        noTokensFound: context.l10n.noTokensFound,
+                        unnamedToken: context.l10n.unnamedToken,
+                        currentToken: context.l10n.currentToken,
+                        tokenCreatedAt: context.l10n.tokenCreatedAt,
+                        tokenLastUsedAt: context.l10n.tokenLastUsedAt,
+                        deleteTokenTitle: context.l10n.deleteTokenTitle,
+                        deleteTokenConfirm: context.l10n.deleteTokenConfirm,
+                        thisToken: context.l10n.thisToken,
+                        cancel: context.l10n.cancel,
+                        delete: context.l10n.delete,
+                        tokenDeletedSuccessfully: context.l10n.tokenDeletedSuccessfully,
+                        failedToDeleteToken: context.l10n.failedToDeleteToken,
+                      ),
+                    )),
                   ),
                 ),
                 _SettingsItem(

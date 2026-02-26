@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
+
 import '../prefs/WealthtrackerPrefs.dart';
 import 'drift/database.dart';
 import 'AssetRepository.dart';
@@ -50,10 +52,14 @@ class WealthtrackerRepository {
   }
 
   Future<void> deleteDatabase() async {
-    await _db.close();
-    final file = await WealthtrackerDatabase.getDatabaseFile();
-    if (await file.exists()) {
-      await file.delete();
+    if (kIsWeb) {
+      await clearAll();
+    } else {
+      await _db.close();
+      final file = await WealthtrackerDatabase.getDatabaseFile();
+      if (await file.exists()) {
+        await file.delete();
+      }
     }
   }
 
