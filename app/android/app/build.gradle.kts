@@ -25,9 +25,20 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
+    val keystorePassword = file("../../../secrets/keystore_password").readText().trim()
+    signingConfigs {
+        create("release") {
+            storeFile = file("../../../secrets/wealthtracker.jks")
+            storePassword = keystorePassword
+            keyAlias = "wealthtracker"
+            keyPassword = keystorePassword
+        }
+    }
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = false
+            isShrinkResources = false
         }
     }
 }

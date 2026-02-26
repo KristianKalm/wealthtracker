@@ -1,4 +1,4 @@
-name: Deploy Web
+name: Build Release
 
 on:
   workflow_dispatch:
@@ -15,6 +15,12 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.35.0'
+
+      - name: Setup Android signing secrets
+        run: |
+          mkdir -p secrets
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > secrets/wealthtracker.jks
+          echo "${{ secrets.KEYSTORE_PASSWORD }}" > secrets/keystore_password
 
       - name: Increment patch version
         run: |
@@ -41,6 +47,11 @@ jobs:
           flutter pub get
           flutter build web --release
 
+      - name: Build Android APK
+        run: |
+          cd app
+          flutter build apk --release
+
       - name: Extract app version
         id: version
         run: |
@@ -57,7 +68,9 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ steps.version.outputs.version }}
-          files: web${{ steps.version.outputs.version }}.zip
+          files: |
+            web${{ steps.version.outputs.version }}.zip
+            app/build/app/outputs/flutter-apk/app-release.apk
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
