@@ -10,7 +10,6 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io' as io;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:wealthtracker/features/settings/OtaScreen.dart';
 import 'package:wealthtracker/features/settings/AssetGroupListScreen.dart';
 import 'package:wealthtracker/features/settings/TagListScreen.dart';
 
@@ -912,7 +911,30 @@ class _SettingsScreen extends ConsumerState<SettingsScreen> {
                   showChevron: true,
                   onTap: () => Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const OtaScreen()),
+                    MaterialPageRoute(builder: (context) => OtaScreen(
+                      sessionApiProvider: wealthtrackerSessionApiProvider.future,
+                      appName: 'Wealthtracker',
+                      strings: OtaStrings(
+                        title: context.l10n.oneTimePasswordTitle,
+                        back: context.l10n.back,
+                        failedToGetSecret: context.l10n.otaFailedToGetSecret,
+                        retry: context.l10n.retry,
+                        isEnabled: context.l10n.otaIsEnabled,
+                        twoFactorProtected: context.l10n.otaTwoFactorProtected,
+                        enterPasswordToRemove: context.l10n.otaEnterPasswordToRemove,
+                        passwordLabel: context.l10n.passwordLabel,
+                        removeButton: context.l10n.otaRemoveButton,
+                        scanQrCode: context.l10n.otaScanQrCode,
+                        orEnterManually: context.l10n.otaOrEnterManually,
+                        keyCopied: context.l10n.otaKeyCopied,
+                        enterCode: context.l10n.otaEnterCode,
+                        confirm: context.l10n.confirm,
+                        enabled: context.l10n.otaEnabled,
+                        invalidCode: context.l10n.otaInvalidCode,
+                        removed: context.l10n.otaPasswordRemoved,
+                        failedToRemove: context.l10n.otaFailedToRemove,
+                      ),
+                    )),
                   ),
                 ),
                 _SettingsItem(

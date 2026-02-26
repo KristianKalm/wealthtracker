@@ -53,6 +53,7 @@ export 'ui/views/KrypticDateRow.dart';
 export 'ui/image/KrypticImagePicker.dart';
 
 // UI - Screens
+export 'ui/screens/OtaScreen.dart';
 export 'ui/screens/TokenListScreen.dart';
 
 // UI - Utilities
