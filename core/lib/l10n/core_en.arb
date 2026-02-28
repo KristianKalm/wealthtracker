@@ -1,0 +1,151 @@
+{
+  "@@locale": "en",
+
+  "back": "Back",
+  "retry": "Retry",
+  "confirm": "Confirm",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "ok": "OK",
+  "error": "Error",
+  "pleaseWait": "Please wait...",
+  "somethingWentWrong": "Something went wrong",
+  "changeButton": "Change",
+  "language": "Language",
+
+  "usernameLabel": "Username",
+  "usernameTooShort": "Username must be at least {min} characters.",
+  "@usernameTooShort": {
+    "placeholders": { "min": {"type": "int"} }
+  },
+  "usernameTooLong": "Username must be at most {max} characters.",
+  "@usernameTooLong": {
+    "placeholders": { "max": {"type": "int"} }
+  },
+  "passwordLabel": "Password",
+  "passwordTooShort": "Password must be at least {min} characters.",
+  "@passwordTooShort": {
+    "placeholders": { "min": {"type": "int"} }
+  },
+  "passwordTooLong": "Password must be at most {max} characters.",
+  "@passwordTooLong": {
+    "placeholders": { "max": {"type": "int"} }
+  },
+  "passwordHelperText": "Password should be between {min} and {max} characters.",
+  "@passwordHelperText": {
+    "placeholders": {
+      "min": {"type": "int"},
+      "max": {"type": "int"}
+    }
+  },
+  "confirmNewPassword": "Confirm new password",
+  "newPasswordsDoNotMatch": "New passwords do not match.",
+
+  "enterPin": "Enter PIN",
+  "wrongPin": "Wrong PIN",
+  "useBiometrics": "Use Biometrics",
+  "appIsLocked": "App is Locked",
+  "unlock": "Unlock",
+
+  "loginButton": "Login",
+  "registerButton": "Register",
+  "useWithoutAccount": "Use without account",
+  "creatingAccount": "Creating Account",
+  "signingIn": "Signing In",
+  "keyGenerationFailed": "Key generation failed",
+  "registrationFailed": "Registration failed: {error}",
+  "@registrationFailed": {
+    "placeholders": { "error": {"type": "String"} }
+  },
+
+  "oneTimePasswordTitle": "One-Time Password",
+  "oneTimePasswordLabel": "One time password",
+
+  "otaScreenTitle": "One-Time Password",
+  "otaFailedToGetSecret": "Failed to get OTA secret",
+  "otaIsEnabled": "One time password is enabled",
+  "otaTwoFactorProtected": "Your account is protected with two-factor authentication.",
+  "otaEnterPasswordToRemove": "Enter your password to remove:",
+  "otaRemoveButton": "Remove one time password",
+  "otaScanQrCode": "Scan this QR code with your authenticator app",
+  "otaOrEnterManually": "Or enter this key manually:",
+  "otaKeyCopied": "Key copied to clipboard",
+  "otaEnterCode": "Enter the 6-digit code to confirm:",
+  "otaEnabled": "One time password enabled",
+  "otaInvalidCode": "Invalid code, please try again",
+  "otaPasswordRemoved": "One time password removed",
+  "otaFailedToRemove": "Failed to remove. Check your password.",
+
+  "tokens": "Tokens",
+  "failedToFetchTokens": "Failed to fetch tokens",
+  "anErrorOccurred": "An error occurred: {error}",
+  "@anErrorOccurred": {
+    "description": "Generic error message with error details",
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+  "noTokensFound": "No tokens found",
+  "unnamedToken": "Unnamed Token",
+  "currentToken": "(current)",
+  "tokenCreatedAt": "Created: {timestamp}",
+  "@tokenCreatedAt": {
+    "description": "Shows when a token was created",
+    "placeholders": {
+      "timestamp": {"type": "String"}
+    }
+  },
+  "tokenLastUsedAt": "Last used: {timestamp}",
+  "@tokenLastUsedAt": {
+    "description": "Shows when a token was last used",
+    "placeholders": {
+      "timestamp": {"type": "String"}
+    }
+  },
+  "deleteTokenTitle": "Delete Token",
+  "deleteTokenConfirm": "Are you sure you want to delete {name}?",
+  "@deleteTokenConfirm": {
+    "description": "Confirmation dialog for deleting a token",
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "thisToken": "this token",
+  "tokenDeletedSuccessfully": "Token deleted successfully",
+  "failedToDeleteToken": "Failed to delete token",
+
+  "errAppNotSupported": "App not supported",
+  "errInvalidToken": "Invalid token",
+  "errUserAlreadyExists": "User already exists",
+  "errUserNotFound": "User not found",
+  "errPinIsRequired": "PIN is required",
+  "errWrongPin": "Wrong PIN",
+  "errInvalidCredentials": "Invalid credentials",
+  "errTokenNotFound": "Token not found",
+  "errFileNotFound": "File not found",
+  "errFileSaved": "File saved",
+  "errFileDeleted": "File deleted",
+  "errOtaAlreadySetUp": "Authenticator already set up",
+  "errOtaNoOngoingSetup": "No ongoing authenticator setup",
+  "errOtaWrongPin": "Wrong authenticator PIN",
+  "errOtaConfirmed": "Authenticator confirmed",
+  "errOtaNotSetUp": "Authenticator not set up",
+  "errOtaRemoved": "Authenticator removed",
+  "errAccountDeleted": "Account deleted",
+  "errAccountUpdated": "Account updated",
+  "errInvalidPath": "Invalid path",
+  "errTimestampExpired": "Request expired",
+  "errTooManyRequests": "Too many requests",
+
+  "serverLabel": "Server",
+  "serverNotFound": "Not found",
+  "serverVersionLabel": "Version {version}",
+  "@serverVersionLabel": {
+    "description": "Shows the server version number",
+    "placeholders": {
+      "version": {"type": "String"}
+    }
+  },
+  "checkServer": "Check Server",
+  "continueButton": "Continue"
+}

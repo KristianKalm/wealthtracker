@@ -3,64 +3,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../models/token.dart';
 import '../../api/kryptic_session_api.dart';
+import '../../gen_l10n/core_localizations.dart';
 import '../../prefs/kryptic_prefs.dart';
 import '../../crypto/pgp_encryption.dart';
 import '../layouts/KrypticBaseScreen.dart';
 import '../widgets/KrypticToolbar.dart';
 import '../views/KrypticSnackbar.dart';
 
-class TokenListStrings {
-  final String title;
-  final String back;
-  final String failedToFetchTokens;
-  final String Function(String error) anErrorOccurred;
-  final String retry;
-  final String noTokensFound;
-  final String unnamedToken;
-  final String currentToken;
-  final String Function(String date) tokenCreatedAt;
-  final String Function(String date) tokenLastUsedAt;
-  final String deleteTokenTitle;
-  final String Function(String name) deleteTokenConfirm;
-  final String thisToken;
-  final String cancel;
-  final String delete;
-  final String tokenDeletedSuccessfully;
-  final String failedToDeleteToken;
-
-  const TokenListStrings({
-    required this.title,
-    required this.back,
-    required this.failedToFetchTokens,
-    required this.anErrorOccurred,
-    required this.retry,
-    required this.noTokensFound,
-    required this.unnamedToken,
-    required this.currentToken,
-    required this.tokenCreatedAt,
-    required this.tokenLastUsedAt,
-    required this.deleteTokenTitle,
-    required this.deleteTokenConfirm,
-    required this.thisToken,
-    required this.cancel,
-    required this.delete,
-    required this.tokenDeletedSuccessfully,
-    required this.failedToDeleteToken,
-  });
-}
-
 class TokenListScreen extends ConsumerStatefulWidget {
   final ProviderListenable<Future<KrypticSessionApi?>> sessionApiProvider;
   final ProviderListenable<KrypticPrefs> prefsProvider;
   final ProviderListenable<Future<KrypticPgpEncryption>>? pgpProvider;
-  final TokenListStrings strings;
 
   const TokenListScreen({
     super.key,
     required this.sessionApiProvider,
     required this.prefsProvider,
     this.pgpProvider,
-    required this.strings,
   });
 
   @override
@@ -72,6 +31,8 @@ class _TokenListScreenState extends ConsumerState<TokenListScreen> {
   bool isLoading = true;
   String? error;
   String? currentTokenId;
+
+  CoreLocalizations get _l => CoreLocalizations.of(context)!;
 
   @override
   void initState() {
@@ -95,7 +56,7 @@ class _TokenListScreenState extends ConsumerState<TokenListScreen> {
       if (response.isEmpty) {
         if (mounted) {
           setState(() {
-            error = widget.strings.failedToFetchTokens;
+            error = _l.failedToFetchTokens;
             isLoading = false;
           });
         }
@@ -122,7 +83,7 @@ class _TokenListScreenState extends ConsumerState<TokenListScreen> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          error = widget.strings.anErrorOccurred(e.toString());
+          error = _l.anErrorOccurred(e.toString());
           isLoading = false;
         });
       }
@@ -142,17 +103,17 @@ class _TokenListScreenState extends ConsumerState<TokenListScreen> {
 
       if (success) {
         if (mounted) {
-          KrypticSnackbar.showSuccess(context, widget.strings.tokenDeletedSuccessfully);
+          KrypticSnackbar.showSuccess(context, _l.tokenDeletedSuccessfully);
         }
         fetchTokens();
       } else {
         if (mounted) {
-          KrypticSnackbar.showError(context, widget.strings.failedToDeleteToken);
+          KrypticSnackbar.showError(context, _l.failedToDeleteToken);
         }
       }
     } catch (e) {
       if (mounted) {
-        KrypticSnackbar.showError(context, widget.strings.anErrorOccurred(e.toString()));
+        KrypticSnackbar.showError(context, _l.anErrorOccurred(e.toString()));
       }
     }
   }
@@ -161,21 +122,21 @@ class _TokenListScreenState extends ConsumerState<TokenListScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(widget.strings.deleteTokenTitle),
+        title: Text(_l.deleteTokenTitle),
         content: Text(
-          widget.strings.deleteTokenConfirm(tokenName ?? widget.strings.thisToken),
+          _l.deleteTokenConfirm(tokenName ?? _l.thisToken),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text(widget.strings.cancel),
+            child: Text(_l.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: TextButton.styleFrom(
               foregroundColor: Colors.red,
             ),
-            child: Text(widget.strings.delete),
+            child: Text(_l.delete),
           ),
         ],
       ),
@@ -193,9 +154,9 @@ class _TokenListScreenState extends ConsumerState<TokenListScreen> {
         leftButton: ToolbarButton(
           icon: Icons.arrow_back,
           onPressed: () => Navigator.of(context).pop(),
-          tooltip: widget.strings.back,
+          tooltip: _l.back,
         ),
-        title: widget.strings.title,
+        title: _l.tokens,
       ),
       content: isLoading
           ? Center(child: CircularProgressIndicator())
@@ -211,7 +172,7 @@ class _TokenListScreenState extends ConsumerState<TokenListScreen> {
                       SizedBox(height: 16),
                       ElevatedButton(
                         onPressed: fetchTokens,
-                        child: Text(widget.strings.retry),
+                        child: Text(_l.retry),
                       ),
                     ],
                   ),
@@ -219,7 +180,7 @@ class _TokenListScreenState extends ConsumerState<TokenListScreen> {
               : tokens.isEmpty
                   ? Center(
                       child: Text(
-                        widget.strings.noTokensFound,
+                        _l.noTokensFound,
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.secondary,
                         ),
@@ -238,13 +199,13 @@ class _TokenListScreenState extends ConsumerState<TokenListScreen> {
                             title: Row(
                               children: [
                                 Text(
-                                  token.name ?? widget.strings.unnamedToken,
+                                  token.name ?? _l.unnamedToken,
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 if (isCurrent) ...[
                                   SizedBox(width: 8),
                                   Text(
-                                    widget.strings.currentToken,
+                                    _l.currentToken,
                                     style: TextStyle(
                                       color: Theme.of(context).colorScheme.primary,
                                       fontWeight: FontWeight.normal,
@@ -259,11 +220,11 @@ class _TokenListScreenState extends ConsumerState<TokenListScreen> {
                               children: [
                                 SizedBox(height: 4),
                                 Text(
-                                  widget.strings.tokenCreatedAt(formatTimestamp(token.createdAt)),
+                                  _l.tokenCreatedAt(formatTimestamp(token.createdAt)),
                                   style: TextStyle(fontSize: 12),
                                 ),
                                 Text(
-                                  widget.strings.tokenLastUsedAt(formatTimestamp(token.lastUsedAt)),
+                                  _l.tokenLastUsedAt(formatTimestamp(token.lastUsedAt)),
                                   style: TextStyle(fontSize: 12),
                                 ),
                               ],
@@ -274,7 +235,7 @@ class _TokenListScreenState extends ConsumerState<TokenListScreen> {
                                 : IconButton(
                                     icon: Icon(Icons.delete, color: Colors.red),
                                     onPressed: () => confirmDeleteToken(token.id, token.name),
-                                    tooltip: widget.strings.delete,
+                                    tooltip: _l.delete,
                                   ),
                             isThreeLine: true,
                           ),

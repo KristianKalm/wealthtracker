@@ -1,14 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kryptic_core/kryptic_core.dart';
-import '../../core/api_config.dart';
-import '../../l10n/l10n.dart';
-import 'LoginScreen.dart';
+
+import '../../api/kryptic_api_config.dart';
+import '../../api/kryptic_auth_api.dart';
+import '../../gen_l10n/core_localizations.dart';
+import '../theme/KrypticColors.dart';
+import '../layouts/KrypticBaseScreen.dart';
+import '../widgets/KrypticToolbar.dart';
+import '../UiExtensions.dart';
+
+const double _authContentWidth = 400;
 
 class ServerScreen extends ConsumerStatefulWidget {
   final String initialUrl;
+  final KrypticApiConfig apiConfig;
 
-  const ServerScreen({super.key, required this.initialUrl});
+  const ServerScreen({
+    super.key,
+    required this.initialUrl,
+    required this.apiConfig,
+  });
 
   @override
   ConsumerState<ServerScreen> createState() => _ServerScreenState();
@@ -52,7 +63,7 @@ class _ServerScreenState extends ConsumerState<ServerScreen> {
     setState(() {
       isChecking = true;
     });
-    KrypticAuthApi(serverController.text, wealthtrackerApiConfig).getVersion().then((version) {
+    KrypticAuthApi(serverController.text, widget.apiConfig).getVersion().then((version) {
       setState(() {
         serverVersion = version;
         isChecking = false;
@@ -66,6 +77,7 @@ class _ServerScreenState extends ConsumerState<ServerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = CoreLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final serverOk = serverVersion != null && serverVersion != 0;
 
@@ -74,13 +86,13 @@ class _ServerScreenState extends ConsumerState<ServerScreen> {
         leftButton: ToolbarButton(
           icon: Icons.arrow_back,
           onPressed: () => Navigator.pop(context),
-          tooltip: context.l10n.back,
+          tooltip: l.back,
         ),
-        title: context.l10n.serverLabel,
+        title: l.serverLabel,
       ),
       content: Center(
         child: SizedBox(
-          width: AUTH_CONTENT_WIDTH,
+          width: _authContentWidth,
           child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -89,8 +101,8 @@ class _ServerScreenState extends ConsumerState<ServerScreen> {
             controller: serverController,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: context.l10n.serverLabel,
-              hintText: context.l10n.serverLabel,
+              labelText: l.serverLabel,
+              hintText: l.serverLabel,
             ),
           ),
           const SizedBox(height: 16),
@@ -99,8 +111,8 @@ class _ServerScreenState extends ConsumerState<ServerScreen> {
             children: [
               Text(
                 serverVersion == 0
-                    ? context.l10n.serverNotFound
-                    : context.l10n.serverVersionLabel(serverVersion.toString()),
+                    ? l.serverNotFound
+                    : l.serverVersionLabel(serverVersion.toString()),
               ),
               const SizedBox(width: 8),
               Icon(
@@ -123,12 +135,12 @@ class _ServerScreenState extends ConsumerState<ServerScreen> {
             ),
           ElevatedButton(
             onPressed: isChecking ? null : () => _checkServer(),
-            child: Text(context.l10n.checkServer),
+            child: Text(l.checkServer),
           ),
           const SizedBox(height: 24),
           ElevatedButton(
             onPressed: serverOk ? () => _continue() : null,
-            child: Text(context.l10n.continueButton),
+            child: Text(l.continueButton),
           ),
         ],
       ),

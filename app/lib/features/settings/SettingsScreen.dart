@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:kryptic_core/ui/screens/OtaScreen.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -21,9 +22,8 @@ import '../../main.dart';
 import '../navigation/WealthtrackerBottomNav.dart';
 import 'package:kryptic_core/kryptic_core.dart';
 import '../Providers.dart';
-import '../sync/LoginScreen.dart';
+import '../../core/login_screen_factory.dart';
 import 'DebugScreen.dart';
-import 'PinEntryWidget.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -384,7 +384,7 @@ class _SettingsScreen extends ConsumerState<SettingsScreen> {
 
     if (mounted) {
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => LoginScreen(isFirstTime: true)),
+        MaterialPageRoute(builder: (context) => makeLoginScreen(ref, isFirstTime: true)),
         (Route<dynamic> route) => false,
       );
     }
@@ -569,7 +569,7 @@ class _SettingsScreen extends ConsumerState<SettingsScreen> {
       if (mounted) {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
-            builder: (context) => LoginScreen(isFirstTime: true),
+            builder: (context) => makeLoginScreen(ref, isFirstTime: true),
           ),
           (Route<dynamic> route) => false,
         );
@@ -914,26 +914,6 @@ class _SettingsScreen extends ConsumerState<SettingsScreen> {
                     MaterialPageRoute(builder: (context) => OtaScreen(
                       sessionApiProvider: wealthtrackerSessionApiProvider.future,
                       appName: 'Wealthtracker',
-                      strings: OtaStrings(
-                        title: context.l10n.oneTimePasswordTitle,
-                        back: context.l10n.back,
-                        failedToGetSecret: context.l10n.otaFailedToGetSecret,
-                        retry: context.l10n.retry,
-                        isEnabled: context.l10n.otaIsEnabled,
-                        twoFactorProtected: context.l10n.otaTwoFactorProtected,
-                        enterPasswordToRemove: context.l10n.otaEnterPasswordToRemove,
-                        passwordLabel: context.l10n.passwordLabel,
-                        removeButton: context.l10n.otaRemoveButton,
-                        scanQrCode: context.l10n.otaScanQrCode,
-                        orEnterManually: context.l10n.otaOrEnterManually,
-                        keyCopied: context.l10n.otaKeyCopied,
-                        enterCode: context.l10n.otaEnterCode,
-                        confirm: context.l10n.confirm,
-                        enabled: context.l10n.otaEnabled,
-                        invalidCode: context.l10n.otaInvalidCode,
-                        removed: context.l10n.otaPasswordRemoved,
-                        failedToRemove: context.l10n.otaFailedToRemove,
-                      ),
                     )),
                   ),
                 ),
@@ -948,25 +928,6 @@ class _SettingsScreen extends ConsumerState<SettingsScreen> {
                       sessionApiProvider: wealthtrackerSessionApiProvider.future,
                       prefsProvider: wealthtrackerPrefsProvider,
                       pgpProvider: pgpProvider.future,
-                      strings: TokenListStrings(
-                        title: context.l10n.tokens,
-                        back: context.l10n.back,
-                        failedToFetchTokens: context.l10n.failedToFetchTokens,
-                        anErrorOccurred: context.l10n.anErrorOccurred,
-                        retry: context.l10n.retry,
-                        noTokensFound: context.l10n.noTokensFound,
-                        unnamedToken: context.l10n.unnamedToken,
-                        currentToken: context.l10n.currentToken,
-                        tokenCreatedAt: context.l10n.tokenCreatedAt,
-                        tokenLastUsedAt: context.l10n.tokenLastUsedAt,
-                        deleteTokenTitle: context.l10n.deleteTokenTitle,
-                        deleteTokenConfirm: context.l10n.deleteTokenConfirm,
-                        thisToken: context.l10n.thisToken,
-                        cancel: context.l10n.cancel,
-                        delete: context.l10n.delete,
-                        tokenDeletedSuccessfully: context.l10n.tokenDeletedSuccessfully,
-                        failedToDeleteToken: context.l10n.failedToDeleteToken,
-                      ),
                     )),
                   ),
                 ),

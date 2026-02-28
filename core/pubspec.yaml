@@ -6,8 +6,13 @@ publish_to: 'none'
 environment:
   sdk: ^3.8.1
 
+flutter:
+  generate: true
+
 dependencies:
   flutter:
+    sdk: flutter
+  flutter_localizations:
     sdk: flutter
 
   http: ^1.4.0
@@ -25,6 +30,7 @@ dependencies:
   encrypt: ^5.0.3
   openpgp: 3.10.6
   pointycastle: ^3.9.1
+  bip39: ^1.0.6
 
   # Auth
   local_auth: ^2.3.0

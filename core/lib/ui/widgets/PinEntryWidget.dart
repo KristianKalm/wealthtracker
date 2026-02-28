@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../gen_l10n/core_localizations.dart';
+
 class PinEntryWidget extends StatefulWidget {
   final String title;
   final String? subtitle;
@@ -142,6 +144,7 @@ class PinEntryWidgetState extends State<PinEntryWidget> {
 
   Widget _buildNumberPad(Color textColor, bool isDark) {
     final buttonColor = isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.05);
+    final cancelLabel = CoreLocalizations.of(context)?.cancel ?? 'Cancel';
 
     Widget digitButton(String digit) {
       return Expanded(
@@ -179,7 +182,7 @@ class PinEntryWidgetState extends State<PinEntryWidget> {
                 height: 64,
                 alignment: Alignment.center,
                 child: Text(
-                  'Cancel',
+                  cancelLabel,
                   style: TextStyle(fontSize: 16, color: textColor),
                 ),
               ),

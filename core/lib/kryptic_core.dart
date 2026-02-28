@@ -1,5 +1,7 @@
 library kryptic_core;
 
+export 'kryptic_core_config.dart';
+
 // API
 export 'api/kryptic_api_config.dart';
 export 'api/kryptic_api_base.dart';
@@ -9,6 +11,10 @@ export 'api/kryptic_sync_api.dart';
 
 // Auth
 export 'auth/biometric_service.dart';
+
+// Lock
+export 'ui/lock/kryptic_lock_service.dart';
+export 'ui/lock/kryptic_lock_screen.dart';
 
 // Crypto
 export 'crypto/pgp_encryption.dart';
@@ -41,6 +47,7 @@ export 'ui/widgets/KrypticToolbar.dart';
 export 'ui/widgets/KrypticPopup.dart';
 export 'ui/widgets/KrypticEmptyView.dart';
 export 'ui/widgets/KrypticBottomNav.dart';
+export 'ui/widgets/PinEntryWidget.dart';
 
 // UI - Layouts
 export 'ui/layouts/KrypticBaseScreen.dart';
@@ -53,7 +60,10 @@ export 'ui/views/KrypticDateRow.dart';
 export 'ui/image/KrypticImagePicker.dart';
 
 // UI - Screens
+export 'ui/screens/LoginScreen.dart';
 export 'ui/screens/OtaScreen.dart';
+export 'ui/screens/ServerScreen.dart';
+export 'ui/screens/SplashScreen.dart';
 export 'ui/screens/TokenListScreen.dart';
 
 // UI - Utilities

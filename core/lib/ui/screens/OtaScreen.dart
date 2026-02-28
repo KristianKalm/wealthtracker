@@ -4,65 +4,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../api/kryptic_session_api.dart';
+import '../../gen_l10n/core_localizations.dart';
 import '../theme/KrypticColors.dart';
 import '../layouts/KrypticBaseScreen.dart';
 import '../widgets/KrypticToolbar.dart';
 import '../views/KrypticSnackbar.dart';
-
-class OtaStrings {
-  final String title;
-  final String back;
-  final String failedToGetSecret;
-  final String retry;
-  final String isEnabled;
-  final String twoFactorProtected;
-  final String enterPasswordToRemove;
-  final String passwordLabel;
-  final String removeButton;
-  final String scanQrCode;
-  final String orEnterManually;
-  final String keyCopied;
-  final String enterCode;
-  final String confirm;
-  final String enabled;
-  final String invalidCode;
-  final String removed;
-  final String failedToRemove;
-
-  const OtaStrings({
-    required this.title,
-    required this.back,
-    required this.failedToGetSecret,
-    required this.retry,
-    required this.isEnabled,
-    required this.twoFactorProtected,
-    required this.enterPasswordToRemove,
-    required this.passwordLabel,
-    required this.removeButton,
-    required this.scanQrCode,
-    required this.orEnterManually,
-    required this.keyCopied,
-    required this.enterCode,
-    required this.confirm,
-    required this.enabled,
-    required this.invalidCode,
-    required this.removed,
-    required this.failedToRemove,
-  });
-}
 
 enum OtaState { loading, setup, exists, error }
 
 class OtaScreen extends ConsumerStatefulWidget {
   final ProviderListenable<Future<KrypticSessionApi?>> sessionApiProvider;
   final String appName;
-  final OtaStrings strings;
 
   const OtaScreen({
     super.key,
     required this.sessionApiProvider,
     required this.appName,
-    required this.strings,
   });
 
   @override
@@ -77,6 +34,8 @@ class _OtaScreenState extends ConsumerState<OtaScreen> {
   bool isDeleting = false;
   late TextEditingController pinController;
   late TextEditingController passwordController;
+
+  CoreLocalizations get _l => CoreLocalizations.of(context)!;
 
   @override
   void initState() {
@@ -115,7 +74,7 @@ class _OtaScreenState extends ConsumerState<OtaScreen> {
           otaState = OtaState.exists;
           break;
         default:
-          errorMessage = widget.strings.failedToGetSecret;
+          errorMessage = _l.otaFailedToGetSecret;
           otaState = OtaState.error;
       }
     });
@@ -136,10 +95,10 @@ class _OtaScreenState extends ConsumerState<OtaScreen> {
     setState(() => isConfirming = false);
 
     if (success) {
-      KrypticSnackbar.showSuccess(context, widget.strings.enabled);
+      KrypticSnackbar.showSuccess(context, _l.otaEnabled);
       Navigator.pop(context);
     } else {
-      KrypticSnackbar.showError(context, widget.strings.invalidCode);
+      KrypticSnackbar.showError(context, _l.otaInvalidCode);
       pinController.clear();
     }
   }
@@ -159,10 +118,10 @@ class _OtaScreenState extends ConsumerState<OtaScreen> {
     setState(() => isDeleting = false);
 
     if (success) {
-      KrypticSnackbar.showSuccess(context, widget.strings.removed);
+      KrypticSnackbar.showSuccess(context, _l.otaPasswordRemoved);
       Navigator.pop(context);
     } else {
-      KrypticSnackbar.showError(context, widget.strings.failedToRemove);
+      KrypticSnackbar.showError(context, _l.otaFailedToRemove);
       passwordController.clear();
     }
   }
@@ -181,9 +140,9 @@ class _OtaScreenState extends ConsumerState<OtaScreen> {
         leftButton: ToolbarButton(
           icon: Icons.arrow_back,
           onPressed: () => Navigator.pop(context),
-          tooltip: widget.strings.back,
+          tooltip: _l.back,
         ),
-        title: widget.strings.title,
+        title: _l.otaScreenTitle,
       ),
       content: _buildContent(colors),
     );
@@ -202,7 +161,7 @@ class _OtaScreenState extends ConsumerState<OtaScreen> {
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: _fetchOta,
-                child: Text(widget.strings.retry),
+                child: Text(_l.retry),
               ),
             ],
           ),
@@ -225,7 +184,7 @@ class _OtaScreenState extends ConsumerState<OtaScreen> {
             Icon(Icons.verified_user, size: 64, color: colors.successColor),
             const SizedBox(height: 24),
             Text(
-              widget.strings.isEnabled,
+              _l.otaIsEnabled,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
@@ -235,13 +194,13 @@ class _OtaScreenState extends ConsumerState<OtaScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              widget.strings.twoFactorProtected,
+              _l.otaTwoFactorProtected,
               style: TextStyle(fontSize: 14, color: colors.secondaryText),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 40),
             Text(
-              widget.strings.enterPasswordToRemove,
+              _l.otaEnterPasswordToRemove,
               style: TextStyle(fontSize: 14, color: colors.primaryText),
             ),
             const SizedBox(height: 12),
@@ -250,8 +209,8 @@ class _OtaScreenState extends ConsumerState<OtaScreen> {
               obscureText: true,
               decoration: InputDecoration(
                 border: const OutlineInputBorder(),
-                labelText: widget.strings.passwordLabel,
-                hintText: widget.strings.passwordLabel,
+                labelText: _l.passwordLabel,
+                hintText: _l.passwordLabel,
               ),
             ),
             const SizedBox(height: 16),
@@ -263,7 +222,7 @@ class _OtaScreenState extends ConsumerState<OtaScreen> {
                       height: 20,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : Text(widget.strings.removeButton),
+                  : Text(_l.otaRemoveButton),
             ),
           ],
         ),
@@ -280,7 +239,7 @@ class _OtaScreenState extends ConsumerState<OtaScreen> {
           children: [
             const SizedBox(height: 40),
             Text(
-              widget.strings.scanQrCode,
+              _l.otaScanQrCode,
               style: TextStyle(fontSize: 16, color: colors.primaryText),
               textAlign: TextAlign.center,
             ),
@@ -299,14 +258,14 @@ class _OtaScreenState extends ConsumerState<OtaScreen> {
             ),
             const SizedBox(height: 24),
             Text(
-              widget.strings.orEnterManually,
+              _l.otaOrEnterManually,
               style: TextStyle(fontSize: 14, color: colors.secondaryText),
             ),
             const SizedBox(height: 8),
             GestureDetector(
               onTap: () {
                 Clipboard.setData(ClipboardData(text: otaSecret!));
-                KrypticSnackbar.show(context, widget.strings.keyCopied);
+                KrypticSnackbar.show(context, _l.otaKeyCopied);
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -336,7 +295,7 @@ class _OtaScreenState extends ConsumerState<OtaScreen> {
             ),
             const SizedBox(height: 32),
             Text(
-              widget.strings.enterCode,
+              _l.otaEnterCode,
               style: TextStyle(fontSize: 14, color: colors.primaryText),
             ),
             const SizedBox(height: 12),
@@ -365,7 +324,7 @@ class _OtaScreenState extends ConsumerState<OtaScreen> {
                       height: 20,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : Text(widget.strings.confirm),
+                  : Text(_l.confirm),
             ),
           ],
         ),

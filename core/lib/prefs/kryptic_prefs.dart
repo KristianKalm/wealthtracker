@@ -8,6 +8,8 @@ const String PREFS_SERVER = "server";
 const String PREFS_PRIVATE_KEY = "private_key";
 const String PREFS_PUBLIC_KEY = "public_key";
 const String PREFS_HAS_SIGNED_IN = "has_signed_in";
+const String PREFS_BIOMETRIC_LOCK = "biometric_lock";
+const String PREFS_PIN_CODE = "pin_code";
 
 class KrypticPrefs {
   final _secureStorage = const FlutterSecureStorage();

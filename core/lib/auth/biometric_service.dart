@@ -5,6 +5,7 @@ import 'package:local_auth/local_auth.dart';
 class KrypticBiometricService {
   final _auth = LocalAuthentication();
   final String localizedReason;
+  bool _isAuthenticating = false;
 
   KrypticBiometricService({this.localizedReason = 'Unlock app'});
 
