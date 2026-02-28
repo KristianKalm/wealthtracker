@@ -1,21 +1,31 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
-import 'package:kryptic_core/kryptic_core.dart';
-import '../../core/api_config.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../core/prefs/WealthtrackerPrefs.dart';
-import '../Providers.dart';
 
-class DebugScreen extends ConsumerStatefulWidget {
-  const DebugScreen({super.key});
+import '../../api/kryptic_api_base.dart';
+import '../../api/kryptic_api_config.dart';
+import '../../prefs/kryptic_prefs.dart';
+import '../layouts/KrypticBaseScreen.dart';
+import '../widgets/KrypticToolbar.dart';
+
+class KrypticDebugScreen extends ConsumerStatefulWidget {
+  final KrypticApiConfig apiConfig;
+  final ProviderListenable<KrypticPrefs> prefsProvider;
+
+  const KrypticDebugScreen({
+    super.key,
+    required this.apiConfig,
+    required this.prefsProvider,
+  });
 
   @override
-  ConsumerState<DebugScreen> createState() => _DebugScreenState();
+  ConsumerState<KrypticDebugScreen> createState() => _KrypticDebugScreenState();
 }
 
-class _DebugScreenState extends ConsumerState<DebugScreen> {
+class _KrypticDebugScreenState extends ConsumerState<KrypticDebugScreen> {
   final TextEditingController _endpointController = TextEditingController();
   String _response = '';
   bool _isLoading = false;
@@ -30,10 +40,10 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
   }
 
   Future<void> _loadCredentials() async {
-    final wealthtrackerPrefs = ref.read(wealthtrackerPrefsProvider);
-    final server = await wealthtrackerPrefs.get(PREFS_SERVER);
-    final user = await wealthtrackerPrefs.get(PREFS_USER);
-    final token = await wealthtrackerPrefs.get(PREFS_TOKEN);
+    final prefs = ref.read(widget.prefsProvider);
+    final server = await prefs.get(PREFS_SERVER);
+    final user = await prefs.get(PREFS_USER);
+    final token = await prefs.get(PREFS_TOKEN);
 
     setState(() {
       _serverUrl = server;
@@ -58,7 +68,6 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
       return;
     }
 
-    // Remove leading slash if present
     if (endpoint.startsWith('/')) {
       endpoint = endpoint.substring(1);
     }
@@ -72,7 +81,7 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
       final url = Uri.parse('$_serverUrl$endpoint');
       final response = await http.get(
         url,
-        headers: authHeaders(wealthtrackerApiConfig, _username!, _token!),
+        headers: authHeaders(widget.apiConfig, _username!, _token!),
       );
 
       String formattedResponse = '';
@@ -84,12 +93,10 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
       formattedResponse += '\nBody:\n';
 
       try {
-        // Try to pretty print JSON
         final jsonBody = json.decode(response.body);
         const encoder = JsonEncoder.withIndent('  ');
         formattedResponse += encoder.convert(jsonBody);
       } catch (e) {
-        // If not JSON, just show the raw body
         formattedResponse += response.body;
       }
 
@@ -197,10 +204,10 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
             child: Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                  color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
                 ),
               ),
               child: SingleChildScrollView(

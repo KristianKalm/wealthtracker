@@ -60,6 +60,7 @@ export 'ui/views/KrypticDateRow.dart';
 export 'ui/image/KrypticImagePicker.dart';
 
 // UI - Screens
+export 'ui/screens/KrypticDebugScreen.dart';
 export 'ui/screens/LoginScreen.dart';
 export 'ui/screens/OtaScreen.dart';
 export 'ui/screens/ServerScreen.dart';

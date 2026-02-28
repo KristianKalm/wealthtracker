@@ -23,7 +23,7 @@ import '../navigation/WealthtrackerBottomNav.dart';
 import 'package:kryptic_core/kryptic_core.dart';
 import '../Providers.dart';
 import '../../core/login_screen_factory.dart';
-import 'DebugScreen.dart';
+import '../../core/api_config.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -762,7 +762,10 @@ class _SettingsScreen extends ConsumerState<SettingsScreen> {
                   Navigator.pop(context);
                   Navigator.push(
                     this.context,
-                    MaterialPageRoute(builder: (context) => DebugScreen()),
+                    MaterialPageRoute(builder: (context) => KrypticDebugScreen(
+                      apiConfig: wealthtrackerApiConfig,
+                      prefsProvider: wealthtrackerPrefsProvider,
+                    )),
                   );
                 },
               ),
