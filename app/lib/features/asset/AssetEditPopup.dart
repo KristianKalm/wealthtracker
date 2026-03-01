@@ -10,6 +10,7 @@ import '../../core/models/AssetUiModel.dart';
 import '../../core/models/AssetGroup.dart';
 import '../../core/models/Tag.dart';
 import '../../core/sync/WealthtrackerSync.dart' as WealthtrackerSync;
+import '../../core/util/MoneyFormat.dart';
 import '../../l10n/l10n.dart';
 import '../Providers.dart';
 import 'AutofillPopup.dart';
@@ -68,10 +69,10 @@ class _AssetEditPopupState extends State<AssetEditPopup> {
       changeController.removeListener(changeListener);
       if (valueController.text.isEmpty || valueController.text == "-") {
         widget.currentAsset.value = null;
-        changeController.text = ((widget.currentAsset.lastMonthValue ?? 0) * -1).toString();
+        changeController.text = roundMoney((widget.currentAsset.lastMonthValue ?? 0) * -1).toString();
       } else {
         widget.currentAsset.value = double.parse(valueController.text);
-        changeController.text = ((widget.currentAsset.value ?? 0) - (widget.currentAsset.lastMonthValue ?? 0)).toString();
+        changeController.text = roundMoney(((widget.currentAsset.value ?? 0) - (widget.currentAsset.lastMonthValue ?? 0)).toDouble()).toString();
       }
       changeController.addListener(changeListener);
       setState(() {
@@ -82,9 +83,9 @@ class _AssetEditPopupState extends State<AssetEditPopup> {
     changeListener = () {
       valueController.removeListener(valueListener);
       if (changeController.text.isEmpty || changeController.text == "-") {
-        valueController.text = (widget.currentAsset.lastMonthValue ?? 0).toString();
+        valueController.text = roundMoney((widget.currentAsset.lastMonthValue ?? 0).toDouble()).toString();
       } else {
-        valueController.text = ((widget.currentAsset.lastMonthValue ?? 0) + double.parse(changeController.text)).toString();
+        valueController.text = roundMoney((widget.currentAsset.lastMonthValue ?? 0) + double.parse(changeController.text)).toString();
       }
       widget.currentAsset.value = double.parse(valueController.text);
       valueController.addListener(valueListener);
@@ -160,9 +161,10 @@ class _AssetEditPopupState extends State<AssetEditPopup> {
         final updatedGroups = List<AssetGroup>.from(myConf.assetGroups)..add(newGroup);
         final updatedConf = myConf.copyWith(assetGroups: updatedGroups);
         await repo.conf.save(updatedConf);
-        WealthtrackerSync.uploadMyConf(widget.ref);
         resolvedGroupId = newGroup.id;
       }
+      // Always ensure group definitions are synced when assigning a group
+      WealthtrackerSync.uploadUnsyncedMyConf(widget.ref);
     }
 
     // Merge new month's value into existing monthlyValues (or start fresh)
@@ -262,8 +264,17 @@ class _AssetEditPopupState extends State<AssetEditPopup> {
     );
 
     if (result != null && mounted) {
+      final ymStr = yearMonth.toString();
+      final newValue = result[ymStr];
       setState(() {
-        _autofillValues = result;
+        _autofillValues = Map.from(result)..remove(ymStr);
+        if (newValue != null) {
+          valueController.removeListener(valueListener);
+          valueController.text = newValue.toString();
+          widget.currentAsset.value = newValue;
+          isAsset = newValue >= 0;
+          valueController.addListener(valueListener);
+        }
       });
     }
   }
@@ -337,6 +348,33 @@ class _AssetEditPopupState extends State<AssetEditPopup> {
               ),
             ],
             const SizedBox(height: 10),
+            TextField(
+              controller: valueController,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                label: Text(context.l10n.valueLabel),
+                hintText: context.l10n.valueLabel,
+              ),
+              keyboardType: TextInputType.number,
+              inputFormatters: [
+                _CustomTextInputFormatter(RegExp(r'^-?[0-9]+(\.[0-9]*)?$')),
+              ],
+            ),
+            const SizedBox(height: 10),
+            if (widget.currentAsset.lastMonthValue != 0 &&
+                (widget.currentAsset.yearMonth != null || widget.currentAsset.suggestion) &&
+                !widget.currentAsset.addNew)
+              TextField(
+                controller: changeController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  label: Text(context.l10n.changeFieldLabel),
+                  hintText: context.l10n.changeFieldLabel,
+                ),
+                keyboardType: TextInputType.number,
+                inputFormatters: [_CustomTextInputFormatter(RegExp(r'^-?[0-9]+(\.[0-9]*)?$'))],
+              ),
+            const SizedBox(height: 10),
             RawAutocomplete<AssetGroup>(
               textEditingController: groupController,
               focusNode: _groupFocusNode,
@@ -382,33 +420,6 @@ class _AssetEditPopupState extends State<AssetEditPopup> {
                 );
               },
             ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: valueController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                label: Text(context.l10n.valueLabel),
-                hintText: context.l10n.valueLabel,
-              ),
-              keyboardType: TextInputType.number,
-              inputFormatters: [
-                _CustomTextInputFormatter(RegExp(r'^-?[0-9]+(\.[0-9]*)?$')),
-              ],
-            ),
-            const SizedBox(height: 10),
-            if (widget.currentAsset.lastMonthValue != 0 &&
-                (widget.currentAsset.yearMonth != null || widget.currentAsset.suggestion) &&
-                !widget.currentAsset.addNew)
-              TextField(
-                controller: changeController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  label: Text(context.l10n.changeFieldLabel),
-                  hintText: context.l10n.changeFieldLabel,
-                ),
-                keyboardType: TextInputType.number,
-                inputFormatters: [_CustomTextInputFormatter(RegExp(r'^-?[0-9]+(\.[0-9]*)?$'))],
-              ),
             const SizedBox(height: 10),
             OutlinedButton.icon(
               icon: const Icon(Icons.auto_fix_high),

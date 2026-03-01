@@ -433,43 +433,55 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-              TextField(
-                controller: usernameController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: _l.usernameLabel,
-                  hintText: _l.usernameLabel,
-                  counterText: '',
+              AutofillGroup(
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: usernameController,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: _l.usernameLabel,
+                        hintText: _l.usernameLabel,
+                        counterText: '',
+                      ),
+                      maxLength: _usernameMaxLength,
+                      autofillHints: isLoginMode ? [AutofillHints.username] : [AutofillHints.newUsername],
+                      textInputAction: TextInputAction.next,
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: passwordController,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: _l.passwordLabel,
+                        hintText: _l.passwordLabel,
+                        helperText: isLoginMode ? null : _l.passwordHelperText(_passwordMinLength, _passwordMaxLength),
+                      ),
+                      obscureText: true,
+                      maxLength: _passwordMaxLength,
+                      autofillHints: isLoginMode ? [AutofillHints.password] : [AutofillHints.newPassword],
+                      textInputAction: isLoginMode ? TextInputAction.done : TextInputAction.next,
+                      onSubmitted: isLoginMode ? (_) => _login() : null,
+                    ),
+                    if (!isLoginMode) ...[
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: confirmPasswordController,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: _l.confirmNewPassword,
+                          hintText: _l.confirmNewPassword,
+                        ),
+                        obscureText: true,
+                        maxLength: _passwordMaxLength,
+                        autofillHints: const [AutofillHints.newPassword],
+                        textInputAction: TextInputAction.done,
+                        onSubmitted: (_) => _register(),
+                      ),
+                    ],
+                  ],
                 ),
-                maxLength: _usernameMaxLength,
               ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: passwordController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: _l.passwordLabel,
-                  hintText: _l.passwordLabel,
-                  helperText: isLoginMode ? null : _l.passwordHelperText(_passwordMinLength, _passwordMaxLength),
-                ),
-                obscureText: true,
-                maxLength: _passwordMaxLength,
-                onSubmitted: isLoginMode ? (_) => _login() : null,
-              ),
-              if (!isLoginMode) ...[
-                const SizedBox(height: 16),
-                TextField(
-                  controller: confirmPasswordController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: _l.confirmNewPassword,
-                    hintText: _l.confirmNewPassword,
-                  ),
-                  obscureText: true,
-                  maxLength: _passwordMaxLength,
-                  onSubmitted: (_) => _register(),
-                ),
-              ],
               const SizedBox(height: 24),
               SizedBox(
                 child: ElevatedButton(

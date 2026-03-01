@@ -672,13 +672,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get autofillFixed => 'Fixed';
 
   @override
-  String get autofillPercentage => '% / Month';
+  String get autofillPercentage => 'Percent';
 
   @override
-  String get autofillPercentageYearly => '% / Year';
+  String get autofillMonthly => 'Monthly';
+
+  @override
+  String get autofillYearly => 'Yearly';
+
+  @override
+  String get autofillMonthlyContribution => 'Monthly contribution';
 
   @override
   String get autofillLoan => 'Loan';
+
+  @override
+  String get autofillLoanPrincipal => 'Loan amount';
+
+  @override
+  String get autofillTotalWithInterest => 'Total with interest';
 
   @override
   String get autofillAmountPerMonth => 'Amount per month';
@@ -691,6 +703,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get autofillLoanRate => 'Annual interest rate (%)';
+
+  @override
+  String get autofillInitialAmount => 'Initial amount';
 
   @override
   String get autofillNumberOfMonths => 'Number of months';

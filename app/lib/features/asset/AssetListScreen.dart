@@ -11,6 +11,7 @@ import '../../core/models/AssetUiModel.dart';
 import '../../core/models/MonthSummary.dart';
 import '../../core/models/Tag.dart';
 import '../../core/sync/WealthtrackerSync.dart' as WealthtrackerSync;
+import '../../core/util/MoneyFormat.dart';
 import '../../core/util/PercentTools.dart';
 import '../../l10n/l10n.dart';
 import '../Providers.dart';
@@ -120,7 +121,7 @@ class _AssetListScreenState extends ConsumerState<AssetListScreen> {
 
       if (currentVal != null) {
         // Asset has a value for the current month
-        var change = currentVal - (prevVal ?? 0);
+        var change = roundMoney(currentVal - (prevVal ?? 0));
         var percent = getPercent((prevVal ?? 0).toDouble(), currentVal);
         totalCalc += currentVal;
         mAssets.add(AssetUiModel(
@@ -156,7 +157,7 @@ class _AssetListScreenState extends ConsumerState<AssetListScreen> {
     summary.assets = mAssets;
     summary.comment = comment?.comment;
     summary.currentMonthSum = totalCalc;
-    summary.change = summary.currentMonthSum - summary.lastMonthSum;
+    summary.change = roundMoney((summary.currentMonthSum - summary.lastMonthSum).toDouble());
     summary.percent = getPercent(summary.lastMonthSum.toDouble(), summary.currentMonthSum.toDouble());
     return summary;
   }
@@ -473,7 +474,7 @@ class _AssetListScreenState extends ConsumerState<AssetListScreen> {
 
   Widget _assetItem(AssetUiModel item, KrypticColors colors) {
     return ListTile(
-      contentPadding: EdgeInsets.zero,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
       tileColor: item.suggestion ? colors.cardBackgroundColor.withValues(alpha: 0.5) : null,
       title: Text(
         item.name ?? "",

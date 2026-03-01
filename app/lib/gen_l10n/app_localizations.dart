@@ -1289,20 +1289,44 @@ abstract class AppLocalizations {
   /// No description provided for @autofillPercentage.
   ///
   /// In en, this message translates to:
-  /// **'% / Month'**
+  /// **'Percent'**
   String get autofillPercentage;
 
-  /// No description provided for @autofillPercentageYearly.
+  /// No description provided for @autofillMonthly.
   ///
   /// In en, this message translates to:
-  /// **'% / Year'**
-  String get autofillPercentageYearly;
+  /// **'Monthly'**
+  String get autofillMonthly;
+
+  /// No description provided for @autofillYearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly'**
+  String get autofillYearly;
+
+  /// No description provided for @autofillMonthlyContribution.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly contribution'**
+  String get autofillMonthlyContribution;
 
   /// No description provided for @autofillLoan.
   ///
   /// In en, this message translates to:
   /// **'Loan'**
   String get autofillLoan;
+
+  /// No description provided for @autofillLoanPrincipal.
+  ///
+  /// In en, this message translates to:
+  /// **'Loan amount'**
+  String get autofillLoanPrincipal;
+
+  /// No description provided for @autofillTotalWithInterest.
+  ///
+  /// In en, this message translates to:
+  /// **'Total with interest'**
+  String get autofillTotalWithInterest;
 
   /// No description provided for @autofillAmountPerMonth.
   ///
@@ -1327,6 +1351,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Annual interest rate (%)'**
   String get autofillLoanRate;
+
+  /// No description provided for @autofillInitialAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Initial amount'**
+  String get autofillInitialAmount;
 
   /// No description provided for @autofillNumberOfMonths.
   ///

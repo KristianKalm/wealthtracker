@@ -672,13 +672,25 @@ class AppLocalizationsEt extends AppLocalizations {
   String get autofillFixed => 'Fikseeritud';
 
   @override
-  String get autofillPercentage => '% / Kuus';
+  String get autofillPercentage => 'Protsent';
 
   @override
-  String get autofillPercentageYearly => '% / Aasta';
+  String get autofillMonthly => 'Kuine';
+
+  @override
+  String get autofillYearly => 'Aastane';
+
+  @override
+  String get autofillMonthlyContribution => 'Kuine sissemakse';
 
   @override
   String get autofillLoan => 'Laen';
+
+  @override
+  String get autofillLoanPrincipal => 'Laenusumma';
+
+  @override
+  String get autofillTotalWithInterest => 'Kokku koos intressiga';
 
   @override
   String get autofillAmountPerMonth => 'Summa kuus';
@@ -691,6 +703,9 @@ class AppLocalizationsEt extends AppLocalizations {
 
   @override
   String get autofillLoanRate => 'Aastane intressimäär (%)';
+
+  @override
+  String get autofillInitialAmount => 'Algväärtus';
 
   @override
   String get autofillNumberOfMonths => 'Kuude arv';
