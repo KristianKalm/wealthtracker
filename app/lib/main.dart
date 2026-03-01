@@ -134,6 +134,8 @@ class _WealthtrackerApp extends ConsumerState<WealthtrackerApp> with WidgetsBind
       localeOptions: const [(Locale('en'), 'English'), (Locale('et'), 'Eesti')],
       localeProvider: localeNotifierProvider,
       setLocale: (locale) => ref.read(localeNotifierProvider.notifier).setLocale(locale),
+      appLogoAsset: 'assets/icon/wealthtrackerColored.png',
+      defaultServerUrl: 'https://eu.wealthtracker.app/',
       child: MaterialApp(
         title: 'Wealthtracker',
         navigatorKey: _navigatorKey,

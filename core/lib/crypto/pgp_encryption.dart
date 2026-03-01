@@ -1,7 +1,25 @@
 import 'dart:convert';
+import 'dart:developer' as Logger;
 import 'dart:typed_data';
 
 import 'package:openpgp/openpgp.dart';
+
+Future<Map<String, String>> generatePGPKeys(String passphrase) async {
+  try {
+    var keyOptions = KeyOptions()..rsaBits = 2048;
+    var keyPair = await OpenPGP.generate(
+      options: Options()
+        ..name = ''
+        ..email = ''
+        ..passphrase = passphrase
+        ..keyOptions = keyOptions,
+    );
+    return {'public': keyPair.publicKey, 'private': keyPair.privateKey};
+  } catch (e) {
+    Logger.log('Error during key generation: $e');
+    return {};
+  }
+}
 
 class KrypticPgpEncryption {
   final String privateKey;

@@ -19,6 +19,7 @@ export 'ui/lock/kryptic_lock_screen.dart';
 // Crypto
 export 'crypto/pgp_encryption.dart';
 export 'crypto/password_encryption.dart';
+export 'crypto/rsa_key_generation.dart';
 
 // DB Connection
 export 'db/connection/connection.dart';

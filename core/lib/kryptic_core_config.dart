@@ -5,12 +5,16 @@ class KrypticCore extends InheritedWidget {
   final List<(Locale, String)> localeOptions;
   final ProviderListenable<Locale?> localeProvider;
   final void Function(Locale?) setLocale;
+  final String appLogoAsset;
+  final String defaultServerUrl;
 
   const KrypticCore({
     super.key,
     required this.localeOptions,
     required this.localeProvider,
     required this.setLocale,
+    required this.appLogoAsset,
+    required this.defaultServerUrl,
     required super.child,
   });
 

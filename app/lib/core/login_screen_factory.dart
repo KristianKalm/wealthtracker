@@ -11,12 +11,10 @@ import '../l10n/l10n.dart';
 
 LoginScreen makeLoginScreen(WidgetRef ref, {bool isFirstTime = false}) {
   return LoginScreen(
-    serverUrl: 'https://eu.wealthtracker.app/',
     isFirstTime: isFirstTime,
     apiConfig: wealthtrackerApiConfig,
     prefsProvider: wealthtrackerPrefsProvider,
     pgpProvider: pgpProvider.future,
-    appLogoAsset: 'assets/icon/wealthtrackerColored.png',
     onAfterLogin: (context, ref) async {
       ref.invalidate(wealthtrackerSyncProvider);
       ref.invalidate(pgpProvider);

@@ -1,18 +1,14 @@
 import 'dart:developer' as Logger;
 
-import 'package:bip39/bip39.dart' as bip39;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:openpgp/openpgp.dart';
-import 'package:pointycastle/export.dart' as pc;
-import 'package:crypto/crypto.dart';
-
 import '../../api/kryptic_api_config.dart';
 import '../../kryptic_core_config.dart';
 import '../../api/kryptic_auth_api.dart';
 import '../../crypto/password_encryption.dart';
 import '../../crypto/pgp_encryption.dart';
+import '../../crypto/rsa_key_generation.dart';
 import '../../gen_l10n/core_localizations.dart';
 import '../../prefs/kryptic_prefs.dart';
 import '../../util/device_info.dart';
@@ -30,24 +26,20 @@ const int _passwordMinLength = 16;
 const int _passwordMaxLength = 128;
 
 class LoginScreen extends ConsumerStatefulWidget {
-  final String serverUrl;
   final bool isFirstTime;
   final KrypticApiConfig apiConfig;
   final ProviderListenable<KrypticPrefs> prefsProvider;
   final ProviderListenable<Future<KrypticPgpEncryption>> pgpProvider;
-  final String appLogoAsset;
   final Future<void> Function(BuildContext context, WidgetRef ref) onAfterLogin;
   final Future<void> Function(BuildContext context, WidgetRef ref, String seed) onAfterRegister;
   final Future<void> Function(BuildContext context, WidgetRef ref) onUseWithoutAccount;
 
   const LoginScreen({
     super.key,
-    this.serverUrl = '',
     this.isFirstTime = false,
     required this.apiConfig,
     required this.prefsProvider,
     required this.pgpProvider,
-    required this.appLogoAsset,
     required this.onAfterLogin,
     required this.onAfterRegister,
     required this.onUseWithoutAccount,
@@ -57,30 +49,12 @@ class LoginScreen extends ConsumerStatefulWidget {
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-pc.AsymmetricKeyPair<pc.PublicKey, pc.PrivateKey> generateDeterministicRSA(
-  String mnemonic, {
-  int bits = 2048,
-}) {
-  final seed = bip39.mnemonicToSeed(mnemonic);
-  final seedHash = sha256.convert(seed).bytes;
-  final secureRandom = pc.FortunaRandom()
-    ..seed(pc.KeyParameter(Uint8List.fromList(seedHash)));
-  final keyGen = pc.RSAKeyGenerator()
-    ..init(
-      pc.ParametersWithRandom(
-        pc.RSAKeyGeneratorParameters(BigInt.parse('65537'), bits, 32),
-        secureRandom,
-      ),
-    );
-  return keyGen.generateKeyPair();
-}
-
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   late TextEditingController usernameController;
   late TextEditingController passwordController;
   late TextEditingController confirmPasswordController;
 
-  late String serverUrl;
+  String serverUrl = '';
   String seed = '';
   bool isLoginMode = true;
 
@@ -89,9 +63,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     usernameController = TextEditingController();
     passwordController = TextEditingController();
     confirmPasswordController = TextEditingController();
-    serverUrl = widget.serverUrl;
     _generateSeed();
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (serverUrl.isEmpty) {
+      serverUrl = KrypticCore.of(context).defaultServerUrl;
+    }
   }
 
   @override
@@ -104,26 +85,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   CoreLocalizations get _l => CoreLocalizations.of(context)!;
 
-  Future<Map<String, String>> _generatePGPKeys(passphrase) async {
-    try {
-      var keyOptions = KeyOptions()..rsaBits = 2048;
-      var keyPair = await OpenPGP.generate(
-        options: Options()
-          ..name = ''
-          ..email = ''
-          ..passphrase = passphrase
-          ..keyOptions = keyOptions,
-      );
-      return {'public': keyPair.publicKey, 'private': keyPair.privateKey};
-    } catch (e) {
-      Logger.log('Error during key generation: $e');
-      return {};
-    }
-  }
-
   _generateSeed() {
     setState(() {
-      seed = bip39.generateMnemonic(strength: 256);
+      seed = generateMnemonic();
     });
   }
 
@@ -183,7 +147,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       final encryptedSeed = await encryptText(seed, passwordController.text);
 
       Logger.log("Generating PGP keys");
-      var keys = await _generatePGPKeys(seed);
+      var keys = await generatePGPKeys(seed);
 
       if (keys['private'] == null) {
         Logger.log("private key generation failed");
@@ -433,7 +397,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const SizedBox(height: 60),
-              Image.asset(widget.appLogoAsset, height: 140),
+              Image.asset(KrypticCore.of(context).appLogoAsset, height: 140),
               const SizedBox(height: 40),
               _buildModeToggle(isDark),
               const SizedBox(height: 24),

@@ -14,15 +14,15 @@ class WealthtrackerDatabase extends _$WealthtrackerDatabase {
   WealthtrackerDatabase(super.e);
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 1;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
+    onCreate: (migrator) async {
+      await migrator.createAll();
+    },
     onUpgrade: (migrator, from, to) async {
-      if (from < 3) {
-        await customStatement('DROP TABLE IF EXISTS asset_entries');
-        await migrator.createTable(assetEntries);
-      }
+      await migrator.destructiveFallback.onUpgrade(migrator, from, to);
     },
   );
 
