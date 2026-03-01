@@ -17,14 +17,7 @@ class WealthtrackerDatabase extends _$WealthtrackerDatabase {
   int get schemaVersion => 1;
 
   @override
-  MigrationStrategy get migration => MigrationStrategy(
-    onCreate: (migrator) async {
-      await migrator.createAll();
-    },
-    onUpgrade: (migrator, from, to) async {
-      await migrator.destructiveFallback.onUpgrade(migrator, from, to);
-    },
-  );
+  MigrationStrategy get migration => destructiveFallback;
 
   static Future<WealthtrackerDatabase> create(String? encryptionKey) async {
     final executor = await connection.createDatabaseConnection(encryptionKey, dbName: 'wealthtracker');
