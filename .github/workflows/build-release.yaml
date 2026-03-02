@@ -46,6 +46,11 @@ jobs:
           cd app
           flutter build apk --release
 
+      - name: Build Android AAB
+        run: |
+          cd app
+          flutter build appbundle --release
+
       - name: Commit and push version bump
         run: |
           git config --global user.name "GitHub Actions"
@@ -71,6 +76,9 @@ jobs:
       - name: Rename APK
         run: mv app/build/app/outputs/flutter-apk/app-release.apk app/build/app/outputs/flutter-apk/android-${{ steps.version.outputs.version }}.apk
 
+      - name: Rename AAB
+        run: mv app/build/app/outputs/bundle/release/app-release.aab app/build/app/outputs/bundle/release/android-${{ steps.version.outputs.version }}.aab
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
@@ -78,6 +86,7 @@ jobs:
           files: |
             web-${{ steps.version.outputs.version }}.zip
             app/build/app/outputs/flutter-apk/android-${{ steps.version.outputs.version }}.apk
+            app/build/app/outputs/bundle/release/android-${{ steps.version.outputs.version }}.aab
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
