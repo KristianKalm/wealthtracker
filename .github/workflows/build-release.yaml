@@ -66,15 +66,18 @@ jobs:
       - name: Create release zip
         run: |
           cd app/build/web
-          zip -r ../../../web${{ steps.version.outputs.version }}.zip .
+          zip -r ../../../web-${{ steps.version.outputs.version }}.zip .
+
+      - name: Rename APK
+        run: mv app/build/app/outputs/flutter-apk/app-release.apk app/build/app/outputs/flutter-apk/android-${{ steps.version.outputs.version }}.apk
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ steps.version.outputs.version }}
           files: |
-            web${{ steps.version.outputs.version }}.zip
-            app/build/app/outputs/flutter-apk/app-release.apk
+            web-${{ steps.version.outputs.version }}.zip
+            app/build/app/outputs/flutter-apk/android-${{ steps.version.outputs.version }}.apk
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
