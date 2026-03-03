@@ -474,7 +474,7 @@ class _AssetListScreenState extends ConsumerState<AssetListScreen> {
 
   Widget _assetItem(AssetUiModel item, KrypticColors colors) {
     return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12),
       tileColor: item.suggestion ? colors.cardBackgroundColor.withValues(alpha: 0.5) : null,
       title: Text(
         item.name ?? "",

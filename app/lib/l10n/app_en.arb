@@ -423,6 +423,7 @@
   "autofillMonthlyContribution": "Monthly contribution",
   "autofillLoan": "Loan",
   "autofillLoanPrincipal": "Loan amount",
+  "autofillMonthlyPayment": "Monthly payment",
   "autofillTotalWithInterest": "Total with interest",
   "autofillAmountPerMonth": "Amount per month",
   "autofillRatePerMonth": "Rate per month (%)",

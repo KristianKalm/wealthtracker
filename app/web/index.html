@@ -5,7 +5,7 @@
 
     <meta charset="UTF-8">
     <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-    <meta name="description" content="A new Flutter project.">
+    <meta name="description" content="Simple and secure net worth tracker">
 
     <!-- iOS meta tags & icons -->
     <meta name="mobile-web-app-capable" content="yes">
@@ -24,7 +24,13 @@
     <title>Wealthtracker</title>
     <link rel="manifest" href="manifest.json">
 </head>
-<body>
+<body style="background-color: #31c8c8; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh;">
+<img id="loading-icon" src="icon.png" style="width: 128px; height: 128px;">
+<script>
+  window.addEventListener('flutter-first-frame', function() {
+    document.getElementById('loading-icon').remove();
+  });
+</script>
 <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

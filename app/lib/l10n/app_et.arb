@@ -219,6 +219,7 @@
   "autofillMonthlyContribution": "Kuine sissemakse",
   "autofillLoan": "Laen",
   "autofillLoanPrincipal": "Laenusumma",
+  "autofillMonthlyPayment": "Kuumakse",
   "autofillTotalWithInterest": "Kokku koos intressiga",
   "autofillAmountPerMonth": "Summa kuus",
   "autofillRatePerMonth": "Määr kuus (%)",

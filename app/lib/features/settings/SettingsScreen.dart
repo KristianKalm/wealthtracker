@@ -996,6 +996,21 @@ class _SettingsScreen extends ConsumerState<SettingsScreen> {
                 ),
             ],
           ),
+
+          // About section
+          _SettingsGroup(
+            title: 'About',
+            colors: colors,
+            children: [
+              _SettingsItem(
+                icon: Icons.description_outlined,
+                title: 'Open-source licenses',
+                colors: colors,
+                showChevron: true,
+                onTap: () => showLicensePage(context: context),
+              ),
+            ],
+          ),
         ],
       ),
     );

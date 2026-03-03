@@ -1322,6 +1322,12 @@ abstract class AppLocalizations {
   /// **'Loan amount'**
   String get autofillLoanPrincipal;
 
+  /// No description provided for @autofillMonthlyPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly payment'**
+  String get autofillMonthlyPayment;
+
   /// No description provided for @autofillTotalWithInterest.
   ///
   /// In en, this message translates to:

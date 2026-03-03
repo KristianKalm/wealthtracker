@@ -150,6 +150,15 @@ class _AutofillPopupState extends State<AutofillPopup> {
     return result;
   }
 
+  double? _loanMonthlyPayment() {
+    final n = int.tryParse(_monthsController.text) ?? 0;
+    if (n <= 0) return null;
+    final P = (double.tryParse(_loanPrincipalController.text) ?? 0).abs();
+    if (P == 0) return null;
+    final r = (double.tryParse(_amountController.text) ?? 0) / 100 / 12;
+    return r == 0 ? roundMoney(P / n) : roundMoney(P * r * pow(1 + r, n) / (pow(1 + r, n) - 1));
+  }
+
   double? _loanTotalWithInterest() {
     final n = int.tryParse(_monthsController.text) ?? 0;
     if (n <= 0) return null;
@@ -187,9 +196,10 @@ class _AutofillPopupState extends State<AutofillPopup> {
       title: Text(context.l10n.autofill),
       content: SizedBox(
         width: 320,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (_mode != _AutofillMode.loan)
               TextField(
@@ -289,6 +299,17 @@ class _AutofillPopupState extends State<AutofillPopup> {
               InputDecorator(
                 decoration: InputDecoration(
                   border: const OutlineInputBorder(),
+                  label: Text(context.l10n.autofillMonthlyPayment),
+                ),
+                child: Text(
+                  _loanMonthlyPayment() != null ? formatMoney(_loanMonthlyPayment()!) : '—',
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ),
+              const SizedBox(height: 10),
+              InputDecorator(
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
                   label: Text(context.l10n.autofillTotalWithInterest),
                 ),
                 child: Text(
@@ -302,10 +323,9 @@ class _AutofillPopupState extends State<AutofillPopup> {
             // Below: preview values
             if (preview.isNotEmpty) ...[
               const SizedBox(height: 12),
-              ConstrainedBox(
-                constraints: const BoxConstraints(maxHeight: 220),
-                child: ListView(
+              ListView(
                   shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
                   children: preview.entries.map((e) {
                     final ym = int.parse(e.key);
                     final date = DateTime(ym ~/ 100, ym % 100);
@@ -327,10 +347,10 @@ class _AutofillPopupState extends State<AutofillPopup> {
                       ),
                     );
                   }).toList(),
-                ),
               ),
             ],
           ],
+        ),
         ),
       ),
       actions: [

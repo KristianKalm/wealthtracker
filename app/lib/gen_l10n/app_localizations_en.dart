@@ -690,6 +690,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get autofillLoanPrincipal => 'Loan amount';
 
   @override
+  String get autofillMonthlyPayment => 'Monthly payment';
+
+  @override
   String get autofillTotalWithInterest => 'Total with interest';
 
   @override
