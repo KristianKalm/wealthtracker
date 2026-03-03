@@ -21,6 +21,7 @@ import '../../core/sync/WealthtrackerSync.dart' as WealthtrackerSync;
 import '../../main.dart';
 import '../navigation/WealthtrackerBottomNav.dart';
 import 'package:kryptic_core/kryptic_core.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../Providers.dart';
 import '../../core/login_screen_factory.dart';
 import '../../core/api_config.dart';
@@ -45,6 +46,7 @@ class _SettingsScreen extends ConsumerState<SettingsScreen> {
   int? _usageMaxMb;
   int _debugTapCount = 0;
   bool _legacyImportHidden = false;
+  String? _appVersion;
 
   @override
   void initState() {
@@ -56,6 +58,12 @@ class _SettingsScreen extends ConsumerState<SettingsScreen> {
     _loadPinState();
     _loadUsage();
     _loadLegacyImportHidden();
+    _loadAppVersion();
+  }
+
+  Future<void> _loadAppVersion() async {
+    final info = await PackageInfo.fromPlatform();
+    if (mounted) setState(() => _appVersion = info.version);
   }
 
   Future<void> _loadBiometricState() async {
@@ -1002,6 +1010,12 @@ class _SettingsScreen extends ConsumerState<SettingsScreen> {
             title: 'About',
             colors: colors,
             children: [
+              _SettingsItem(
+                icon: Icons.info_outline,
+                title: 'App version',
+                value: _appVersion,
+                colors: colors,
+              ),
               _SettingsItem(
                 icon: Icons.description_outlined,
                 title: 'Open-source licenses',

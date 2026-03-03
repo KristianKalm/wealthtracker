@@ -27,41 +27,39 @@ class PinEntryWidget extends StatefulWidget {
 
 class PinEntryWidgetState extends State<PinEntryWidget> {
   String _entered = '';
-  final _focusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _focusNode.requestFocus();
-    });
+    ServicesBinding.instance.keyboard.addHandler(_onKey);
   }
 
   void clear() {
     setState(() => _entered = '');
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _focusNode.requestFocus();
-    });
   }
 
   @override
   void dispose() {
-    _focusNode.dispose();
+    ServicesBinding.instance.keyboard.removeHandler(_onKey);
     super.dispose();
   }
 
-  void _handleKeyEvent(KeyEvent event) {
-    if (event is! KeyDownEvent) return;
+  bool _onKey(KeyEvent event) {
+    if (event is! KeyDownEvent) return false;
     final key = event.logicalKey;
     if (key == LogicalKeyboardKey.backspace) {
       removeDigit();
+      return true;
     } else if (key.keyId >= LogicalKeyboardKey.digit0.keyId &&
         key.keyId <= LogicalKeyboardKey.digit9.keyId) {
       addDigit(String.fromCharCode(key.keyId));
+      return true;
     } else if (key.keyId >= LogicalKeyboardKey.numpad0.keyId &&
         key.keyId <= LogicalKeyboardKey.numpad9.keyId) {
       addDigit('${key.keyId - LogicalKeyboardKey.numpad0.keyId}');
+      return true;
     }
+    return false;
   }
 
   void addDigit(String digit) {
@@ -85,11 +83,7 @@ class PinEntryWidgetState extends State<PinEntryWidget> {
     final filledColor = isDark ? Colors.white : Colors.black87;
     final emptyColor = isDark ? Colors.white38 : Colors.black26;
 
-    return KeyboardListener(
-      focusNode: _focusNode,
-      autofocus: true,
-      onKeyEvent: _handleKeyEvent,
-      child: Column(
+    return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
@@ -138,7 +132,6 @@ class PinEntryWidgetState extends State<PinEntryWidget> {
           widget.bottomAction!,
         ],
       ],
-    ),
     );
   }
 

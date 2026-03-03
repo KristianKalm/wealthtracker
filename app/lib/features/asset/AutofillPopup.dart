@@ -24,6 +24,18 @@ int addMonths(int yearMonth, int months) {
   return year * 100 + month;
 }
 
+class _MaxValueFormatter extends TextInputFormatter {
+  final int max;
+  _MaxValueFormatter(this.max);
+
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    final n = int.tryParse(newValue.text);
+    if (n != null && n > max) return oldValue;
+    return newValue;
+  }
+}
+
 class _NumericFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
@@ -102,9 +114,11 @@ class _AutofillPopupState extends State<AutofillPopup> {
   }
 
 
+  int get _months => (int.tryParse(_monthsController.text) ?? 0).clamp(0, 360);
+
   Map<String, double> _calculate() {
     final result = <String, double>{};
-    final n = int.tryParse(_monthsController.text) ?? 0;
+    final n = _months;
     if (n <= 0) return result;
     final initialValue = double.tryParse(_initialController.text) ?? widget.startValue;
 
@@ -151,7 +165,7 @@ class _AutofillPopupState extends State<AutofillPopup> {
   }
 
   double? _loanMonthlyPayment() {
-    final n = int.tryParse(_monthsController.text) ?? 0;
+    final n = _months;
     if (n <= 0) return null;
     final P = (double.tryParse(_loanPrincipalController.text) ?? 0).abs();
     if (P == 0) return null;
@@ -160,7 +174,7 @@ class _AutofillPopupState extends State<AutofillPopup> {
   }
 
   double? _loanTotalWithInterest() {
-    final n = int.tryParse(_monthsController.text) ?? 0;
+    final n = _months;
     if (n <= 0) return null;
     final P = (double.tryParse(_loanPrincipalController.text) ?? 0).abs();
     if (P == 0) return null;
@@ -172,7 +186,7 @@ class _AutofillPopupState extends State<AutofillPopup> {
   }
 
   void _apply() {
-    final months = int.tryParse(_monthsController.text) ?? 0;
+    final months = _months;
     if (months <= 0) return;
     final result = _calculate();
     if (_mode == _AutofillMode.loan) {
@@ -292,7 +306,7 @@ class _AutofillPopupState extends State<AutofillPopup> {
                 label: Text(context.l10n.autofillNumberOfMonths),
               ),
               keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly, _MaxValueFormatter(360)],
             ),
             if (_mode == _AutofillMode.loan) ...[
               const SizedBox(height: 10),
