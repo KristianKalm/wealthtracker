@@ -197,6 +197,9 @@ class CoreLocalizationsEt extends CoreLocalizations {
   }
 
   @override
+  String get tokenNeverUsed => 'Pole kasutatud';
+
+  @override
   String get deleteTokenTitle => 'Kustuta pääsuluba';
 
   @override
@@ -278,6 +281,15 @@ class CoreLocalizationsEt extends CoreLocalizations {
 
   @override
   String get errTooManyRequests => 'Liiga palju päringuid';
+
+  @override
+  String get captchaLabel => 'Captcha';
+
+  @override
+  String get captchaInvalid => 'Vigane captcha';
+
+  @override
+  String get captchaFailedToLoad => 'Captcha laadimine ebaõnnestus';
 
   @override
   String get serverLabel => 'Server';

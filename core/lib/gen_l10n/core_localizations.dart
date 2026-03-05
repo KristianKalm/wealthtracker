@@ -434,6 +434,12 @@ abstract class CoreLocalizations {
   /// **'Last used: {timestamp}'**
   String tokenLastUsedAt(String timestamp);
 
+  /// No description provided for @tokenNeverUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Never used'**
+  String get tokenNeverUsed;
+
   /// No description provided for @deleteTokenTitle.
   ///
   /// In en, this message translates to:
@@ -595,6 +601,24 @@ abstract class CoreLocalizations {
   /// In en, this message translates to:
   /// **'Too many requests'**
   String get errTooManyRequests;
+
+  /// No description provided for @captchaLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Captcha'**
+  String get captchaLabel;
+
+  /// No description provided for @captchaInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid captcha'**
+  String get captchaInvalid;
+
+  /// No description provided for @captchaFailedToLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load captcha'**
+  String get captchaFailedToLoad;
 
   /// No description provided for @serverLabel.
   ///

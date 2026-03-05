@@ -26,6 +26,23 @@ class KrypticAuthApi {
     );
   }
 
+  Future<Map<String, String>> getCaptcha() {
+    return safeApiCall<Map<String, String>>(
+      () => http.get(Uri.parse('${serverUrl}register'), headers: {'xApp': config.appName}),
+      (response) {
+        if (response.statusCode == 200) {
+          var json = jsonDecode(response.body);
+          return {
+            'captcha_id': json['captcha_id']?.toString() ?? '',
+            'captcha_image': json['captcha_image']?.toString() ?? '',
+          };
+        }
+        return <String, String>{};
+      },
+      <String, String>{},
+    );
+  }
+
   Future<Map<String, String>> register(
     String username,
     String password,
@@ -33,6 +50,8 @@ class KrypticAuthApi {
     String publicKey,
     Map<String, String> encryptedPrivateKey,
     String tokenName,
+    String captchaId,
+    String captchaText,
   ) async {
     var userHash = SHA1(config.userSalt + username);
     var passHash = SHA512(config.passSalt + password);
@@ -44,6 +63,8 @@ class KrypticAuthApi {
       "public_key": publicKey,
       "private_key": encryptedPrivateKey,
       "token_name": encryptedTokenName,
+      "captcha_id": captchaId,
+      "captcha_text": captchaText,
     };
     return safeApiCall(
       () => http.post(

@@ -114,6 +114,9 @@ class _WealthtrackerApp extends ConsumerState<WealthtrackerApp> with WidgetsBind
   void _handleUnauthorized() {
     _prefs.delete(PREFS_TOKEN);
     _prefs.delete(PREFS_HAS_SIGNED_IN);
+    ref.invalidate(wealthtrackerSessionApiProvider);
+    ref.invalidate(wealthtrackerSyncProvider);
+    ref.invalidate(pgpProvider);
     _navigatorKey.currentState?.pushAndRemoveUntil(
       MaterialPageRoute(builder: (_) => makeLoginScreen(ref, isFirstTime: true)),
       (_) => false,

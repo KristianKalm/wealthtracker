@@ -63,6 +63,7 @@
   "currentToken": "(aktiivne)",
   "tokenCreatedAt": "Loodud: {timestamp}",
   "tokenLastUsedAt": "Viimati kasutatud: {timestamp}",
+  "tokenNeverUsed": "Pole kasutatud",
   "deleteTokenTitle": "Kustuta pääsuluba",
   "deleteTokenConfirm": "Kas oled kindel, et soovid kustutada {name}?",
   "thisToken": "seda pääsuluba",
@@ -91,6 +92,10 @@
   "errInvalidPath": "Vigane tee",
   "errTimestampExpired": "Päring aegunud",
   "errTooManyRequests": "Liiga palju päringuid",
+
+  "captchaLabel": "Captcha",
+  "captchaInvalid": "Vigane captcha",
+  "captchaFailedToLoad": "Captcha laadimine ebaõnnestus",
 
   "serverLabel": "Server",
   "serverNotFound": "Ei leitud",

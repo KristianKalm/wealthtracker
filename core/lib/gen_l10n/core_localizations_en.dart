@@ -196,6 +196,9 @@ class CoreLocalizationsEn extends CoreLocalizations {
   }
 
   @override
+  String get tokenNeverUsed => 'Never used';
+
+  @override
   String get deleteTokenTitle => 'Delete Token';
 
   @override
@@ -277,6 +280,15 @@ class CoreLocalizationsEn extends CoreLocalizations {
 
   @override
   String get errTooManyRequests => 'Too many requests';
+
+  @override
+  String get captchaLabel => 'Captcha';
+
+  @override
+  String get captchaInvalid => 'Invalid captcha';
+
+  @override
+  String get captchaFailedToLoad => 'Failed to load captcha';
 
   @override
   String get serverLabel => 'Server';

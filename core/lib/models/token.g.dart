@@ -10,7 +10,7 @@ Token _$TokenFromJson(Map<String, dynamic> json) => Token(
   id: json['id'] as String,
   name: json['name'] as String?,
   createdAt: (json['created_at'] as num).toInt(),
-  lastUsedAt: (json['last_used_at'] as num).toInt(),
+  lastUsedAt: (json['last_used_at'] as num?)?.toInt(),
 );
 
 Map<String, dynamic> _$TokenToJson(Token instance) => <String, dynamic>{

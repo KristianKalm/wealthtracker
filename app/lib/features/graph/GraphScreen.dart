@@ -163,20 +163,12 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
       groupMap[g.id] = g;
     }
 
-    String displayName(a) {
-      if (_showGroups && a.groupId != null && groupMap.containsKey(a.groupId)) {
-        return groupMap[a.groupId]!.name;
-      }
-      return a.name;
-    }
-
-    // Aggregate values for the selected month
+    // Aggregate values for the selected month (always by asset name, not group)
     final aggregated = <String, double>{};
     for (var a in allAssets) {
       final val = a.monthlyValues[ymStr];
       if (val != null) {
-        final name = displayName(a);
-        aggregated[name] = (aggregated[name] ?? 0) + val;
+        aggregated[a.name] = (aggregated[a.name] ?? 0) + val;
       }
     }
 

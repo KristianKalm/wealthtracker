@@ -224,7 +224,9 @@ class _TokenListScreenState extends ConsumerState<TokenListScreen> {
                                   style: TextStyle(fontSize: 12),
                                 ),
                                 Text(
-                                  _l.tokenLastUsedAt(formatTimestamp(token.lastUsedAt)),
+                                  token.lastUsedAt != null
+                                      ? _l.tokenLastUsedAt(formatTimestamp(token.lastUsedAt!))
+                                      : _l.tokenNeverUsed,
                                   style: TextStyle(fontSize: 12),
                                 ),
                               ],

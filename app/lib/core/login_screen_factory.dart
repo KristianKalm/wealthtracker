@@ -16,6 +16,7 @@ LoginScreen makeLoginScreen(WidgetRef ref, {bool isFirstTime = false}) {
     prefsProvider: wealthtrackerPrefsProvider,
     pgpProvider: pgpProvider.future,
     onAfterLogin: (context, ref) async {
+      ref.invalidate(wealthtrackerSessionApiProvider);
       ref.invalidate(wealthtrackerSyncProvider);
       ref.invalidate(pgpProvider);
       krypticPopup(context, title: context.l10n.syncingTitle, subtitle: context.l10n.downloadingData);
@@ -35,6 +36,7 @@ LoginScreen makeLoginScreen(WidgetRef ref, {bool isFirstTime = false}) {
       );
     },
     onAfterRegister: (context, ref, seed) async {
+      ref.invalidate(wealthtrackerSessionApiProvider);
       ref.invalidate(wealthtrackerSyncProvider);
       ref.invalidate(pgpProvider);
       await showDialog(

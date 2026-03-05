@@ -102,6 +102,7 @@
       "timestamp": {"type": "String"}
     }
   },
+  "tokenNeverUsed": "Never used",
   "deleteTokenTitle": "Delete Token",
   "deleteTokenConfirm": "Are you sure you want to delete {name}?",
   "@deleteTokenConfirm": {
@@ -136,6 +137,10 @@
   "errInvalidPath": "Invalid path",
   "errTimestampExpired": "Request expired",
   "errTooManyRequests": "Too many requests",
+
+  "captchaLabel": "Captcha",
+  "captchaInvalid": "Invalid captcha",
+  "captchaFailedToLoad": "Failed to load captcha",
 
   "serverLabel": "Server",
   "serverNotFound": "Not found",

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer' as Logger;
 
 import 'package:flutter/material.dart';
@@ -53,16 +54,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   late TextEditingController usernameController;
   late TextEditingController passwordController;
   late TextEditingController confirmPasswordController;
+  late TextEditingController captchaController;
 
   String serverUrl = '';
   String seed = '';
   bool isLoginMode = true;
+  String? _captchaId;
+  String? _captchaImageBase64;
+  bool _isLoadingCaptcha = false;
 
   @override
   void initState() {
     usernameController = TextEditingController();
     passwordController = TextEditingController();
     confirmPasswordController = TextEditingController();
+    captchaController = TextEditingController();
     _generateSeed();
     super.initState();
   }
@@ -80,6 +86,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     usernameController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
+    captchaController.dispose();
     super.dispose();
   }
 
@@ -112,6 +119,27 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     await widget.onUseWithoutAccount(context, ref);
   }
 
+  _fetchCaptcha() async {
+    setState(() {
+      _isLoadingCaptcha = true;
+      _captchaId = null;
+      _captchaImageBase64 = null;
+      captchaController.clear();
+    });
+    try {
+      final result = await KrypticAuthApi(serverUrl, widget.apiConfig).getCaptcha();
+      if (mounted) {
+        setState(() {
+          _captchaId = result['captcha_id'];
+          _captchaImageBase64 = result['captcha_image'];
+          _isLoadingCaptcha = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) setState(() => _isLoadingCaptcha = false);
+    }
+  }
+
   _register() async {
     Logger.log("Start register");
 
@@ -133,6 +161,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
     if (passwordController.text != confirmPasswordController.text) {
       krypticPopup(context, title: _l.error, subtitle: _l.newPasswordsDoNotMatch, buttonTitle: _l.ok, onButtonPressed: () => Navigator.pop(context));
+      return;
+    }
+    if (_captchaId == null || captchaController.text.isEmpty) {
+      krypticPopup(context, title: _l.error, subtitle: _l.captchaInvalid, buttonTitle: _l.ok, onButtonPressed: () => Navigator.pop(context));
       return;
     }
 
@@ -166,11 +198,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             keys['public'] ?? "",
             encryptedPrivateKey,
             deviceName,
+            _captchaId ?? "",
+            captchaController.text,
           )
           .then((result) async {
             hideKrypticPopup(context);
 
             if (result.containsKey("error")) {
+              _fetchCaptcha();
               krypticPopup(
                 context,
                 title: _l.error,
@@ -196,6 +231,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             }
           })
           .catchError((error) {
+            _fetchCaptcha();
             hideKrypticPopup(context);
             krypticPopup(context, title: _l.error, subtitle: _l.registrationFailed(error.toString()), buttonTitle: _l.ok, onButtonPressed: () => Navigator.pop(context));
           });
@@ -475,9 +511,40 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         obscureText: true,
                         maxLength: _passwordMaxLength,
                         autofillHints: const [AutofillHints.newPassword],
-                        textInputAction: TextInputAction.done,
-                        onSubmitted: (_) => _register(),
+                        textInputAction: TextInputAction.next,
                       ),
+                      const SizedBox(height: 16),
+                      if (_isLoadingCaptcha)
+                        const Center(child: CircularProgressIndicator())
+                      else if (_captchaImageBase64 != null) ...[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.memory(base64Decode(_captchaImageBase64!), height: 60),
+                            IconButton(
+                              icon: const Icon(Icons.refresh),
+                              onPressed: _fetchCaptcha,
+                              tooltip: _l.retry,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        TextField(
+                          controller: captchaController,
+                          decoration: InputDecoration(
+                            border: const OutlineInputBorder(),
+                            labelText: _l.captchaLabel,
+                            hintText: _l.captchaLabel,
+                          ),
+                          textInputAction: TextInputAction.done,
+                          onSubmitted: (_) => _register(),
+                        ),
+                      ] else
+                        TextButton.icon(
+                          onPressed: _fetchCaptcha,
+                          icon: const Icon(Icons.refresh),
+                          label: Text(_l.captchaFailedToLoad),
+                        ),
                     ],
                   ],
                 ),
@@ -529,7 +596,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               icon: Icons.person_add,
               isSelected: !isLoginMode,
               isDark: isDark,
-              onTap: () => setState(() => isLoginMode = false),
+              onTap: () {
+                setState(() => isLoginMode = false);
+                _fetchCaptcha();
+              },
             ),
           ),
         ],

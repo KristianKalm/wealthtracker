@@ -11,13 +11,13 @@ class Token {
   @JsonKey(name: 'created_at')
   int createdAt;
   @JsonKey(name: 'last_used_at')
-  int lastUsedAt;
+  int? lastUsedAt;
 
   Token({
     required this.id,
     this.name,
     required this.createdAt,
-    required this.lastUsedAt,
+    this.lastUsedAt,
   });
 
   factory Token.fromJson(Map<String, dynamic> json) => _$TokenFromJson(json);

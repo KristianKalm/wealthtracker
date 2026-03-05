@@ -11,43 +11,75 @@ import '../models/Comment.dart';
 import 'package:kryptic_core/kryptic_core.dart';
 import 'WealthtrackerSync.dart';
 
-// Generic restore function for an entity type
-Future<void> _restoreEntityFile<T>(
+// Generic restore function for an entity type, returns 1 on success, 0 on error
+Future<int> _restoreEntityFile<T>(
   WealthtrackerRepository wealthtrackerRepository,
   EntitySyncConfig<T, WealthtrackerRepository> config,
-  String folderName,
   ArchiveFile file,
 ) async {
-  Logger.log("Restore", config.logName);
   try {
     final entityString = utf8.decode(file.content as List<int>);
     final entity = config.fromJson(jsonDecode(entityString));
     await config.saveEntity(wealthtrackerRepository, entity);
+    return 1;
   } catch (e, stack) {
-    print('Error: $e $stack');
+    print('Error restoring ${config.logName}: $e $stack');
+    return 0;
+  }
+}
+
+// Returns (entitiesRestored, monthsAdded)
+Future<(int, int)> _restoreAssetFile(
+  WealthtrackerRepository wealthtrackerRepository,
+  ArchiveFile file,
+) async {
+  try {
+    final entityString = utf8.decode(file.content as List<int>);
+    final backupAsset = Asset.fromJson(jsonDecode(entityString));
+    final existing = await wealthtrackerRepository.assets.load(backupAsset.id);
+    int monthsAdded = backupAsset.monthlyValues.length;
+    if (existing != null) {
+      final mergedMv = Map<String, double>.from(existing.monthlyValues)
+        ..addAll(backupAsset.monthlyValues);
+      monthsAdded = mergedMv.length - existing.monthlyValues.length;
+      backupAsset.monthlyValues = mergedMv;
+    }
+    await wealthtrackerRepository.assets.save(backupAsset);
+    return (1, monthsAdded);
+  } catch (e, stack) {
+    print('Error restoring Asset: $e $stack');
+    return (0, 0);
   }
 }
 
 Future<List<String>> restoreWealthtrackerData(WidgetRef ref, List<int> zipBytes) async {
   final wealthtrackerRepository = await ref.read(wealthtrackerRepositoryProvider.future);
   final archive = ZipDecoder().decodeBytes(zipBytes);
-  final contents = <String>[];
 
   Logger.log("Restore", "Start");
+
+  int assetsRestored = 0;
+  int monthsAdded = 0;
+  int commentsRestored = 0;
+  int myConfRestored = 0;
+
   for (final file in archive) {
     if (file.isFile) {
       if (file.name.startsWith("asset/")) {
-        await _restoreEntityFile(wealthtrackerRepository, assetConfig, "asset", file);
-      }
-      else if (file.name.startsWith("comment/")) {
-        await _restoreEntityFile(wealthtrackerRepository, commentConfig, "comment", file);
-      }
-      else if (file.name.startsWith("myconf/")) {
-        await _restoreEntityFile(wealthtrackerRepository, myConfConfig, "myconf", file);
+        final (entities, months) = await _restoreAssetFile(wealthtrackerRepository, file);
+        assetsRestored += entities;
+        monthsAdded += months;
+      } else if (file.name.startsWith("comment/")) {
+        commentsRestored += await _restoreEntityFile(wealthtrackerRepository, commentConfig, file);
+      } else if (file.name.startsWith("myconf/")) {
+        myConfRestored += await _restoreEntityFile(wealthtrackerRepository, myConfConfig, file);
       }
     }
   }
-  return contents;
+
+  Logger.log("Restore", "Done — assets: $assetsRestored, months added: $monthsAdded, comments: $commentsRestored, myconf: $myConfRestored");
+
+  return [];
 }
 
 // Generic backup function for an entity type
