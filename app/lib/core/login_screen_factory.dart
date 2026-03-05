@@ -21,7 +21,7 @@ LoginScreen makeLoginScreen(WidgetRef ref, {bool isFirstTime = false}) {
       ref.invalidate(pgpProvider);
       krypticPopup(context, title: context.l10n.syncingTitle, subtitle: context.l10n.downloadingData);
       try {
-        await WealthtrackerSync.fullDownload(ref);
+        await WealthtrackerSync.syncNow(ref);
       } catch (_) {}
       if (!context.mounted) return;
       hideKrypticPopup(context);

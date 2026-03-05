@@ -130,10 +130,12 @@ Future<void> uploadEntity<T>(
       var itemEntity = await entity.loadEntity(wealthtrackerRepository, itemId);
       if (itemEntity != null) {
         var itemString = jsonEncode((itemEntity as dynamic).toJson());
-        syncApi.saveFile(entity.boxName, itemId, itemString, pgp);
-        await entity.markSynced(wealthtrackerRepository, itemId);
-        final now = DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000;
-        await wealthtrackerPrefs.set(LAST_UPLOAD_TIME, now.toString());
+        final result = await syncApi.saveFile(entity.boxName, itemId, itemString, pgp);
+        if (result['detail'] == 'success') {
+          await entity.markSynced(wealthtrackerRepository, itemId);
+          final now = DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000;
+          await wealthtrackerPrefs.set(LAST_UPLOAD_TIME, now.toString());
+        }
       }
     } catch (e, stack) {
       print('Error: $e $stack');
@@ -251,9 +253,11 @@ Future<void> uploadUnsyncedEntityList<T>(
     for (var i = 0; i < files.length; i += UPLOAD_BATCH_SIZE) {
       final end = i + UPLOAD_BATCH_SIZE > files.length ? files.length : i + UPLOAD_BATCH_SIZE;
       final batch = files.sublist(i, end);
-      await syncApi.saveFiles(entity.boxName, batch);
-      for (var j = i; j < end; j++) {
-        await entity.markSynced(wealthtrackerRepository, itemIds[j]);
+      final result = await syncApi.saveFiles(entity.boxName, batch);
+      if (result['detail'] == 'success') {
+        for (var j = i; j < end; j++) {
+          await entity.markSynced(wealthtrackerRepository, itemIds[j]);
+        }
       }
     }
   } catch (e) {
@@ -280,8 +284,10 @@ Future<void> uploadUnsyncedMyConf(WidgetRef ref) async {
       final conf = await wealthtrackerRepository.conf.load();
       final confString = jsonEncode(conf.toJson());
       var encryptedData = await pgp.encrypt(confString);
-      await syncApi.saveFiles(TABLE_CONF, [FileData(name: 'my_config', data: encryptedData)]);
-      await wealthtrackerRepository.conf.markSynced();
+      final result = await syncApi.saveFiles(TABLE_CONF, [FileData(name: 'my_config', data: encryptedData)]);
+      if (result['detail'] == 'success') {
+        await wealthtrackerRepository.conf.markSynced();
+      }
     } catch (e, stack) {
       print('Error uploading MyConf: $e $stack');
     }
@@ -354,10 +360,12 @@ Future<void> uploadMyConf(WidgetRef ref) async {
       final conf = await wealthtrackerRepository.conf.load();
       final confString = jsonEncode(conf.toJson());
       var encryptedData = await pgp.encrypt(confString);
-      await syncApi.saveFiles(TABLE_CONF, [FileData(name: 'my_config', data: encryptedData)]);
-      await wealthtrackerRepository.conf.markSynced();
-      final now = DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000;
-      await wealthtrackerPrefs.set(LAST_UPLOAD_TIME, now.toString());
+      final result = await syncApi.saveFiles(TABLE_CONF, [FileData(name: 'my_config', data: encryptedData)]);
+      if (result['detail'] == 'success') {
+        await wealthtrackerRepository.conf.markSynced();
+        final now = DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000;
+        await wealthtrackerPrefs.set(LAST_UPLOAD_TIME, now.toString());
+      }
     } catch (e, stack) {
       print('Error uploading MyConf: $e $stack');
     }
@@ -398,7 +406,7 @@ Future<void> syncNow(WidgetRef ref) async {
     final usage = await syncApi.getUsage();
     if (usage != null) {
       final sizeBytes = usage['usage_size_bytes'];
-      final maxMb = usage['default_max_mb'];
+      final maxMb = usage['max_mb'];
       if (sizeBytes != null) {
         await wealthtrackerPrefs.set(PREFS_USAGE_SIZE_BYTES, sizeBytes.toString());
       }

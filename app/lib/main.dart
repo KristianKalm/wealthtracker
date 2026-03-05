@@ -68,11 +68,23 @@ class LocaleNotifier extends Notifier<Locale?> {
 
 final localeNotifierProvider = NotifierProvider<LocaleNotifier, Locale?>(LocaleNotifier.new);
 
+final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   FlutterError.onError = (details) {
     FlutterError.presentError(details);
+  };
+
+  onStorageFull = () {
+    print('[StorageFull] showing snackbar');
+    _scaffoldMessengerKey.currentState?.showSnackBar(
+      SnackBar(
+        content: const Text('Your account storage is full.'),
+        backgroundColor: Colors.red,
+      ),
+    );
   };
 
   runApp(ProviderScope(child: WealthtrackerApp()));
@@ -142,6 +154,7 @@ class _WealthtrackerApp extends ConsumerState<WealthtrackerApp> with WidgetsBind
       child: MaterialApp(
         title: 'Wealthtracker',
         navigatorKey: _navigatorKey,
+        scaffoldMessengerKey: _scaffoldMessengerKey,
         debugShowCheckedModeBanner: false,
         locale: locale,
         localizationsDelegates: [
