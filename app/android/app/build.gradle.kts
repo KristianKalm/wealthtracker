@@ -22,7 +22,8 @@ android {
         applicationId = "app.wealthtracker"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
+        val versionParts = flutter.versionName.split(".")
+        versionCode = versionParts[0].toInt() * 10000 + versionParts[1].toInt() * 100 + versionParts[2].toInt()
         versionName = flutter.versionName
     }
     val keystorePassword = file("../../../secrets/keystore_password").readText().trim()
