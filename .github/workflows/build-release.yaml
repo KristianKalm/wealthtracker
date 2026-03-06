@@ -139,6 +139,12 @@ jobs:
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles/$UUID.mobileprovision
           echo "PROFILE_UUID=$UUID" >> $GITHUB_ENV
 
+      - name: Configure manual code signing
+        run: |
+          PBXPROJ=app/ios/Runner.xcodeproj/project.pbxproj
+          sed -i '' 's/CODE_SIGN_STYLE = Automatic/CODE_SIGN_STYLE = Manual/g' $PBXPROJ
+          sed -i '' "s/DEVELOPMENT_TEAM = DGQCZ44ZU7;/DEVELOPMENT_TEAM = DGQCZ44ZU7;\n\t\t\t\tPROVISIONING_PROFILE_SPECIFIER = \"$PROFILE_UUID\";/g" $PBXPROJ
+
       - name: Build IPA
         run: |
           cat > $RUNNER_TEMP/ExportOptions.plist << EOF
