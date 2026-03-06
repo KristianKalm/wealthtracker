@@ -29,6 +29,8 @@ jobs:
           security import $RUNNER_TEMP/certificate.p12 -P "$CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
           security set-key-partition-list -S apple-tool:,apple: -s -k "" $KEYCHAIN_PATH
           security list-keychain -d user -s $KEYCHAIN_PATH
+          echo "=== Identities in keychain ==="
+          security find-identity -v -p codesigning $KEYCHAIN_PATH
 
       - name: Install provisioning profile
         env:
