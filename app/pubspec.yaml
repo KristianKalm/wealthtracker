@@ -1,7 +1,7 @@
 name: wealthtracker
 description: "Private"
 publish_to: 'none'
-version: 1.0.14
+version: 1.0.15
 
 environment:
   sdk: ^3.8.1
