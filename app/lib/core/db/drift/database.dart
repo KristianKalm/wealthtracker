@@ -21,7 +21,22 @@ class WealthtrackerDatabase extends _$WealthtrackerDatabase {
 
   static Future<WealthtrackerDatabase> create(String? encryptionKey) async {
     final executor = await connection.createDatabaseConnection(encryptionKey, dbName: 'wealthtracker');
-    return WealthtrackerDatabase(executor);
+    final db = WealthtrackerDatabase(executor);
+
+    try {
+      // Force connection open to detect incompatible/corrupt database files early
+      await db.customSelect('SELECT 1').get();
+    } catch (_) {
+      // File is not a valid database (e.g. old unencrypted file opened with encryption key).
+      // Delete it and let Drift create a fresh database.
+      try { await db.close(); } catch (_) {}
+      final file = await getDatabaseFile();
+      if (await file.exists()) await file.delete();
+      final freshExecutor = await connection.createDatabaseConnection(encryptionKey, dbName: 'wealthtracker');
+      return WealthtrackerDatabase(freshExecutor);
+    }
+
+    return db;
   }
 
   static Future<File> getDatabaseFile() async {
