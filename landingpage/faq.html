@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <title>FAQ — WealthTracker</title>
+  <meta name="description" content="Frequently asked questions about WealthTracker — the private, open source, end-to-end encrypted personal finance app." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0d0f14;
+      --surface:   #161a22;
+      --border:    #252b38;
+      --accent:    #31c8c8;
+      --accent-hi: #31c8c8;
+      --text:      #e2e8f0;
+      --muted:     #7a8899;
+      --green:     #34d399;
+      --radius:    12px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 2rem;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(13, 15, 20, 0.85);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+    }
+    .logo {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links .btn-primary,
+    .nav-links .btn-primary:hover { color: #fff; }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      padding: 0.55rem 1.1rem;
+      border-radius: var(--radius);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-primary:hover { background: var(--accent-hi); transform: translateY(-1px); }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 5rem 2rem 3rem;
+      text-align: center;
+    }
+    .page-header .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(79, 142, 247, 0.1);
+      border: 1px solid rgba(79, 142, 247, 0.25);
+      padding: 0.3rem 0.8rem;
+      border-radius: 999px;
+      margin-bottom: 1.5rem;
+    }
+    .page-header h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+    .page-header p {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* ── FAQ ── */
+    .faq-wrapper {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 1rem 2rem 6rem;
+    }
+
+    .faq-category {
+      margin-bottom: 3rem;
+    }
+    .faq-category-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 0.65rem;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .faq-item.is-open { border-color: var(--accent); }
+
+    .faq-question {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      width: 100%;
+      background: var(--surface);
+      border: none;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.975rem;
+      font-weight: 600;
+      text-align: left;
+      padding: 1.1rem 1.4rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .faq-question:hover { background: rgba(49, 200, 200, 0.04); }
+    .faq-question-text { flex: 1; }
+
+    .faq-chevron {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      color: var(--muted);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s;
+    }
+    .faq-item.is-open .faq-chevron {
+      transform: rotate(180deg);
+      color: var(--accent);
+    }
+
+    .faq-answer {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .faq-item.is-open .faq-answer { grid-template-rows: 1fr; }
+    .faq-answer-inner {
+      overflow: hidden;
+      padding: 0 1.4rem;
+    }
+    .faq-item.is-open .faq-answer-inner { padding: 0 1.4rem 1.25rem; }
+    .faq-answer-inner p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .faq-answer-inner p + p { margin-top: 0.75rem; }
+    .faq-answer-inner a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .faq-answer-inner a:hover { text-decoration: underline; }
+    .faq-answer-inner code {
+      background: rgba(49, 200, 200, 0.1);
+      border: 1px solid rgba(49, 200, 200, 0.2);
+      border-radius: 4px;
+      padding: 0.1em 0.45em;
+      font-size: 0.85em;
+      color: var(--accent);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      nav { padding: 1rem 1.25rem; }
+      .nav-links { gap: 0.75rem; }
+      .page-header { padding: 3.5rem 1.25rem 2rem; }
+      .faq-wrapper { padding: 0.5rem 1.25rem 4rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="logo">Wealth<span>Tracker</span></a>
+    <div class="nav-links">
+      <a href="index.html#download">Apps</a>
+      <a href="faq.html" style="color: var(--text);">FAQ</a>
+      <a href="https://github.com/KristianKalm/wealthtracker" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://web.wealthtracker.app/" class="btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.83824 18.4467C10.0103 18.7692 10.1826 19.0598 10.3473 19.3173C8.59745 18.9238 7.07906 17.9187 6.02838 16.5383C6.72181 16.1478 7.60995 15.743 8.67766 15.4468C8.98112 16.637 9.40924 17.6423 9.83824 18.4467ZM11.1618 17.7408C10.7891 17.0421 10.4156 16.1695 10.1465 15.1356C10.7258 15.0496 11.3442 15 12.0001 15C12.6559 15 13.2743 15.0496 13.8535 15.1355C13.5844 16.1695 13.2109 17.0421 12.8382 17.7408C12.5394 18.3011 12.2417 18.7484 12 19.0757C11.7583 18.7484 11.4606 18.3011 11.1618 17.7408ZM9.75 12C9.75 12.5841 9.7893 13.1385 9.8586 13.6619C10.5269 13.5594 11.2414 13.5 12.0001 13.5C12.7587 13.5 13.4732 13.5593 14.1414 13.6619C14.2107 13.1384 14.25 12.5841 14.25 12C14.25 11.4159 14.2107 10.8616 14.1414 10.3381C13.4732 10.4406 12.7587 10.5 12.0001 10.5C11.2414 10.5 10.5269 10.4406 9.8586 10.3381C9.7893 10.8615 9.75 11.4159 9.75 12ZM8.38688 10.0288C8.29977 10.6478 8.25 11.3054 8.25 12C8.25 12.6946 8.29977 13.3522 8.38688 13.9712C7.11338 14.3131 6.05882 14.7952 5.24324 15.2591C4.76698 14.2736 4.5 13.168 4.5 12C4.5 10.832 4.76698 9.72644 5.24323 8.74088C6.05872 9.20472 7.1133 9.68686 8.38688 10.0288ZM10.1465 8.86445C10.7258 8.95042 11.3442 9 12.0001 9C12.6559 9 13.2743 8.95043 13.8535 8.86447C13.5844 7.83055 13.2109 6.95793 12.8382 6.2592C12.5394 5.69894 12.2417 5.25156 12 4.92432C11.7583 5.25156 11.4606 5.69894 11.1618 6.25918C10.7891 6.95791 10.4156 7.83053 10.1465 8.86445ZM15.6131 10.0289C15.7002 10.6479 15.75 11.3055 15.75 12C15.75 12.6946 15.7002 13.3521 15.6131 13.9711C16.8866 14.3131 17.9412 14.7952 18.7568 15.2591C19.233 14.2735 19.5 13.1679 19.5 12C19.5 10.8321 19.233 9.72647 18.7568 8.74093C17.9413 9.20477 16.8867 9.6869 15.6131 10.0289ZM17.9716 7.46178C17.2781 7.85231 16.39 8.25705 15.3224 8.55328C15.0189 7.36304 14.5908 6.35769 14.1618 5.55332C13.9897 5.23077 13.8174 4.94025 13.6527 4.6827C15.4026 5.07623 16.921 6.08136 17.9716 7.46178ZM8.67765 8.55325C7.61001 8.25701 6.7219 7.85227 6.02839 7.46173C7.07906 6.08134 8.59745 5.07623 10.3472 4.6827C10.1826 4.94025 10.0103 5.23076 9.83823 5.5533C9.40924 6.35767 8.98112 7.36301 8.67765 8.55325ZM15.3224 15.4467C15.0189 16.637 14.5908 17.6423 14.1618 18.4467C13.9897 18.7692 13.8174 19.0598 13.6527 19.3173C15.4026 18.9238 16.921 17.9186 17.9717 16.5382C17.2782 16.1477 16.3901 15.743 15.3224 15.4467ZM12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z" fill="white"/></svg>
+        Open Web App
+      </a>
+    </div>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <div class="hero-tag">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      Help &amp; FAQ
+    </div>
+    <h1>Frequently Asked Questions</h1>
+    <p>Everything you need to know about WealthTracker — privacy, pricing, setup, and more.</p>
+  </header>
+
+  <!-- FAQ CONTENT -->
+  <main class="faq-wrapper">
+
+    <!-- PRIVACY & SECURITY -->
+    <div class="faq-category">
+      <p class="faq-category-title">Privacy &amp; Security</p>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-question-text">How does end-to-end encryption work?</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer" role="region">
+          <div class="faq-answer-inner">
+            <p>Your data is encrypted locally on your device using your password before it is ever sent to any server. This means neither us, nor anyone with access to the server, can read your financial data — only you can, because only you hold the encryption key derived from your password.</p>
+            <p>We use industry-standard AES-256 encryption. You can verify this yourself by <a href="https://github.com/KristianKalm/wealthtracker" target="_blank" rel="noopener">reading the source code on GitHub</a>.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-question-text">Can WealthTracker see my financial data?</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer" role="region">
+          <div class="faq-answer-inner">
+            <p>No. All data is encrypted on your device before it reaches our servers. We only ever store encrypted blobs that are meaningless without your password. We have no ability to access, sell, or share your financial information.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-question-text">What happens if I forget my password?</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer" role="region">
+          <div class="faq-answer-inner">
+            <p>Because your password is the encryption key, we cannot reset or recover it for you — there is no "forgot password" backdoor. If you lose your password, your encrypted data cannot be recovered.</p>
+            <p>We strongly recommend keeping your password stored somewhere safe, such as a password manager.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-question-text">Does WealthTracker use ads or sell my data?</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer" role="region">
+          <div class="faq-answer-inner">
+            <p>No. WealthTracker has no ads and does not sell or share your data with any third parties. There are no analytics SDKs or trackers embedded in the app. The business model is a simple one-time purchase for mobile apps — not your personal data.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRICING -->
+    <div class="faq-category">
+      <p class="faq-category-title">Pricing</p>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-question-text">How much does WealthTracker cost?</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer" role="region">
+          <div class="faq-answer-inner">
+            <p>The web app is completely free to use — no account required to get started.</p>
+            <p>The iOS (App Store) and Android (Google Play) apps require a one-time purchase. There are no subscriptions, no recurring fees, and no in-app purchases.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-question-text">Is there a free trial for the mobile apps?</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer" role="region">
+          <div class="faq-answer-inner">
+            <p>Yes — the web app at <a href="https://web.wealthtracker.app/" target="_blank" rel="noopener">web.wealthtracker.app</a> is fully functional and free. Try it out before purchasing the mobile app, as it shares the same feature set.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-question-text">Will I ever be charged again after buying?</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer" role="region">
+          <div class="faq-answer-inner">
+            <p>No. It is a one-time purchase. You get all future updates to the app at no additional cost. There are no subscriptions, no premium tiers, and no paywalled features.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLATFORMS & SYNC -->
+    <div class="faq-category">
+      <p class="faq-category-title">Platforms &amp; Sync</p>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-question-text">Which platforms is WealthTracker available on?</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer" role="region">
+          <div class="faq-answer-inner">
+            <p>WealthTracker is available as a web app (any modern browser), an Android app (Google Play or direct APK download), and an iOS app (App Store). All platforms stay in sync via the encrypted backend.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-question-text">Does my data sync across devices?</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer" role="region">
+          <div class="faq-answer-inner">
+            <p>Yes. As long as you use the same account and password, your encrypted data syncs automatically across all your devices — phone, tablet, and browser.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-question-text">Can I use it offline?</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer" role="region">
+          <div class="faq-answer-inner">
+            <p>The mobile apps cache your data locally, so you can view your assets and net worth even without an internet connection. Changes made offline will sync the next time you connect.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPEN SOURCE & SELF-HOSTING -->
+    <div class="faq-category">
+      <p class="faq-category-title">Open Source &amp; Self-Hosting</p>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-question-text">Is WealthTracker really open source?</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer" role="region">
+          <div class="faq-answer-inner">
+            <p>Yes. The full source code for both the client apps and the backend API is available on <a href="https://github.com/KristianKalm/wealthtracker" target="_blank" rel="noopener">GitHub</a> under the GPL-3.0 license. Anyone can read, audit, fork, and contribute to the code.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-question-text">How do I self-host WealthTracker?</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer" role="region">
+          <div class="faq-answer-inner">
+            <p>You can spin up your own instance with a single Docker command. Full setup instructions are in the <a href="https://github.com/KristianKalm/kryptic-api" target="_blank" rel="noopener">self-hosting docs on GitHub</a>. You will need a server with Docker installed and a domain name.</p>
+            <p>Once your server is running, point the app at your own backend URL in the settings.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-question-text">Can I contribute to WealthTracker?</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer" role="region">
+          <div class="faq-answer-inner">
+            <p>Absolutely. Open an issue or pull request on <a href="https://github.com/KristianKalm/wealthtracker" target="_blank" rel="noopener">GitHub</a>. Bug reports, feature suggestions, translations, and code contributions are all welcome.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACCOUNT & DATA -->
+    <div class="faq-category">
+      <p class="faq-category-title">Account &amp; Data</p>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-question-text">Do I need an account to use WealthTracker?</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer" role="region">
+          <div class="faq-answer-inner">
+            <p>You can start tracking your assets in the web app immediately without creating an account. To sync data across devices and back up your data, you will need to register with an email and password.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-question-text">Can I export my data?</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer" role="region">
+          <div class="faq-answer-inner">
+            <p>Yes. You can export all your data in JSON format from the app settings. Your data is yours — you are never locked in.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-question-text">I used a previous version of WealthTracker — how do I migrate my data?</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer" role="region">
+          <div class="faq-answer-inner">
+            <p>If you were using a previous version of WealthTracker, sign in at <a href="https://wealthtracker.app/legacy" target="_blank" rel="noopener">wealthtracker.app/legacy</a> and export your data. Then create a new account at <a href="https://web.wealthtracker.app/" target="_blank" rel="noopener">web.wealthtracker.app</a> and import the exported file from the app settings.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-question-text">How do I delete my account?</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer" role="region">
+          <div class="faq-answer-inner">
+            <p>You can delete your account and all associated data from the app settings at any time. Because your data is end-to-end encrypted, deletion is permanent and irreversible.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>
+      &copy; 2026 WealthTracker &mdash;
+      <a href="privacy-policy.html">Privacy</a> &middot;
+      <a href="#">Terms</a> &middot;
+      <a href="faq.html">FAQ</a> &middot;
+      <a href="https://github.com/KristianKalm/wealthtracker" target="_blank" rel="noopener">GitHub</a>
+    </p>
+    <p style="margin-top: 0.4rem;">End-to-end encrypted &middot; Open source &middot; Self-hostable &middot; Built with &hearts; for your privacy</p>
+  </footer>
+
+  <script>
+  (function () {
+    var items = [].slice.call(document.querySelectorAll('.faq-item'));
+    items.forEach(function (item) {
+      var btn = item.querySelector('.faq-question');
+      btn.addEventListener('click', function () {
+        var isOpen = item.classList.contains('is-open');
+        // Close all
+        items.forEach(function (i) {
+          i.classList.remove('is-open');
+          i.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+        });
+        // Toggle current
+        if (!isOpen) {
+          item.classList.add('is-open');
+          btn.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+  })();
+  </script>
+
+</body>
+</html>
