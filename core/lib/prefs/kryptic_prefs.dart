@@ -12,7 +12,9 @@ const String PREFS_BIOMETRIC_LOCK = "biometric_lock";
 const String PREFS_PIN_CODE = "pin_code";
 
 class KrypticPrefs {
-  final _secureStorage = const FlutterSecureStorage();
+  final _secureStorage = const FlutterSecureStorage(
+    iOptions: IOSOptions(synchronizable: false),
+  );
 
   Future<String?> get(String key) async {
     return await _secureStorage.read(key: key);
