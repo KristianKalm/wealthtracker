@@ -184,6 +184,7 @@ class _WealthtrackerApp extends ConsumerState<WealthtrackerApp> with WidgetsBind
                     biometricEnabled: _lockService.biometricEnabled,
                     onPinVerify: _lockService.verifyPin,
                     onBiometricTap: _lockService.authenticateBiometric,
+                    onLogout: _handleUnauthorized,
                   ),
                 ),
             ],

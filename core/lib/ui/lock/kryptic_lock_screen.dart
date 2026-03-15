@@ -8,6 +8,7 @@ class KrypticLockScreen extends StatefulWidget {
   final bool biometricEnabled;
   final Future<bool> Function(String) onPinVerify;
   final VoidCallback onBiometricTap;
+  final VoidCallback? onLogout;
 
   const KrypticLockScreen({
     super.key,
@@ -15,6 +16,7 @@ class KrypticLockScreen extends StatefulWidget {
     required this.biometricEnabled,
     required this.onPinVerify,
     required this.onBiometricTap,
+    this.onLogout,
   });
 
   @override
@@ -35,6 +37,27 @@ class _KrypticLockScreenState extends State<KrypticLockScreen> {
     }
   }
 
+  Future<void> _handleLogout() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(_l.forgotPinLogOut),
+        content: Text(_l.logOutConfirmPin),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(_l.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text(_l.forgotPinLogOut, style: const TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true) widget.onLogout!();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,14 +73,31 @@ class _KrypticLockScreenState extends State<KrypticLockScreen> {
                       title: _l.enterPin,
                       subtitle: _error,
                       onCompleted: _handlePinCompleted,
-                      bottomAction: widget.biometricEnabled
-                          ? TextButton.icon(
-                              onPressed: widget.onBiometricTap,
-                              icon: const Icon(Icons.fingerprint),
-                              label: Text(_l.useBiometrics),
-                              style: TextButton.styleFrom(
-                                textStyle: const TextStyle(fontSize: 16),
-                              ),
+                      bottomAction: (widget.biometricEnabled || widget.onLogout != null)
+                          ? Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (widget.biometricEnabled)
+                                  TextButton.icon(
+                                    onPressed: widget.onBiometricTap,
+                                    icon: const Icon(Icons.fingerprint),
+                                    label: Text(_l.useBiometrics),
+                                    style: TextButton.styleFrom(
+                                      textStyle: const TextStyle(fontSize: 16),
+                                    ),
+                                  ),
+                                if (widget.onLogout != null)
+                                  TextButton(
+                                    onPressed: _handleLogout,
+                                    child: Text(
+                                      _l.forgotPinLogOut,
+                                      style: TextStyle(
+                                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                  ),
+                              ],
                             )
                           : null,
                     ),

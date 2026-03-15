@@ -94,6 +94,12 @@ class CoreLocalizationsEt extends CoreLocalizations {
   String get unlock => 'Ava';
 
   @override
+  String get forgotPinLogOut => 'Unustasid PIN-i? Logi välja';
+
+  @override
+  String get logOutConfirmPin => 'Kas oled kindel, et soovid välja logida? Pead uuesti sisse logima.';
+
+  @override
   String get loginButton => 'Logi sisse';
 
   @override

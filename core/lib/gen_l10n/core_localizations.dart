@@ -248,6 +248,18 @@ abstract class CoreLocalizations {
   /// **'Unlock'**
   String get unlock;
 
+  /// No description provided for @forgotPinLogOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot PIN? Log out'**
+  String get forgotPinLogOut;
+
+  /// No description provided for @logOutConfirmPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to log out? You will need to log in again.'**
+  String get logOutConfirmPin;
+
   /// No description provided for @loginButton.
   ///
   /// In en, this message translates to:

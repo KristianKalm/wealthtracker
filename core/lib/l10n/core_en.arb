@@ -46,6 +46,8 @@
   "useBiometrics": "Use Biometrics",
   "appIsLocked": "App is Locked",
   "unlock": "Unlock",
+  "forgotPinLogOut": "Forgot PIN? Log out",
+  "logOutConfirmPin": "Are you sure you want to log out? You will need to log in again.",
 
   "loginButton": "Login",
   "registerButton": "Register",

@@ -28,6 +28,8 @@
   "useBiometrics": "Kasuta sõrmejälge",
   "appIsLocked": "Rakendus on lukustatud",
   "unlock": "Ava",
+  "forgotPinLogOut": "Unustasid PIN-i? Logi välja",
+  "logOutConfirmPin": "Kas oled kindel, et soovid välja logida? Pead uuesti sisse logima.",
 
   "loginButton": "Logi sisse",
   "registerButton": "Registreeru",

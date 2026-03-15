@@ -94,6 +94,12 @@ class CoreLocalizationsEn extends CoreLocalizations {
   String get unlock => 'Unlock';
 
   @override
+  String get forgotPinLogOut => 'Forgot PIN? Log out';
+
+  @override
+  String get logOutConfirmPin => 'Are you sure you want to log out? You will need to log in again.';
+
+  @override
   String get loginButton => 'Login';
 
   @override
