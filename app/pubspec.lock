@@ -803,10 +803,10 @@ packages:
     dependency: "direct main"
     description:
       name: openpgp
-      sha256: "8537efa228fe48f54e717bcbbd76d5438d8588e9f42b6c916cd560c49cb972ef"
+      sha256: "8d3fcb7f5ad3ee1874524a896201dcaa7a171430d062c1bea4303374967a7e1f"
       url: "https://pub.dev"
     source: hosted
-    version: "3.10.6"
+    version: "3.10.7"
   package_config:
     dependency: transitive
     description:
