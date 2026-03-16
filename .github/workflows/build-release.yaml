@@ -2,6 +2,11 @@ name: Build Release
 
 on:
   workflow_dispatch:
+    inputs:
+      only_ios:
+        description: 'Only iOS (skip Android APK and AAB)'
+        type: boolean
+        default: false
 
 jobs:
   deploy:
@@ -11,7 +16,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -19,6 +24,7 @@ jobs:
           channel: stable
 
       - name: Setup Android signing secrets
+        if: ${{ !inputs.only_ios }}
         run: |
           mkdir -p secrets
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > secrets/wealthtracker.jks
@@ -44,11 +50,13 @@ jobs:
           flutter build web --release
 
       - name: Build Android APK
+        if: ${{ !inputs.only_ios }}
         run: |
           cd app
           flutter build apk --release
 
       - name: Build Android AAB
+        if: ${{ !inputs.only_ios }}
         run: |
           cd app
           flutter build appbundle --release
@@ -76,13 +84,15 @@ jobs:
           zip -r ../../../web-${{ steps.version.outputs.version }}.zip .
 
       - name: Rename APK
+        if: ${{ !inputs.only_ios }}
         run: mv app/build/app/outputs/flutter-apk/app-release.apk app/build/app/outputs/flutter-apk/android-${{ steps.version.outputs.version }}.apk
 
       - name: Rename AAB
+        if: ${{ !inputs.only_ios }}
         run: mv app/build/app/outputs/bundle/release/app-release.aab app/build/app/outputs/bundle/release/android-${{ steps.version.outputs.version }}.aab
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.version.outputs.version }}
           files: |
@@ -106,7 +116,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: main
 
@@ -185,7 +195,7 @@ jobs:
           mv app/build/ios/ipa/*.ipa app/build/ios/ipa/ios-$VERSION.ipa
 
       - name: Upload IPA to GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ needs.deploy.outputs.version }}
           files: app/build/ios/ipa/ios-${{ needs.deploy.outputs.version }}.ipa
