@@ -45,5 +45,12 @@ post_install do |installer|
         config.build_settings['STRIP_STYLE'] = 'non-global'
       end
     end
+    if target.name == 'openpgp'
+      target.build_configurations.each do |config|
+        config.build_settings['SWIFT_OPTIMIZATION_LEVEL'] = '-Onone'
+        config.build_settings['GCC_OPTIMIZATION_LEVEL'] = '0'
+        config.build_settings['STRIP_STYLE'] = 'non-global'
+      end
+    end
   end
 end
