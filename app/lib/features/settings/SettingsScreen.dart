@@ -777,6 +777,17 @@ class _SettingsScreen extends ConsumerState<SettingsScreen> {
                   );
                 },
               ),
+              ListTile(
+                leading: const Icon(Icons.receipt_long, size: 20),
+                title: const Text('Logger'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    this.context,
+                    MaterialPageRoute(builder: (context) => const LoggerScreen()),
+                  );
+                },
+              ),
               if (_legacyImportHidden)
                 ListTile(
                   leading: const Icon(Icons.history, size: 20),

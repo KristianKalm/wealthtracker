@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer' as Logger;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +12,7 @@ import '../../crypto/rsa_key_generation.dart';
 import '../../gen_l10n/core_localizations.dart';
 import '../../prefs/kryptic_prefs.dart';
 import '../../util/device_info.dart';
+import '../../util/logger.dart';
 import '../theme/KrypticColors.dart';
 import '../layouts/KrypticBaseScreen.dart';
 import '../widgets/KrypticToolbar.dart';
@@ -20,6 +20,8 @@ import '../UiExtensions.dart';
 import '../views/KrypticSnackbar.dart';
 import '../widgets/KrypticPopup.dart';
 import 'ServerScreen.dart';
+
+const _tag = 'Login';
 
 const int _usernameMinLength = 3;
 const int _usernameMaxLength = 64;
@@ -93,12 +95,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   CoreLocalizations get _l => CoreLocalizations.of(context)!;
 
   _generateSeed() {
+    final newSeed = generateMnemonic();
+    Logger.debug(_tag, 'Seed generated: wordCount=${newSeed.split(' ').length}');
     setState(() {
-      seed = generateMnemonic();
+      seed = newSeed;
     });
   }
 
   _changeServer() async {
+    Logger.info(_tag, 'Changing server from $serverUrl');
     final result = await Navigator.push<String>(
       context,
       MaterialPageRoute(
@@ -106,13 +111,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       ),
     );
     if (result != null) {
+      Logger.info(_tag, 'Server changed to $result');
       setState(() {
         serverUrl = result;
       });
+    } else {
+      Logger.debug(_tag, 'Server change cancelled, keeping $serverUrl');
     }
   }
 
   _useWithoutAccount() async {
+    Logger.info(_tag, 'Using without account');
     final prefs = ref.read(widget.prefsProvider);
     await prefs.setBool(PREFS_HAS_SIGNED_IN, true);
     if (!mounted) return;
@@ -120,6 +129,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   _fetchCaptcha() async {
+    Logger.debug(_tag, 'Fetching captcha from $serverUrl...');
     setState(() {
       _isLoadingCaptcha = true;
       _captchaId = null;
@@ -128,6 +138,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     });
     try {
       final result = await KrypticAuthApi(serverUrl, widget.apiConfig).getCaptcha();
+      Logger.debug(_tag, 'Captcha fetched: captchaId=${result['captcha_id']?.isNotEmpty} imageLength=${result['captcha_image']?.length}');
       if (mounted) {
         setState(() {
           _captchaId = result['captcha_id'];
@@ -135,61 +146,75 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           _isLoadingCaptcha = false;
         });
       }
-    } catch (e) {
+    } catch (e, st) {
+      Logger.error(_tag, 'Captcha fetch failed: $e\n$st');
       if (mounted) setState(() => _isLoadingCaptcha = false);
     }
   }
 
   _register() async {
-    Logger.log("Start register");
+    Logger.info(_tag, 'Register started: username="${usernameController.text}" server=$serverUrl');
 
     if (usernameController.text.length < _usernameMinLength) {
+      Logger.warn(_tag, 'Register validation failed: username too short (${usernameController.text.length} < $_usernameMinLength)');
       krypticPopup(context, title: _l.error, subtitle: _l.usernameTooShort(_usernameMinLength), buttonTitle: _l.ok, onButtonPressed: () => Navigator.pop(context));
       return;
     }
     if (usernameController.text.length > _usernameMaxLength) {
+      Logger.warn(_tag, 'Register validation failed: username too long');
       krypticPopup(context, title: _l.error, subtitle: _l.usernameTooLong(_usernameMaxLength), buttonTitle: _l.ok, onButtonPressed: () => Navigator.pop(context));
       return;
     }
     if (passwordController.text.length < _passwordMinLength) {
+      Logger.warn(_tag, 'Register validation failed: password too short');
       krypticPopup(context, title: _l.error, subtitle: _l.passwordTooShort(_passwordMinLength), buttonTitle: _l.ok, onButtonPressed: () => Navigator.pop(context));
       return;
     }
     if (passwordController.text.length > _passwordMaxLength) {
+      Logger.warn(_tag, 'Register validation failed: password too long');
       krypticPopup(context, title: _l.error, subtitle: _l.passwordTooLong(_passwordMaxLength), buttonTitle: _l.ok, onButtonPressed: () => Navigator.pop(context));
       return;
     }
     if (passwordController.text != confirmPasswordController.text) {
+      Logger.warn(_tag, 'Register validation failed: passwords do not match');
       krypticPopup(context, title: _l.error, subtitle: _l.newPasswordsDoNotMatch, buttonTitle: _l.ok, onButtonPressed: () => Navigator.pop(context));
       return;
     }
     if (_captchaId == null || captchaController.text.isEmpty) {
+      Logger.warn(_tag, 'Register validation failed: captchaId=$_captchaId captchaText.isEmpty=${captchaController.text.isEmpty}');
       krypticPopup(context, title: _l.error, subtitle: _l.captchaInvalid, buttonTitle: _l.ok, onButtonPressed: () => Navigator.pop(context));
       return;
     }
 
+    Logger.info(_tag, 'Register validation passed, proceeding...');
     krypticPopup(context, title: _l.creatingAccount, subtitle: _l.pleaseWait);
     await Future.delayed(Duration(milliseconds: 250));
 
     try {
-      Logger.log("Get device name");
+      Logger.debug(_tag, 'Getting device name...');
       final deviceName = await getDeviceName();
+      Logger.debug(_tag, 'Device name: $deviceName');
 
-      Logger.log("Encrypt seed");
+      Logger.debug(_tag, 'Encrypting seed (length=${seed.length})...');
       final encryptedSeed = await encryptText(seed, passwordController.text);
+      Logger.debug(_tag, 'Seed encrypted OK');
 
-      Logger.log("Generating PGP keys");
+      Logger.info(_tag, 'Generating PGP keys (seed length=${seed.length})...');
       var keys = await generatePGPKeys(seed);
 
-      if (keys['private'] == null) {
-        Logger.log("private key generation failed");
+      if (keys['private'] == null || keys['private']!.isEmpty) {
+        Logger.error(_tag, 'PGP key generation failed: private key is null/empty');
         hideKrypticPopup(context);
         krypticPopup(context, title: _l.error, subtitle: _l.keyGenerationFailed, buttonTitle: _l.ok, onButtonPressed: () => Navigator.pop(context));
         return;
       }
+      Logger.info(_tag, 'PGP keys generated: publicKey length=${keys['public']?.length}, privateKey length=${keys['private']?.length}');
 
+      Logger.debug(_tag, 'Encrypting private key...');
       final encryptedPrivateKey = await encryptText(keys['private']!, seed);
+      Logger.debug(_tag, 'Private key encrypted OK');
 
+      Logger.info(_tag, 'Calling register API: server=$serverUrl username="${usernameController.text}"');
       KrypticAuthApi(serverUrl, widget.apiConfig)
           .register(
             usernameController.text,
@@ -205,6 +230,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             hideKrypticPopup(context);
 
             if (result.containsKey("error")) {
+              Logger.error(_tag, 'Register API returned error: ${result["error"]}');
               _fetchCaptcha();
               krypticPopup(
                 context,
@@ -214,6 +240,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 onButtonPressed: () => Navigator.pop(context),
               );
             } else if (result.isNotEmpty) {
+              Logger.info(_tag, 'Register API success: tokenId=${result["token_id"]}');
               final prefs = ref.read(widget.prefsProvider);
               await prefs.set(PREFS_SEED, seed);
               await prefs.set(PREFS_SERVER, serverUrl);
@@ -223,48 +250,62 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               await prefs.set(PREFS_TOKEN, result["token"] ?? "");
               await prefs.set(PREFS_TOKEN_ID, result["token_id"] ?? "");
               await prefs.setBool(PREFS_HAS_SIGNED_IN, true);
+              Logger.info(_tag, 'Prefs saved, calling onAfterRegister...');
 
               if (!mounted) return;
               await widget.onAfterRegister(context, ref, seed);
             } else {
+              Logger.error(_tag, 'Register API returned empty result');
               krypticPopup(context, title: _l.error, subtitle: _l.somethingWentWrong, buttonTitle: _l.ok, onButtonPressed: () => Navigator.pop(context));
             }
           })
           .catchError((error) {
+            Logger.error(_tag, 'Register API call threw: $error');
             _fetchCaptcha();
             hideKrypticPopup(context);
             krypticPopup(context, title: _l.error, subtitle: _l.registrationFailed(error.toString()), buttonTitle: _l.ok, onButtonPressed: () => Navigator.pop(context));
           });
-    } catch (e) {
+    } catch (e, st) {
+      Logger.error(_tag, 'Register unexpected exception: $e\n$st');
       hideKrypticPopup(context);
       krypticPopup(context, title: _l.error, subtitle: _l.anErrorOccurred(e.toString()), buttonTitle: _l.ok, onButtonPressed: () => Navigator.pop(context));
     }
   }
 
   _login({String? pin}) async {
+    Logger.info(_tag, 'Login started: username="${usernameController.text}" server=$serverUrl hasPin=${pin != null}');
+
     if (passwordController.text.length < _passwordMinLength) {
+      Logger.warn(_tag, 'Login validation failed: password too short');
       krypticPopup(context, title: _l.error, subtitle: _l.passwordTooShort(_passwordMinLength), buttonTitle: _l.ok, onButtonPressed: () => Navigator.pop(context));
       return;
     }
     if (passwordController.text.length > _passwordMaxLength) {
+      Logger.warn(_tag, 'Login validation failed: password too long');
       krypticPopup(context, title: _l.error, subtitle: _l.passwordTooLong(_passwordMaxLength), buttonTitle: _l.ok, onButtonPressed: () => Navigator.pop(context));
       return;
     }
 
+    Logger.info(_tag, 'Login validation passed, calling API...');
     krypticPopup(context, title: _l.signingIn, subtitle: _l.pleaseWait);
     await Future.delayed(Duration(milliseconds: 250));
 
     try {
-      Logger.log("Get device name");
+      Logger.debug(_tag, 'Getting device name...');
       final deviceName = await getDeviceName();
+      Logger.debug(_tag, 'Device name: $deviceName');
 
+      Logger.debug(_tag, 'Sending login request to $serverUrl...');
       final result = await KrypticAuthApi(serverUrl, widget.apiConfig)
           .login(usernameController.text, passwordController.text, pin, deviceName);
+      Logger.debug(_tag, 'Login API response keys: ${result.keys.toList()}');
 
       if (result.containsKey("otp_required")) {
+        Logger.info(_tag, 'OTP required, showing dialog');
         hideKrypticPopup(context);
         _showOtpDialog();
       } else if (result.containsKey("error")) {
+        Logger.error(_tag, 'Login API returned error: ${result["error"]}');
         hideKrypticPopup(context);
         krypticPopup(
           context,
@@ -274,24 +315,34 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           onButtonPressed: () => Navigator.pop(context),
         );
       } else if (result.isNotEmpty) {
-        Logger.log("Login completed");
+        Logger.info(_tag, 'Login API success: tokenId=${result["token_id"]}');
 
+        Logger.debug(_tag, 'Decrypting seed...');
         var encryptedSeed = result["seed"];
+        Logger.debug(_tag, 'Encrypted seed keys: ${encryptedSeed?.keys?.toList()}');
         var decryptedSeed = decryptText(
           ciphertext: encryptedSeed["ciphertext"],
           salt: encryptedSeed["salt"],
           iv: encryptedSeed["iv"],
           password: passwordController.text,
         );
+        Logger.debug(_tag, 'Seed decrypted OK: length=${decryptedSeed.length}');
 
+        Logger.debug(_tag, 'Decrypting private key...');
         var encryptedPrivateKey = result["private_key"];
+        Logger.debug(_tag, 'Encrypted private key keys: ${encryptedPrivateKey?.keys?.toList()}');
         var privateKey = decryptText(
           ciphertext: encryptedPrivateKey["ciphertext"],
           salt: encryptedPrivateKey["salt"],
           iv: encryptedPrivateKey["iv"],
           password: decryptedSeed,
         );
+        Logger.debug(_tag, 'Private key decrypted OK: length=${privateKey.length}');
 
+        final publicKey = result["public_key"].toString();
+        Logger.debug(_tag, 'Public key from server: length=${publicKey.length}');
+
+        Logger.debug(_tag, 'Saving credentials to prefs...');
         final prefs = ref.read(widget.prefsProvider);
         await prefs.set(PREFS_TOKEN, result["token"] ?? "");
         await prefs.set(PREFS_TOKEN_ID, result["token_id"] ?? "");
@@ -299,17 +350,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         await prefs.set(PREFS_SEED, decryptedSeed);
         await prefs.set(PREFS_SERVER, serverUrl);
         await prefs.set(PREFS_PRIVATE_KEY, privateKey);
-        await prefs.set(PREFS_PUBLIC_KEY, result["public_key"].toString());
+        await prefs.set(PREFS_PUBLIC_KEY, publicKey);
         await prefs.setBool(PREFS_HAS_SIGNED_IN, true);
+        Logger.info(_tag, 'Prefs saved. Calling onAfterLogin...');
 
         hideKrypticPopup(context);
         if (!mounted) return;
         await widget.onAfterLogin(context, ref);
       } else {
+        Logger.error(_tag, 'Login API returned empty result');
         hideKrypticPopup(context);
         krypticPopup(context, title: _l.error, subtitle: _l.somethingWentWrong, buttonTitle: _l.ok, onButtonPressed: () => Navigator.pop(context));
       }
-    } catch (e) {
+    } catch (e, st) {
+      Logger.error(_tag, 'Login unexpected exception: $e\n$st');
       hideKrypticPopup(context);
       krypticPopup(context, title: _l.error, subtitle: _l.anErrorOccurred(e.toString()), buttonTitle: _l.ok, onButtonPressed: () => Navigator.pop(context));
     }
