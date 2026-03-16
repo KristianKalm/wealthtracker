@@ -35,7 +35,7 @@ dependencies:
   crypto: ^3.0.6
   bip39: ^1.0.6
   encrypt: ^5.0.3
-  openpgp: 3.10.6
+  openpgp: 3.10.7
   pointycastle: ^3.9.1
 
   #Device Info

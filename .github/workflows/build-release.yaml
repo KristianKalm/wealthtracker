@@ -3,10 +3,18 @@ name: Build Release
 on:
   workflow_dispatch:
     inputs:
-      only_ios:
-        description: 'Only iOS (skip Android APK and AAB)'
+      build_apk:
+        description: 'Build APK'
         type: boolean
-        default: false
+        default: true
+      build_aab:
+        description: 'Build AAB'
+        type: boolean
+        default: true
+      build_ipa:
+        description: 'Build IPA'
+        type: boolean
+        default: true
 
 jobs:
   deploy:
@@ -24,7 +32,7 @@ jobs:
           channel: stable
 
       - name: Setup Android signing secrets
-        if: ${{ !inputs.only_ios }}
+        if: ${{ inputs.build_apk || inputs.build_aab }}
         run: |
           mkdir -p secrets
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > secrets/wealthtracker.jks
@@ -50,13 +58,13 @@ jobs:
           flutter build web --release
 
       - name: Build Android APK
-        if: ${{ !inputs.only_ios }}
+        if: ${{ inputs.build_apk }}
         run: |
           cd app
           flutter build apk --release
 
       - name: Build Android AAB
-        if: ${{ !inputs.only_ios }}
+        if: ${{ inputs.build_aab }}
         run: |
           cd app
           flutter build appbundle --release
@@ -84,11 +92,11 @@ jobs:
           zip -r ../../../web-${{ steps.version.outputs.version }}.zip .
 
       - name: Rename APK
-        if: ${{ !inputs.only_ios }}
+        if: ${{ inputs.build_apk }}
         run: mv app/build/app/outputs/flutter-apk/app-release.apk app/build/app/outputs/flutter-apk/android-${{ steps.version.outputs.version }}.apk
 
       - name: Rename AAB
-        if: ${{ !inputs.only_ios }}
+        if: ${{ inputs.build_aab }}
         run: mv app/build/app/outputs/bundle/release/app-release.aab app/build/app/outputs/bundle/release/android-${{ steps.version.outputs.version }}.aab
 
       - name: Create GitHub Release
@@ -99,6 +107,7 @@ jobs:
             web-${{ steps.version.outputs.version }}.zip
             app/build/app/outputs/flutter-apk/android-${{ steps.version.outputs.version }}.apk
             app/build/app/outputs/bundle/release/android-${{ steps.version.outputs.version }}.aab
+          fail_on_unmatched_files: false
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -113,6 +122,7 @@ jobs:
   build-ios:
     runs-on: macos-latest
     needs: deploy
+    if: ${{ inputs.build_ipa }}
 
     steps:
       - name: Checkout code
