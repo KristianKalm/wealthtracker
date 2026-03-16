@@ -42,6 +42,7 @@ post_install do |installer|
     if target.name == 'Runner'
       target.build_configurations.each do |config|
         config.build_settings['OTHER_LDFLAGS'] = '$(inherited) -u _OpenPGPBridgeCall'
+        config.build_settings['STRIP_STYLE'] = 'non-global'
       end
     end
   end
