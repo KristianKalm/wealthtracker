@@ -45,6 +45,7 @@ class SalaryEntries extends Table {
   RealColumn get grossSalary => real().nullable()();
   RealColumn get bonusNet => real().nullable()();
   TextColumn get position => text().nullable()();
+  TextColumn get company => text().nullable()();
   TextColumn get comment => text().nullable()();
   IntColumn get updatedAt => integer().nullable()();
   IntColumn get syncedAt => integer().nullable()();

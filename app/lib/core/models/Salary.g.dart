@@ -13,6 +13,7 @@ Salary _$SalaryFromJson(Map<String, dynamic> json) => Salary(
   grossSalary: (json['g'] as num?)?.toDouble(),
   bonusNet: (json['b'] as num?)?.toDouble(),
   position: json['p'] as String?,
+  company: json['co'] as String?,
   comment: json['c'] as String?,
   updatedAt: (json['ua'] as num?)?.toInt(),
 );
@@ -24,6 +25,7 @@ Map<String, dynamic> _$SalaryToJson(Salary instance) => <String, dynamic>{
   'g': instance.grossSalary,
   'b': instance.bonusNet,
   'p': instance.position,
+  'co': instance.company,
   'c': instance.comment,
   'ua': instance.updatedAt,
 };

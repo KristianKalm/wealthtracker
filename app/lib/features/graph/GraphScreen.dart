@@ -6,6 +6,7 @@ import 'package:kryptic_core/kryptic_core.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 
 import '../../core/models/AssetGroup.dart';
+import '../../core/models/Salary.dart';
 import '../../l10n/l10n.dart';
 import '../Providers.dart';
 import '../navigation/WealthtrackerBottomNav.dart';
@@ -40,6 +41,10 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
   bool _showGroups = false;
   List<AssetGroup> _allGroups = [];
 
+  // Salary chart state
+  List<Salary> _salaryData = [];
+  static const int _birthYear = 1993; // Update to your actual birth year
+
   // Pie chart state
   DateTime pieDate = DateTime.now();
   List<MapEntry<String, double>> pieAssetData = [];
@@ -54,6 +59,7 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
     super.initState();
     updateGraph();
     updatePie();
+    _loadSalaryData();
   }
 
   DateTime _parseYearMonth(int yearMonth) {
@@ -204,6 +210,268 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
         pieGroupTouchedIndex = -1;
       });
     }
+  }
+
+  void _loadSalaryData() async {
+    final repo = await ref.read(wealthtrackerRepositoryProvider.future);
+    final salaries = await repo.salaries.loadAll();
+    salaries.sort((a, b) => a.yearMonth.compareTo(b.yearMonth));
+    if (mounted) {
+      setState(() => _salaryData = salaries);
+    }
+  }
+
+  // Months since year 2000, giving a linear time axis.
+  int _toMonthIndex(int yearMonth) =>
+      (yearMonth ~/ 100 - 2000) * 12 + (yearMonth % 100 - 1);
+
+  DateTime _fromMonthIndex(int idx) =>
+      DateTime(2000 + idx ~/ 12, idx % 12 + 1);
+
+  Widget _buildSalaryChart(KrypticColors colors) {
+    if (_salaryData.isEmpty) return const SizedBox.shrink();
+
+    const netColor = Colors.blue;
+    const netBonusColor = Colors.green;
+    const grossColor = Colors.orange;
+
+    final netSpots = <FlSpot>[];
+    final netBonusSpots = <FlSpot>[];
+    final grossSpots = <FlSpot>[];
+
+    final occupiedMonths = _salaryData.map((s) => _toMonthIndex(s.yearMonth)).toSet();
+
+    for (final s in _salaryData) {
+      final m = _toMonthIndex(s.yearMonth);
+      final x = m.toDouble();
+      final net = s.netSalary ?? 0.0;
+      final netBonus = net + (s.bonusNet ?? 0.0);
+      final gross = s.grossSalary ?? 0.0;
+
+      if (!occupiedMonths.contains(m - 1)) {
+        netSpots.add(FlSpot(m - 1.0, 0));
+        netBonusSpots.add(FlSpot(m - 1.0, 0));
+        grossSpots.add(FlSpot(m - 1.0, 0));
+      }
+
+      netSpots.add(FlSpot(x, net));
+      netBonusSpots.add(FlSpot(x, netBonus));
+      grossSpots.add(FlSpot(x, gross));
+
+      if (!occupiedMonths.contains(m + 1)) {
+        netSpots.add(FlSpot(m + 1.0, 0));
+        netBonusSpots.add(FlSpot(m + 1.0, 0));
+        grossSpots.add(FlSpot(m + 1.0, 0));
+      }
+    }
+
+    netSpots.sort((a, b) => a.x.compareTo(b.x));
+    netBonusSpots.sort((a, b) => a.x.compareTo(b.x));
+    grossSpots.sort((a, b) => a.x.compareTo(b.x));
+
+    final allX = _salaryData.map((s) => _toMonthIndex(s.yearMonth).toDouble()).toList();
+    final minX = allX.first;
+    final maxX = allX.last;
+    final range = (maxX - minX).clamp(1.0, double.infinity);
+    final interval = (range / 6).ceilToDouble().clamp(1.0, double.infinity);
+
+    LineChartBarData series(List<FlSpot> spots, Color color) => LineChartBarData(
+          spots: spots,
+          isCurved: false,
+          color: color,
+          barWidth: 2,
+          dotData: FlDotData(
+            show: true,
+            getDotPainter: (spot, _, __, ___) => FlDotCirclePainter(radius: 3, color: color, strokeWidth: 0),
+          ),
+        );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 8, bottom: 8),
+          child: Text('Salary', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: colors.primaryText)),
+        ),
+        Container(
+          height: 250,
+          padding: const EdgeInsets.only(right: 16, top: 16),
+          decoration: BoxDecoration(
+            color: colors.cardBackgroundColor,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: LineChart(
+            LineChartData(
+              minX: minX - 1,
+              maxX: maxX + 1,
+              lineBarsData: [
+                series(netSpots, netColor),
+                series(netBonusSpots, netBonusColor),
+                series(grossSpots, grossColor),
+              ],
+              titlesData: FlTitlesData(
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    reservedSize: 30,
+                    interval: interval,
+                    getTitlesWidget: (value, meta) {
+                      final dt = _fromMonthIndex(value.round());
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Text(
+                          DateFormat('MM/yy').format(dt),
+                          style: TextStyle(fontSize: 10, color: colors.secondaryText),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                leftTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    reservedSize: 50,
+                    getTitlesWidget: (value, meta) => Text(
+                      NumberFormat.compact().format(value),
+                      style: TextStyle(fontSize: 10, color: colors.secondaryText),
+                    ),
+                  ),
+                ),
+                topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              ),
+              gridData: FlGridData(
+                show: true,
+                drawVerticalLine: false,
+                getDrawingHorizontalLine: (value) => FlLine(color: colors.inputBorder, strokeWidth: 0.5),
+              ),
+              borderData: FlBorderData(show: false),
+              lineTouchData: LineTouchData(
+                touchTooltipData: LineTouchTooltipData(
+                  getTooltipItems: (spots) {
+                    final labels = ['Net', 'Net+Bonus', 'Gross'];
+                    return spots.map((spot) {
+                      final dt = _fromMonthIndex(spot.x.round());
+                      final label = spot.barIndex < labels.length ? labels[spot.barIndex] : '';
+                      return LineTooltipItem(
+                        '${DateFormat('MMM yyyy').format(dt)}\n$label: ${NumberFormat('#,##0').format(spot.y)}',
+                        TextStyle(color: spot.bar.color, fontWeight: FontWeight.bold, fontSize: 12),
+                      );
+                    }).toList();
+                  },
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 16,
+          children: [
+            _salaryLegend(netColor, 'Net'),
+            _salaryLegend(netBonusColor, 'Net + Bonus'),
+            _salaryLegend(grossColor, 'Gross'),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _salaryLegend(Color color, String label) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(width: 12, height: 12, decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(2))),
+        const SizedBox(width: 4),
+        Text(label, style: const TextStyle(fontSize: 12)),
+      ],
+    );
+  }
+
+  Widget _buildSalaryTable(KrypticColors colors) {
+    if (_salaryData.isEmpty) return const SizedBox.shrink();
+
+    final byYear = <int, List<Salary>>{};
+    for (final s in _salaryData) {
+      byYear.putIfAbsent(s.yearMonth ~/ 100, () => []).add(s);
+    }
+    final years = byYear.keys.toList()..sort();
+
+    double? prevTotal;
+    final rows = <DataRow>[];
+
+    for (final year in years) {
+      final salaries = byYear[year]!;
+
+      final totalGross = salaries.fold(0.0, (sum, s) => sum + (s.grossSalary ?? 0));
+
+      final withGross = salaries.where((s) => (s.grossSalary ?? 0) != 0).toList()
+        ..sort((a, b) => a.yearMonth.compareTo(b.yearMonth));
+      final yearly = withGross.isEmpty ? 0.0 : (withGross.last.grossSalary ?? 0) * 12;
+
+      final age = year - _birthYear;
+
+      Color? changeColor;
+      String changeStr = '-';
+      if (prevTotal != null && prevTotal != 0) {
+        final pct = (totalGross - prevTotal!) / prevTotal! * 100;
+        changeStr = '${pct >= 0 ? '+' : ''}${pct.toStringAsFixed(1)}%';
+        changeColor = pct >= 0 ? Colors.green : Colors.red;
+      }
+
+      final comment = salaries
+          .where((s) => s.comment != null && s.comment!.isNotEmpty)
+          .map((s) => s.comment!)
+          .join('; ');
+
+      rows.add(DataRow(cells: [
+        DataCell(Text(year.toString(), style: TextStyle(color: colors.primaryText))),
+        DataCell(Text(NumberFormat('#,##0').format(totalGross), style: TextStyle(color: colors.primaryText))),
+        DataCell(Text(NumberFormat('#,##0').format(yearly), style: TextStyle(color: colors.primaryText))),
+        DataCell(Text(age.toString(), style: TextStyle(color: colors.primaryText))),
+        DataCell(Text(changeStr, style: TextStyle(color: changeColor ?? colors.primaryText))),
+        DataCell(
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 160),
+            child: Text(comment, style: TextStyle(color: colors.secondaryText), overflow: TextOverflow.ellipsis),
+          ),
+        ),
+      ]));
+
+      prevTotal = totalGross;
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 8, bottom: 8),
+          child: Text('Salary by Year', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: colors.primaryText)),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            color: colors.cardBackgroundColor,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              columnSpacing: 16,
+              headingTextStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: colors.secondaryText),
+              columns: const [
+                DataColumn(label: Text('Year')),
+                DataColumn(label: Text('Income\n(Total gross)'), numeric: true),
+                DataColumn(label: Text('Yearly\n(avg mo. ×12)'), numeric: true),
+                DataColumn(label: Text('Age'), numeric: true),
+                DataColumn(label: Text('Change')),
+                DataColumn(label: Text('Comment')),
+              ],
+              rows: rows,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   List<LineChartBarData> _buildLines(KrypticColors colors) {
@@ -415,6 +683,16 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
 
           // Pie chart section
           _buildPieSection(colors),
+
+          const SizedBox(height: 32),
+
+          // Salary chart
+          _buildSalaryChart(colors),
+
+          const SizedBox(height: 32),
+
+          // Salary yearly table
+          _buildSalaryTable(colors),
 
           const SizedBox(height: 100),
         ],

@@ -27,6 +27,7 @@ class SalaryEditPopup extends StatefulWidget {
 
 class _SalaryEditPopupState extends State<SalaryEditPopup> {
   late TextEditingController _positionController;
+  late TextEditingController _companyController;
   late TextEditingController _netController;
   late TextEditingController _grossController;
   late TextEditingController _bonusNetController;
@@ -37,6 +38,7 @@ class _SalaryEditPopupState extends State<SalaryEditPopup> {
     super.initState();
     final s = widget.initialSalary;
     _positionController = TextEditingController(text: s?.position ?? '');
+    _companyController = TextEditingController(text: s?.company ?? '');
     _netController = TextEditingController(
         text: s?.netSalary != null ? s!.netSalary.toString() : '');
     _grossController = TextEditingController(
@@ -49,6 +51,7 @@ class _SalaryEditPopupState extends State<SalaryEditPopup> {
   @override
   void dispose() {
     _positionController.dispose();
+    _companyController.dispose();
     _netController.dispose();
     _grossController.dispose();
     _bonusNetController.dispose();
@@ -69,6 +72,9 @@ class _SalaryEditPopupState extends State<SalaryEditPopup> {
       position: _positionController.text.trim().isEmpty
           ? null
           : _positionController.text.trim(),
+      company: _companyController.text.trim().isEmpty
+          ? null
+          : _companyController.text.trim(),
       comment: _commentController.text.trim().isEmpty
           ? null
           : _commentController.text.trim(),
@@ -97,13 +103,30 @@ class _SalaryEditPopupState extends State<SalaryEditPopup> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(
-              controller: _positionController,
-              textCapitalization: TextCapitalization.sentences,
-              decoration: InputDecoration(
-                border: const OutlineInputBorder(),
-                label: Text(context.l10n.position),
-              ),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _positionController,
+                    textCapitalization: TextCapitalization.sentences,
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      label: Text(context.l10n.position),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: TextField(
+                    controller: _companyController,
+                    textCapitalization: TextCapitalization.sentences,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      label: Text('Company'),
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 12),
             Row(

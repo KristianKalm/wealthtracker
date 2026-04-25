@@ -1209,6 +1209,17 @@ class $SalaryEntriesTable extends SalaryEntries
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _companyMeta = const VerificationMeta(
+    'company',
+  );
+  @override
+  late final GeneratedColumn<String> company = GeneratedColumn<String>(
+    'company',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _commentMeta = const VerificationMeta(
     'comment',
   );
@@ -1250,6 +1261,7 @@ class $SalaryEntriesTable extends SalaryEntries
     grossSalary,
     bonusNet,
     position,
+    company,
     comment,
     updatedAt,
     syncedAt,
@@ -1306,6 +1318,12 @@ class $SalaryEntriesTable extends SalaryEntries
         position.isAcceptableOrUnknown(data['position']!, _positionMeta),
       );
     }
+    if (data.containsKey('company')) {
+      context.handle(
+        _companyMeta,
+        company.isAcceptableOrUnknown(data['company']!, _companyMeta),
+      );
+    }
     if (data.containsKey('comment')) {
       context.handle(
         _commentMeta,
@@ -1357,6 +1375,10 @@ class $SalaryEntriesTable extends SalaryEntries
         DriftSqlType.string,
         data['${effectivePrefix}position'],
       ),
+      company: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}company'],
+      ),
       comment: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}comment'],
@@ -1385,6 +1407,7 @@ class SalaryEntry extends DataClass implements Insertable<SalaryEntry> {
   final double? grossSalary;
   final double? bonusNet;
   final String? position;
+  final String? company;
   final String? comment;
   final int? updatedAt;
   final int? syncedAt;
@@ -1395,6 +1418,7 @@ class SalaryEntry extends DataClass implements Insertable<SalaryEntry> {
     this.grossSalary,
     this.bonusNet,
     this.position,
+    this.company,
     this.comment,
     this.updatedAt,
     this.syncedAt,
@@ -1415,6 +1439,9 @@ class SalaryEntry extends DataClass implements Insertable<SalaryEntry> {
     }
     if (!nullToAbsent || position != null) {
       map['position'] = Variable<String>(position);
+    }
+    if (!nullToAbsent || company != null) {
+      map['company'] = Variable<String>(company);
     }
     if (!nullToAbsent || comment != null) {
       map['comment'] = Variable<String>(comment);
@@ -1444,6 +1471,9 @@ class SalaryEntry extends DataClass implements Insertable<SalaryEntry> {
       position: position == null && nullToAbsent
           ? const Value.absent()
           : Value(position),
+      company: company == null && nullToAbsent
+          ? const Value.absent()
+          : Value(company),
       comment: comment == null && nullToAbsent
           ? const Value.absent()
           : Value(comment),
@@ -1468,6 +1498,7 @@ class SalaryEntry extends DataClass implements Insertable<SalaryEntry> {
       grossSalary: serializer.fromJson<double?>(json['grossSalary']),
       bonusNet: serializer.fromJson<double?>(json['bonusNet']),
       position: serializer.fromJson<String?>(json['position']),
+      company: serializer.fromJson<String?>(json['company']),
       comment: serializer.fromJson<String?>(json['comment']),
       updatedAt: serializer.fromJson<int?>(json['updatedAt']),
       syncedAt: serializer.fromJson<int?>(json['syncedAt']),
@@ -1483,6 +1514,7 @@ class SalaryEntry extends DataClass implements Insertable<SalaryEntry> {
       'grossSalary': serializer.toJson<double?>(grossSalary),
       'bonusNet': serializer.toJson<double?>(bonusNet),
       'position': serializer.toJson<String?>(position),
+      'company': serializer.toJson<String?>(company),
       'comment': serializer.toJson<String?>(comment),
       'updatedAt': serializer.toJson<int?>(updatedAt),
       'syncedAt': serializer.toJson<int?>(syncedAt),
@@ -1496,6 +1528,7 @@ class SalaryEntry extends DataClass implements Insertable<SalaryEntry> {
     Value<double?> grossSalary = const Value.absent(),
     Value<double?> bonusNet = const Value.absent(),
     Value<String?> position = const Value.absent(),
+    Value<String?> company = const Value.absent(),
     Value<String?> comment = const Value.absent(),
     Value<int?> updatedAt = const Value.absent(),
     Value<int?> syncedAt = const Value.absent(),
@@ -1506,6 +1539,7 @@ class SalaryEntry extends DataClass implements Insertable<SalaryEntry> {
     grossSalary: grossSalary.present ? grossSalary.value : this.grossSalary,
     bonusNet: bonusNet.present ? bonusNet.value : this.bonusNet,
     position: position.present ? position.value : this.position,
+    company: company.present ? company.value : this.company,
     comment: comment.present ? comment.value : this.comment,
     updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
     syncedAt: syncedAt.present ? syncedAt.value : this.syncedAt,
@@ -1520,6 +1554,7 @@ class SalaryEntry extends DataClass implements Insertable<SalaryEntry> {
           : this.grossSalary,
       bonusNet: data.bonusNet.present ? data.bonusNet.value : this.bonusNet,
       position: data.position.present ? data.position.value : this.position,
+      company: data.company.present ? data.company.value : this.company,
       comment: data.comment.present ? data.comment.value : this.comment,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
       syncedAt: data.syncedAt.present ? data.syncedAt.value : this.syncedAt,
@@ -1535,6 +1570,7 @@ class SalaryEntry extends DataClass implements Insertable<SalaryEntry> {
           ..write('grossSalary: $grossSalary, ')
           ..write('bonusNet: $bonusNet, ')
           ..write('position: $position, ')
+          ..write('company: $company, ')
           ..write('comment: $comment, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('syncedAt: $syncedAt')
@@ -1550,6 +1586,7 @@ class SalaryEntry extends DataClass implements Insertable<SalaryEntry> {
     grossSalary,
     bonusNet,
     position,
+    company,
     comment,
     updatedAt,
     syncedAt,
@@ -1564,6 +1601,7 @@ class SalaryEntry extends DataClass implements Insertable<SalaryEntry> {
           other.grossSalary == this.grossSalary &&
           other.bonusNet == this.bonusNet &&
           other.position == this.position &&
+          other.company == this.company &&
           other.comment == this.comment &&
           other.updatedAt == this.updatedAt &&
           other.syncedAt == this.syncedAt);
@@ -1576,6 +1614,7 @@ class SalaryEntriesCompanion extends UpdateCompanion<SalaryEntry> {
   final Value<double?> grossSalary;
   final Value<double?> bonusNet;
   final Value<String?> position;
+  final Value<String?> company;
   final Value<String?> comment;
   final Value<int?> updatedAt;
   final Value<int?> syncedAt;
@@ -1587,6 +1626,7 @@ class SalaryEntriesCompanion extends UpdateCompanion<SalaryEntry> {
     this.grossSalary = const Value.absent(),
     this.bonusNet = const Value.absent(),
     this.position = const Value.absent(),
+    this.company = const Value.absent(),
     this.comment = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.syncedAt = const Value.absent(),
@@ -1599,6 +1639,7 @@ class SalaryEntriesCompanion extends UpdateCompanion<SalaryEntry> {
     this.grossSalary = const Value.absent(),
     this.bonusNet = const Value.absent(),
     this.position = const Value.absent(),
+    this.company = const Value.absent(),
     this.comment = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.syncedAt = const Value.absent(),
@@ -1612,6 +1653,7 @@ class SalaryEntriesCompanion extends UpdateCompanion<SalaryEntry> {
     Expression<double>? grossSalary,
     Expression<double>? bonusNet,
     Expression<String>? position,
+    Expression<String>? company,
     Expression<String>? comment,
     Expression<int>? updatedAt,
     Expression<int>? syncedAt,
@@ -1624,6 +1666,7 @@ class SalaryEntriesCompanion extends UpdateCompanion<SalaryEntry> {
       if (grossSalary != null) 'gross_salary': grossSalary,
       if (bonusNet != null) 'bonus_net': bonusNet,
       if (position != null) 'position': position,
+      if (company != null) 'company': company,
       if (comment != null) 'comment': comment,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (syncedAt != null) 'synced_at': syncedAt,
@@ -1638,6 +1681,7 @@ class SalaryEntriesCompanion extends UpdateCompanion<SalaryEntry> {
     Value<double?>? grossSalary,
     Value<double?>? bonusNet,
     Value<String?>? position,
+    Value<String?>? company,
     Value<String?>? comment,
     Value<int?>? updatedAt,
     Value<int?>? syncedAt,
@@ -1650,6 +1694,7 @@ class SalaryEntriesCompanion extends UpdateCompanion<SalaryEntry> {
       grossSalary: grossSalary ?? this.grossSalary,
       bonusNet: bonusNet ?? this.bonusNet,
       position: position ?? this.position,
+      company: company ?? this.company,
       comment: comment ?? this.comment,
       updatedAt: updatedAt ?? this.updatedAt,
       syncedAt: syncedAt ?? this.syncedAt,
@@ -1678,6 +1723,9 @@ class SalaryEntriesCompanion extends UpdateCompanion<SalaryEntry> {
     if (position.present) {
       map['position'] = Variable<String>(position.value);
     }
+    if (company.present) {
+      map['company'] = Variable<String>(company.value);
+    }
     if (comment.present) {
       map['comment'] = Variable<String>(comment.value);
     }
@@ -1702,6 +1750,7 @@ class SalaryEntriesCompanion extends UpdateCompanion<SalaryEntry> {
           ..write('grossSalary: $grossSalary, ')
           ..write('bonusNet: $bonusNet, ')
           ..write('position: $position, ')
+          ..write('company: $company, ')
           ..write('comment: $comment, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('syncedAt: $syncedAt, ')
@@ -2386,6 +2435,7 @@ typedef $$SalaryEntriesTableCreateCompanionBuilder =
       Value<double?> grossSalary,
       Value<double?> bonusNet,
       Value<String?> position,
+      Value<String?> company,
       Value<String?> comment,
       Value<int?> updatedAt,
       Value<int?> syncedAt,
@@ -2399,6 +2449,7 @@ typedef $$SalaryEntriesTableUpdateCompanionBuilder =
       Value<double?> grossSalary,
       Value<double?> bonusNet,
       Value<String?> position,
+      Value<String?> company,
       Value<String?> comment,
       Value<int?> updatedAt,
       Value<int?> syncedAt,
@@ -2441,6 +2492,11 @@ class $$SalaryEntriesTableFilterComposer
 
   ColumnFilters<String> get position => $composableBuilder(
     column: $table.position,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get company => $composableBuilder(
+    column: $table.company,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2499,6 +2555,11 @@ class $$SalaryEntriesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get company => $composableBuilder(
+    column: $table.company,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get comment => $composableBuilder(
     column: $table.comment,
     builder: (column) => ColumnOrderings(column),
@@ -2543,6 +2604,9 @@ class $$SalaryEntriesTableAnnotationComposer
 
   GeneratedColumn<String> get position =>
       $composableBuilder(column: $table.position, builder: (column) => column);
+
+  GeneratedColumn<String> get company =>
+      $composableBuilder(column: $table.company, builder: (column) => column);
 
   GeneratedColumn<String> get comment =>
       $composableBuilder(column: $table.comment, builder: (column) => column);
@@ -2597,6 +2661,7 @@ class $$SalaryEntriesTableTableManager
                 Value<double?> grossSalary = const Value.absent(),
                 Value<double?> bonusNet = const Value.absent(),
                 Value<String?> position = const Value.absent(),
+                Value<String?> company = const Value.absent(),
                 Value<String?> comment = const Value.absent(),
                 Value<int?> updatedAt = const Value.absent(),
                 Value<int?> syncedAt = const Value.absent(),
@@ -2608,6 +2673,7 @@ class $$SalaryEntriesTableTableManager
                 grossSalary: grossSalary,
                 bonusNet: bonusNet,
                 position: position,
+                company: company,
                 comment: comment,
                 updatedAt: updatedAt,
                 syncedAt: syncedAt,
@@ -2621,6 +2687,7 @@ class $$SalaryEntriesTableTableManager
                 Value<double?> grossSalary = const Value.absent(),
                 Value<double?> bonusNet = const Value.absent(),
                 Value<String?> position = const Value.absent(),
+                Value<String?> company = const Value.absent(),
                 Value<String?> comment = const Value.absent(),
                 Value<int?> updatedAt = const Value.absent(),
                 Value<int?> syncedAt = const Value.absent(),
@@ -2632,6 +2699,7 @@ class $$SalaryEntriesTableTableManager
                 grossSalary: grossSalary,
                 bonusNet: bonusNet,
                 position: position,
+                company: company,
                 comment: comment,
                 updatedAt: updatedAt,
                 syncedAt: syncedAt,

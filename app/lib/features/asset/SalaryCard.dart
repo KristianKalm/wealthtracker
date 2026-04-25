@@ -81,11 +81,19 @@ class SalaryCard extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            if (s.position != null && s.position!.isNotEmpty)
+            if (s.company != null && s.company!.isNotEmpty)
+              Text(
+                s.company!,
+                style: TextStyle(color: colors.secondaryText, fontSize: 13),
+              ),
+            if (s.position != null && s.position!.isNotEmpty) ...[
+              if (s.company != null && s.company!.isNotEmpty)
+                Text(' · ', style: TextStyle(color: colors.secondaryText, fontSize: 13)),
               Text(
                 s.position!,
                 style: TextStyle(color: colors.secondaryText, fontSize: 13),
               ),
+            ],
             if (onCopyPreviousMonth != null) ...[
               const SizedBox(width: 8),
               TextButton(

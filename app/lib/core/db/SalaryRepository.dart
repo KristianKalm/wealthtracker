@@ -24,6 +24,7 @@ class SalaryRepository {
             grossSalary: Value(item.grossSalary),
             bonusNet: Value(item.bonusNet),
             position: Value(item.position),
+            company: Value(item.company),
             comment: Value(item.comment),
             updatedAt: Value(ua),
             syncedAt: Value(fromSync ? ua : null),
@@ -96,6 +97,7 @@ class SalaryRepository {
       grossSalary: row.grossSalary,
       bonusNet: row.bonusNet,
       position: row.position,
+      company: row.company,
       comment: row.comment,
       updatedAt: row.updatedAt,
     );

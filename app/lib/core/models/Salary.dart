@@ -16,6 +16,8 @@ class Salary {
   double? bonusNet;
   @JsonKey(name: 'p')
   String? position;
+  @JsonKey(name: 'co')
+  String? company;
   @JsonKey(name: 'c')
   String? comment;
   @JsonKey(name: 'ua')
@@ -28,6 +30,7 @@ class Salary {
     this.grossSalary,
     this.bonusNet,
     this.position,
+    this.company,
     this.comment,
     this.updatedAt,
   });

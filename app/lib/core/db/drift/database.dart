@@ -14,7 +14,7 @@ class WealthtrackerDatabase extends _$WealthtrackerDatabase {
   WealthtrackerDatabase(super.e);
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -22,6 +22,7 @@ class WealthtrackerDatabase extends _$WealthtrackerDatabase {
     onUpgrade: (m, from, to) async {
       if (from < 2) await m.createTable(salaryEntries);
       if (from < 3) await m.addColumn(salaryEntries, salaryEntries.bonusNet);
+      if (from < 4) await m.addColumn(salaryEntries, salaryEntries.company);
     },
   );
 
