@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:drift/drift.dart';
 
-import '../models/Comment.dart';
+import '../models/Month.dart';
 import 'drift/database.dart';
 
 class CommentRepository {
@@ -13,7 +13,7 @@ class CommentRepository {
   static int _nowEpochSeconds() =>
       DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000;
 
-  Future<void> save(Comment item, {bool fromSync = false}) async {
+  Future<void> save(Month item, {bool fromSync = false}) async {
     final ua = fromSync ? item.updatedAt : _nowEpochSeconds();
     if (!fromSync) item.updatedAt = ua;
     await _db.into(_db.commentEntries).insertOnConflictUpdate(
@@ -23,9 +23,8 @@ class CommentRepository {
             comment: Value(item.comment),
             updatedAt: Value(ua),
             syncedAt: Value(fromSync ? ua : null),
-            netSalary: Value(item.netSalary),
-            grossSalary: Value(item.grossSalary),
-            bonusNet: Value(item.bonusNet),
+            salary: Value(item.salary),
+            bonus: Value(item.bonus),
             position: Value(item.position),
             company: Value(item.company),
             salaryComment: Value(item.salaryComment),
@@ -33,7 +32,7 @@ class CommentRepository {
         );
   }
 
-  Future<Comment?> load(String id) async {
+  Future<Month?> load(String id) async {
     final row = await (_db.select(_db.commentEntries)
           ..where((t) => t.id.equals(id)))
         .getSingleOrNull();
@@ -41,12 +40,12 @@ class CommentRepository {
     return _fromRow(row);
   }
 
-  Future<List<Comment>> loadAll() async {
+  Future<List<Month>> loadAll() async {
     final rows = await _db.select(_db.commentEntries).get();
     return rows.map(_fromRow).toList();
   }
 
-  Future<Comment?> loadByMonth(int yearMonth) async {
+  Future<Month?> loadByMonth(int yearMonth) async {
     final row = await (_db.select(_db.commentEntries)
           ..where((t) => t.yearMonth.equals(yearMonth))
           ..limit(1))
@@ -69,7 +68,7 @@ class CommentRepository {
     await _db.delete(_db.commentEntries).go();
   }
 
-  Future<List<Comment>> loadUnsynced() async {
+  Future<List<Month>> loadUnsynced() async {
     final query = _db.select(_db.commentEntries)
       ..where((t) => t.syncedAt.isNull() |
           (t.updatedAt.isNotNull() & t.updatedAt.isBiggerThan(t.syncedAt)));
@@ -90,15 +89,14 @@ class CommentRepository {
         .write(CommentEntriesCompanion(updatedAt: Value(now)));
   }
 
-  Comment _fromRow(CommentEntry row) {
-    return Comment(
+  Month _fromRow(CommentEntry row) {
+    return Month(
       id: row.id,
       yearMonth: row.yearMonth,
       comment: row.comment,
       updatedAt: row.updatedAt,
-      netSalary: row.netSalary,
-      grossSalary: row.grossSalary,
-      bonusNet: row.bonusNet,
+      salary: row.salary,
+      bonus: row.bonus,
       position: row.position,
       company: row.company,
       salaryComment: row.salaryComment,

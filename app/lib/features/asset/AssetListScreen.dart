@@ -8,7 +8,7 @@ import 'package:month_picker_dialog/month_picker_dialog.dart';
 import '../../core/db/WealthtrackerRepository.dart';
 import '../../core/models/AssetGroup.dart';
 import '../../core/models/AssetUiModel.dart';
-import '../../core/models/Comment.dart';
+import '../../core/models/Month.dart';
 import '../../core/models/MonthSummary.dart';
 import '../../core/models/Tag.dart';
 import '../../core/sync/WealthtrackerSync.dart' as WealthtrackerSync;
@@ -45,8 +45,8 @@ class _AssetListScreenState extends ConsumerState<AssetListScreen> {
   List<Tag> allTags = [];
   List<AssetGroup> allGroups = [];
   Set<String> selectedFilterTagIds = {};
-  Comment? _currentComment;
-  Comment? _previousComment;
+  Month? _currentComment;
+  Month? _previousComment;
 
   @override
   void initState() {
@@ -195,14 +195,13 @@ class _AssetListScreenState extends ConsumerState<AssetListScreen> {
     final repo = await ref.read(wealthtrackerRepositoryProvider.future);
     final yearMonth = date.year * 100 + date.month;
     final existing = await repo.comments.loadByMonth(yearMonth);
-    final updated = Comment(
+    final updated = Month(
       id: existing?.id ?? WealthtrackerRepository.generateId(),
       yearMonth: yearMonth,
       comment: existing?.comment ?? '',
-      netSalary: prev.netSalary,
-      grossSalary: prev.grossSalary,
+      salary: prev.salary,
       company: prev.company,
-      bonusNet: prev.bonusNet,
+      bonus: prev.bonus,
       position: prev.position,
       salaryComment: prev.salaryComment,
     );

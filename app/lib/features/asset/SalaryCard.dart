@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:kryptic_core/kryptic_core.dart';
 
-import '../../core/models/Comment.dart';
+import '../../core/models/Month.dart';
 import '../../l10n/l10n.dart';
 
 class SalaryCard extends StatelessWidget {
   final KrypticColors colors;
-  final Comment? salary;
+  final Month? salary;
   final VoidCallback onTap;
   final VoidCallback? onCopyPreviousMonth;
 
@@ -113,23 +113,6 @@ class SalaryCard extends StatelessWidget {
             ],
           ],
         ),
-        if (s.netSalary != null || s.grossSalary != null || s.bonusNet != null) ...[
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              if (s.netSalary != null)
-                _salaryRow(context, context.l10n.netSalary, s.netSalary!),
-              if (s.netSalary != null && s.grossSalary != null)
-                const SizedBox(width: 24),
-              if (s.grossSalary != null)
-                _salaryRow(context, context.l10n.grossSalary, s.grossSalary!),
-              if (s.bonusNet != null && (s.netSalary != null || s.grossSalary != null))
-                const SizedBox(width: 24),
-              if (s.bonusNet != null)
-                _salaryRow(context, context.l10n.bonusNet, s.bonusNet!),
-            ],
-          ),
-        ],
         if (s.salaryComment != null && s.salaryComment!.isNotEmpty) ...[
           const SizedBox(height: 6),
           Text(

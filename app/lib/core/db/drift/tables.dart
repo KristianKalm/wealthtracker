@@ -32,9 +32,8 @@ class CommentEntries extends Table {
   TextColumn get comment => text().withDefault(const Constant(''))();
   IntColumn get updatedAt => integer().nullable()();
   IntColumn get syncedAt => integer().nullable()();
-  RealColumn get netSalary => real().nullable()();
-  RealColumn get grossSalary => real().nullable()();
-  RealColumn get bonusNet => real().nullable()();
+  RealColumn get salary => real().nullable()();
+  RealColumn get bonus => real().nullable()();
   TextColumn get position => text().nullable()();
   TextColumn get company => text().nullable()();
   TextColumn get salaryComment => text().nullable()();

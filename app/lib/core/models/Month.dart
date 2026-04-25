@@ -1,9 +1,9 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'Comment.g.dart';
+part 'Month.g.dart';
 
 @JsonSerializable()
-class Comment {
+class Month {
   @JsonKey(name: 'i')
   String id;
   @JsonKey(name: 'ym')
@@ -12,12 +12,10 @@ class Comment {
   String comment;
   @JsonKey(name: 'ua')
   int? updatedAt;
-  @JsonKey(name: 'sn')
-  double? netSalary;
   @JsonKey(name: 'sg')
-  double? grossSalary;
+  double? salary;
   @JsonKey(name: 'sb')
-  double? bonusNet;
+  double? bonus;
   @JsonKey(name: 'sp')
   String? position;
   @JsonKey(name: 'sco')
@@ -26,22 +24,21 @@ class Comment {
   String? salaryComment;
 
   bool get hasSalaryData =>
-      netSalary != null || grossSalary != null || bonusNet != null ||
+      salary != null || bonus != null ||
       position != null || company != null;
 
-  Comment({
+  Month({
     required this.id,
     required this.yearMonth,
     this.comment = "",
     this.updatedAt,
-    this.netSalary,
-    this.grossSalary,
-    this.bonusNet,
+    this.salary,
+    this.bonus,
     this.position,
     this.company,
     this.salaryComment,
   });
 
-  factory Comment.fromJson(Map<String, dynamic> json) => _$CommentFromJson(json);
-  Map<String, dynamic> toJson() => _$CommentToJson(this);
+  factory Month.fromJson(Map<String, dynamic> json) => _$MonthFromJson(json);
+  Map<String, dynamic> toJson() => _$MonthToJson(this);
 }

@@ -1394,23 +1394,11 @@ abstract class AppLocalizations {
   /// **'Copy previous month'**
   String get copyPreviousMonth;
 
-  /// No description provided for @netSalary.
-  ///
-  /// In en, this message translates to:
-  /// **'Net salary'**
-  String get netSalary;
-
-  /// No description provided for @bonusNet.
+  /// No description provided for @bonus.
   ///
   /// In en, this message translates to:
   /// **'Bonus (net)'**
-  String get bonusNet;
-
-  /// No description provided for @grossSalary.
-  ///
-  /// In en, this message translates to:
-  /// **'Gross salary'**
-  String get grossSalary;
+  String get bonus;
 
   /// No description provided for @position.
   ///

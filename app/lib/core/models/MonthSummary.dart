@@ -9,4 +9,3 @@ class MonthSummary {
   List<AssetUiModel> assets = [];
   List<AssetUiModel> suggestions = [];
 }
- 

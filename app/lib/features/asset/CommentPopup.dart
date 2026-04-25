@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../core/db/WealthtrackerRepository.dart';
-import '../../core/models/Comment.dart';
+import '../../core/models/Month.dart';
 import '../../core/sync/WealthtrackerSync.dart' as WealthtrackerSync;
 import '../../l10n/l10n.dart';
 import '../Providers.dart';
@@ -40,7 +40,7 @@ class _CommentPopupState extends State<CommentPopup> {
 
     // Check if there's already a comment for this month
     final existing = await repo.comments.loadByMonth(yearMonth);
-    final comment = Comment(
+    final comment = Month(
       id: existing?.id ?? WealthtrackerRepository.generateId(),
       yearMonth: yearMonth,
       comment: commentController.text,

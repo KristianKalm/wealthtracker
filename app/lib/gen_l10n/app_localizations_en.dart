@@ -728,13 +728,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get copyPreviousMonth => 'Copy previous month';
 
   @override
-  String get netSalary => 'Net salary';
-
-  @override
-  String get bonusNet => 'Bonus (net)';
-
-  @override
-  String get grossSalary => 'Gross salary';
+  String get bonus => 'Bonus (net)';
 
   @override
   String get position => 'Position';

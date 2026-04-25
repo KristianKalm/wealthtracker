@@ -728,13 +728,7 @@ class AppLocalizationsEt extends AppLocalizations {
   String get copyPreviousMonth => 'Kopeeri eelmine kuu';
 
   @override
-  String get netSalary => 'Netopalk';
-
-  @override
-  String get bonusNet => 'Boonus (neto)';
-
-  @override
-  String get grossSalary => 'Brutopalk';
+  String get bonus => 'Boonus (neto)';
 
   @override
   String get position => 'Ametikoht';

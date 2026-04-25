@@ -6,7 +6,7 @@ import 'package:kryptic_core/kryptic_core.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 
 import '../../core/models/AssetGroup.dart';
-import '../../core/models/Comment.dart';
+import '../../core/models/Month.dart';
 import '../../l10n/l10n.dart';
 import '../Providers.dart';
 import '../asset/AssetListScreen.dart';
@@ -43,8 +43,11 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
   List<AssetGroup> _allGroups = [];
 
   // Salary chart state
-  List<Comment> _salaryData = [];
-  static const int _birthYear = 1993; // Update to your actual birth year
+  List<Month> _salaryData = [];
+  static const int _birthYear = 1980; // Update to your actual birth year
+  bool _salaryShowTotal = true;
+  bool _salaryShowBonus = true;
+  bool _salaryShowSalary = true;
 
   // Pie chart state
   DateTime pieDate = DateTime.now();
@@ -233,48 +236,48 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
   Widget _buildSalaryChart(KrypticColors colors) {
     if (_salaryData.isEmpty) return const SizedBox.shrink();
 
-    const netColor = Colors.blue;
-    const netBonusColor = Colors.green;
-    const grossColor = Colors.orange;
+    const salaryColor = Colors.orange;
+    const bonusColor = Colors.green;
+    const totalColor = Colors.blue;
 
-    final netSpots = <FlSpot>[];
-    final netBonusSpots = <FlSpot>[];
-    final grossSpots = <FlSpot>[];
+    final salarySpots = <FlSpot>[];
+    final bonusSpots = <FlSpot>[];
+    final totalSpots = <FlSpot>[];
 
     final occupiedMonths = _salaryData.map((s) => _toMonthIndex(s.yearMonth)).toSet();
 
     for (final s in _salaryData) {
       final m = _toMonthIndex(s.yearMonth);
       final x = m.toDouble();
-      final net = s.netSalary ?? 0.0;
-      final netBonus = net + (s.bonusNet ?? 0.0);
-      final gross = s.grossSalary ?? 0.0;
+      final salary = s.salary ?? 0.0;
+      final bonus = s.bonus ?? 0.0;
+      final total = salary + bonus;
 
       if (!occupiedMonths.contains(m - 1)) {
-        netSpots.add(FlSpot(m - 1.0, 0));
-        netBonusSpots.add(FlSpot(m - 1.0, 0));
-        grossSpots.add(FlSpot(m - 1.0, 0));
+        salarySpots.add(FlSpot(m - 1.0, 0));
+        bonusSpots.add(FlSpot(m - 1.0, 0));
+        totalSpots.add(FlSpot(m - 1.0, 0));
       }
 
-      netSpots.add(FlSpot(x, net));
-      netBonusSpots.add(FlSpot(x, netBonus));
-      grossSpots.add(FlSpot(x, gross));
+      salarySpots.add(FlSpot(x, salary));
+      bonusSpots.add(FlSpot(x, bonus));
+      totalSpots.add(FlSpot(x, total));
 
       if (!occupiedMonths.contains(m + 1)) {
         final now = DateTime.now();
         final currentMonthIdx = _toMonthIndex(now.year * 100 + now.month);
         final trailingX = m + 1 <= currentMonthIdx ? m + 1 : currentMonthIdx;
         if (trailingX > m) {
-          netSpots.add(FlSpot(trailingX.toDouble(), 0));
-          netBonusSpots.add(FlSpot(trailingX.toDouble(), 0));
-          grossSpots.add(FlSpot(trailingX.toDouble(), 0));
+          salarySpots.add(FlSpot(trailingX.toDouble(), 0));
+          bonusSpots.add(FlSpot(trailingX.toDouble(), 0));
+          totalSpots.add(FlSpot(trailingX.toDouble(), 0));
         }
       }
     }
 
-    netSpots.sort((a, b) => a.x.compareTo(b.x));
-    netBonusSpots.sort((a, b) => a.x.compareTo(b.x));
-    grossSpots.sort((a, b) => a.x.compareTo(b.x));
+    salarySpots.sort((a, b) => a.x.compareTo(b.x));
+    bonusSpots.sort((a, b) => a.x.compareTo(b.x));
+    totalSpots.sort((a, b) => a.x.compareTo(b.x));
 
     final now = DateTime.now();
     final currentMonthIdx = _toMonthIndex(now.year * 100 + now.month);
@@ -314,9 +317,9 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
               minX: minX - 1,
               maxX: maxX,
               lineBarsData: [
-                series(netSpots, netColor),
-                series(netBonusSpots, netBonusColor),
-                series(grossSpots, grossColor),
+                if (_salaryShowSalary) series(salarySpots, salaryColor),
+                if (_salaryShowBonus) series(bonusSpots, bonusColor),
+                if (_salaryShowTotal) series(totalSpots, totalColor),
               ],
               titlesData: FlTitlesData(
                 bottomTitles: AxisTitles(
@@ -383,10 +386,14 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
                 },
                 touchTooltipData: LineTouchTooltipData(
                   getTooltipItems: (spots) {
-                    final labels = ['Net', 'Net+Bonus', 'Gross'];
+                    final visibleLabels = [
+                      if (_salaryShowSalary) 'Salary',
+                      if (_salaryShowBonus) 'Bonus',
+                      if (_salaryShowTotal) 'Total',
+                    ];
                     return spots.map((spot) {
                       final dt = _fromMonthIndex(spot.x.round());
-                      final label = spot.barIndex < labels.length ? labels[spot.barIndex] : '';
+                      final label = spot.barIndex < visibleLabels.length ? visibleLabels[spot.barIndex] : '';
                       return LineTooltipItem(
                         '${DateFormat('MMM yyyy').format(dt)}\n$label: ${NumberFormat('#,##0').format(spot.y)}',
                         TextStyle(color: spot.bar.color, fontWeight: FontWeight.bold, fontSize: 12),
@@ -402,30 +409,41 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
         Wrap(
           spacing: 16,
           children: [
-            _salaryLegend(netColor, 'Net'),
-            _salaryLegend(netBonusColor, 'Net + Bonus'),
-            _salaryLegend(grossColor, 'Gross'),
+            _salaryLegend(salaryColor, 'Salary', _salaryShowSalary, () => setState(() => _salaryShowSalary = !_salaryShowSalary)),
+            _salaryLegend(bonusColor, 'Bonus', _salaryShowBonus, () => setState(() => _salaryShowBonus = !_salaryShowBonus)),
+            _salaryLegend(totalColor, 'Total', _salaryShowTotal, () => setState(() => _salaryShowTotal = !_salaryShowTotal)),
           ],
         ),
       ],
     );
   }
 
-  Widget _salaryLegend(Color color, String label) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(width: 12, height: 12, decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(2))),
-        const SizedBox(width: 4),
-        Text(label, style: const TextStyle(fontSize: 12)),
-      ],
+  Widget _salaryLegend(Color color, String label, bool active, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 12,
+            height: 12,
+            decoration: BoxDecoration(
+              color: active ? color : Colors.transparent,
+              border: Border.all(color: color, width: 1.5),
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(width: 4),
+          Text(label, style: TextStyle(fontSize: 12, color: active ? null : Colors.grey)),
+        ],
+      ),
     );
   }
 
   Widget _buildSalaryTable(KrypticColors colors) {
     if (_salaryData.isEmpty) return const SizedBox.shrink();
 
-    final byYear = <int, List<Comment>>{};
+    final byYear = <int, List<Month>>{};
     for (final s in _salaryData) {
       byYear.putIfAbsent(s.yearMonth ~/ 100, () => []).add(s);
     }
@@ -438,10 +456,9 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
     for (final year in years) {
       final salaries = byYear[year]!..sort((a, b) => a.yearMonth.compareTo(b.yearMonth));
 
-      final totalGross = salaries.fold(0.0, (sum, s) => sum + (s.grossSalary ?? 0));
-
-      final withGross = salaries.where((s) => (s.grossSalary ?? 0) != 0).toList();
-      final yearly = withGross.isEmpty ? 0.0 : (withGross.last.grossSalary ?? 0) * 12;
+      final totalSalary = salaries.fold(0.0, (sum, s) => sum + (s.salary ?? 0));
+      final withSalary = salaries.where((s) => (s.salary ?? 0) != 0).toList();
+      final yearly = withSalary.isEmpty ? 0.0 : (withSalary.last.salary ?? 0) * 12;
 
       final age = year - _birthYear;
 
@@ -459,7 +476,7 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
 
       rows.add(DataRow(cells: [
         DataCell(Text(year.toString(), style: TextStyle(color: colors.primaryText))),
-        DataCell(Text(NumberFormat('#,##0').format(totalGross), style: TextStyle(color: colors.primaryText))),
+        DataCell(Text(NumberFormat('#,##0').format(totalSalary), style: TextStyle(color: colors.primaryText))),
         DataCell(Text(NumberFormat('#,##0').format(yearly), style: TextStyle(color: colors.primaryText))),
         DataCell(Text(age.toString(), style: TextStyle(color: colors.primaryText))),
         DataCell(Text(changeStr, style: TextStyle(color: changeColor ?? colors.primaryText))),
@@ -493,8 +510,8 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
               headingTextStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: colors.secondaryText),
               columns: const [
                 DataColumn(label: Text('Year')),
-                DataColumn(label: Text('Income\n(Total gross)'), numeric: true),
-                DataColumn(label: Text('Yearly\n(avg mo. ×12)'), numeric: true),
+                DataColumn(label: Text('Income\n(Actual)'), numeric: true),
+                DataColumn(label: Text('Yearly\n(FullTime)'), numeric: true),
                 DataColumn(label: Text('Age'), numeric: true),
                 DataColumn(label: Text('Change')),
                 DataColumn(label: Text('Comment')),

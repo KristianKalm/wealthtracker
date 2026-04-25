@@ -10,7 +10,7 @@ import 'CommentRepository.dart';
 import 'ConfRepository.dart';
 
 const TABLE_ASSET = "asset";
-const TABLE_COMMENT = "comment";
+const TABLE_MONTH = "comment";
 const TABLE_CONF = "conf";
 
 

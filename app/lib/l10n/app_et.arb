@@ -233,9 +233,7 @@
 
   "salary": "Palk",
   "copyPreviousMonth": "Kopeeri eelmine kuu",
-  "netSalary": "Netopalk",
-  "bonusNet": "Boonus (neto)",
-  "grossSalary": "Brutopalk",
+  "bonus": "Boonus (neto)",
   "position": "Ametikoht",
   "addSalary": "Lisa palk",
   "salaryFor": "Palk {date}",

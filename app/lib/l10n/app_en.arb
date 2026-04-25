@@ -443,9 +443,7 @@
 
   "salary": "Salary",
   "copyPreviousMonth": "Copy previous month",
-  "netSalary": "Net salary",
-  "bonusNet": "Bonus (net)",
-  "grossSalary": "Gross salary",
+  "bonus": "Bonus (net)",
   "position": "Position",
   "addSalary": "Add salary",
   "salaryFor": "Salary for {date}",

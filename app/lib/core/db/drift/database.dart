@@ -14,7 +14,7 @@ class WealthtrackerDatabase extends _$WealthtrackerDatabase {
   WealthtrackerDatabase(super.e);
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -45,13 +45,12 @@ class WealthtrackerDatabase extends _$WealthtrackerDatabase {
         );
       }
       if (from < 5) {
-        await m.addColumn(commentEntries, commentEntries.netSalary);
-        await m.addColumn(commentEntries, commentEntries.grossSalary);
-        await m.addColumn(commentEntries, commentEntries.bonusNet);
+        await m.database.customStatement('ALTER TABLE comment_entries ADD COLUMN net_salary REAL');
+        await m.database.customStatement('ALTER TABLE comment_entries ADD COLUMN gross_salary REAL');
+        await m.database.customStatement('ALTER TABLE comment_entries ADD COLUMN bonus_net REAL');
         await m.addColumn(commentEntries, commentEntries.position);
         await m.addColumn(commentEntries, commentEntries.company);
         await m.addColumn(commentEntries, commentEntries.salaryComment);
-        // Migrate salary data: update existing comment rows, insert new ones
         await m.database.customStatement('''
           UPDATE comment_entries SET
             net_salary = (SELECT net_salary FROM salary_entries WHERE salary_entries.year_month = comment_entries.year_month),
@@ -70,6 +69,11 @@ class WealthtrackerDatabase extends _$WealthtrackerDatabase {
           WHERE year_month NOT IN (SELECT year_month FROM comment_entries)
         ''');
         await m.database.customStatement('DROP TABLE IF EXISTS salary_entries');
+      }
+      if (from < 6) {
+        await m.database.customStatement('ALTER TABLE comment_entries RENAME COLUMN gross_salary TO salary');
+        await m.database.customStatement('ALTER TABLE comment_entries RENAME COLUMN bonus_net TO bonus');
+        await m.database.customStatement('ALTER TABLE comment_entries DROP COLUMN net_salary');
       }
     },
   );

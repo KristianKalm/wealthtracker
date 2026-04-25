@@ -6,7 +6,7 @@ import 'package:kryptic_core/kryptic_core.dart';
 import '../../features/Providers.dart';
 import '../db/WealthtrackerRepository.dart';
 import '../models/Asset.dart';
-import '../models/Comment.dart';
+import '../models/Month.dart';
 import '../models/MyConf.dart';
 import '../prefs/WealthtrackerPrefs.dart';
 
@@ -30,10 +30,10 @@ final assetConfig = EntitySyncConfig<Asset, WealthtrackerRepository>(
   getUpdatedAt: (e) => e.updatedAt,
 );
 
-final commentConfig = EntitySyncConfig<Comment, WealthtrackerRepository>(
-  boxName: TABLE_COMMENT,
-  logName: "Comment",
-  fromJson: (json) => Comment.fromJson(json),
+final monthConfig = EntitySyncConfig<Month, WealthtrackerRepository>(
+  boxName: TABLE_MONTH,
+  logName: "Month",
+  fromJson: (json) => Month.fromJson(json),
   saveEntity: (box, entity, {bool fromSync = false}) =>
       box.comments.save(entity, fromSync: fromSync),
   loadEntityList: (box) => box.comments.loadAll(),
@@ -207,7 +207,7 @@ Future<void> uploadEntityList<T>(
 Future<void> fullDownload(WidgetRef ref) async {
   await downloadAndSaveMyConf(ref);
   await downloadAndSaveEntityList(ref, assetConfig);
-  await downloadAndSaveEntityList(ref, commentConfig);
+  await downloadAndSaveEntityList(ref, monthConfig);
 
   try {
     final wealthtrackerRepository = await ref.read(wealthtrackerRepositoryProvider.future);
@@ -224,13 +224,13 @@ Future<void> fullDownload(WidgetRef ref) async {
 Future<void> downloadFrom(WidgetRef ref, int timestamp) async {
   await downloadAndSaveMyConf(ref);
   await downloadAndSaveEntityList(ref, assetConfig, newerThan: timestamp);
-  await downloadAndSaveEntityList(ref, commentConfig, newerThan: timestamp);
+  await downloadAndSaveEntityList(ref, monthConfig, newerThan: timestamp);
 }
 
 Future<void> fullUpload(WidgetRef ref) async {
   await uploadMyConf(ref);
   await uploadEntityList(ref, assetConfig);
-  await uploadEntityList(ref, commentConfig);
+  await uploadEntityList(ref, monthConfig);
 }
 
 // Upload unsynced entities (where syncedAt is null or updatedAt > syncedAt)
@@ -312,7 +312,7 @@ Future<void> uploadUnsyncedMyConf(WidgetRef ref) async {
 Future<void> uploadUnsynced(WidgetRef ref) async {
   await uploadUnsyncedMyConf(ref);
   await uploadUnsyncedEntityList(ref, assetConfig);
-  await uploadUnsyncedEntityList(ref, commentConfig);
+  await uploadUnsyncedEntityList(ref, monthConfig);
 }
 
 // Convenience wrappers for specific entity types
@@ -320,8 +320,8 @@ Future<void> uploadUnsynced(WidgetRef ref) async {
 Future<void> uploadAsset(WidgetRef ref, Asset item) =>
     uploadEntity(ref, assetConfig, item.id);
 
-Future<void> uploadComment(WidgetRef ref, Comment item) =>
-    uploadEntity(ref, commentConfig, item.id);
+Future<void> uploadComment(WidgetRef ref, Month item) =>
+    uploadEntity(ref, monthConfig, item.id);
 
 Future<void> uploadTombstone<T>(
   WidgetRef ref,

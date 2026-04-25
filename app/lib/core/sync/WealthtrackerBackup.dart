@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/Providers.dart';
 import '../db/WealthtrackerRepository.dart';
 import '../models/Asset.dart';
-import '../models/Comment.dart';
+import '../models/Month.dart';
 import 'package:kryptic_core/kryptic_core.dart';
 import 'WealthtrackerSync.dart';
 
@@ -78,7 +78,7 @@ Future<List<String>> restoreWealthtrackerData(WidgetRef ref, List<int> zipBytes)
       assetsRestored += entities;
       monthsAdded += months;
     } else if (file.name.startsWith("comment/")) {
-      commentsRestored += await _restoreEntityFile(wealthtrackerRepository, commentConfig, file);
+      commentsRestored += await _restoreEntityFile(wealthtrackerRepository, monthConfig, file);
     } else if (file.name.startsWith("myconf/")) {
       myConfRestored += await _restoreEntityFile(wealthtrackerRepository, myConfConfig, file);
     } else {
@@ -174,7 +174,7 @@ Future<int> restoreLegacyJson(WidgetRef ref, String jsonString) async {
       final existing = await repo.comments.loadByMonth(yearMonth);
       final id = existing?.id ?? WealthtrackerRepository.generateId();
 
-      final comment = Comment(
+      final comment = Month(
         id: id,
         yearMonth: yearMonth,
         comment: commentText,
@@ -193,7 +193,7 @@ Future<Uint8List> backupWealthtrackerData(WidgetRef ref) async {
   final files = <String, Uint8List>{};
 
   await _backupEntityList(wealthtrackerRepository, assetConfig, files, "asset");
-  await _backupEntityList(wealthtrackerRepository, commentConfig, files, "comment");
+  await _backupEntityList(wealthtrackerRepository, monthConfig, files, "comment");
   await _backupEntityList(wealthtrackerRepository, myConfConfig, files, "myconf");
 
   Logger.log("Backup", "Zipping");

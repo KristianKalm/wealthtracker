@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../core/db/WealthtrackerRepository.dart';
-import '../../core/models/Comment.dart';
+import '../../core/models/Month.dart';
 import '../../core/sync/WealthtrackerSync.dart' as WealthtrackerSync;
 import '../../l10n/l10n.dart';
 import '../Providers.dart';
@@ -12,7 +12,7 @@ import '../Providers.dart';
 class SalaryEditPopup extends StatefulWidget {
   final WidgetRef ref;
   final DateTime date;
-  final Comment? initialSalary;
+  final Month? initialSalary;
 
   const SalaryEditPopup({
     super.key,
@@ -28,9 +28,8 @@ class SalaryEditPopup extends StatefulWidget {
 class _SalaryEditPopupState extends State<SalaryEditPopup> {
   late TextEditingController _positionController;
   late TextEditingController _companyController;
-  late TextEditingController _netController;
-  late TextEditingController _grossController;
-  late TextEditingController _bonusNetController;
+  late TextEditingController _salaryController;
+  late TextEditingController _bonusController;
   late TextEditingController _commentController;
 
   @override
@@ -39,12 +38,10 @@ class _SalaryEditPopupState extends State<SalaryEditPopup> {
     final s = widget.initialSalary;
     _positionController = TextEditingController(text: s?.position ?? '');
     _companyController = TextEditingController(text: s?.company ?? '');
-    _netController = TextEditingController(
-        text: s?.netSalary != null ? s!.netSalary.toString() : '');
-    _grossController = TextEditingController(
-        text: s?.grossSalary != null ? s!.grossSalary.toString() : '');
-    _bonusNetController = TextEditingController(
-        text: s?.bonusNet != null ? s!.bonusNet.toString() : '');
+    _salaryController = TextEditingController(
+        text: s?.salary != null ? s!.salary.toString() : '');
+    _bonusController = TextEditingController(
+        text: s?.bonus != null ? s!.bonus.toString() : '');
     _commentController = TextEditingController(text: s?.salaryComment ?? '');
   }
 
@@ -52,9 +49,8 @@ class _SalaryEditPopupState extends State<SalaryEditPopup> {
   void dispose() {
     _positionController.dispose();
     _companyController.dispose();
-    _netController.dispose();
-    _grossController.dispose();
-    _bonusNetController.dispose();
+    _salaryController.dispose();
+    _bonusController.dispose();
     _commentController.dispose();
     super.dispose();
   }
@@ -63,13 +59,12 @@ class _SalaryEditPopupState extends State<SalaryEditPopup> {
     final repo = await widget.ref.read(wealthtrackerRepositoryProvider.future);
     final yearMonth = widget.date.year * 100 + widget.date.month;
     final existing = await repo.comments.loadByMonth(yearMonth);
-    final comment = Comment(
+    final comment = Month(
       id: existing?.id ?? WealthtrackerRepository.generateId(),
       yearMonth: yearMonth,
       comment: existing?.comment ?? '',
-      netSalary: double.tryParse(_netController.text),
-      grossSalary: double.tryParse(_grossController.text),
-      bonusNet: double.tryParse(_bonusNetController.text),
+      salary: double.tryParse(_salaryController.text),
+      bonus: double.tryParse(_bonusController.text),
       position: _positionController.text.trim().isEmpty
           ? null
           : _positionController.text.trim(),
@@ -90,7 +85,7 @@ class _SalaryEditPopupState extends State<SalaryEditPopup> {
     if (s == null) return;
     final repo = await widget.ref.read(wealthtrackerRepositoryProvider.future);
     // Clear salary fields, preserve comment text
-    final cleared = Comment(
+    final cleared = Month(
       id: s.id,
       yearMonth: s.yearMonth,
       comment: s.comment,
@@ -141,28 +136,14 @@ class _SalaryEditPopupState extends State<SalaryEditPopup> {
               children: [
                 Expanded(
                   child: TextField(
-                    controller: _netController,
+                    controller: _salaryController,
                     keyboardType: const TextInputType.numberWithOptions(decimal: true),
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp(r'^[0-9]+\.?[0-9]*$')),
                     ],
                     decoration: InputDecoration(
                       border: const OutlineInputBorder(),
-                      label: Text(context.l10n.netSalary),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: TextField(
-                    controller: _grossController,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r'^[0-9]+\.?[0-9]*$')),
-                    ],
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
-                      label: Text(context.l10n.grossSalary),
+                      label: Text(context.l10n.salary),
                     ),
                   ),
                 ),
@@ -170,14 +151,14 @@ class _SalaryEditPopupState extends State<SalaryEditPopup> {
             ),
             const SizedBox(height: 12),
             TextField(
-              controller: _bonusNetController,
+              controller: _bonusController,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'^[0-9]+\.?[0-9]*$')),
               ],
               decoration: InputDecoration(
                 border: const OutlineInputBorder(),
-                label: Text(context.l10n.bonusNet),
+                label: Text(context.l10n.bonus),
               ),
             ),
             const SizedBox(height: 12),
