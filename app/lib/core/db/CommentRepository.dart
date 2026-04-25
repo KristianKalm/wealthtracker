@@ -23,6 +23,12 @@ class CommentRepository {
             comment: Value(item.comment),
             updatedAt: Value(ua),
             syncedAt: Value(fromSync ? ua : null),
+            netSalary: Value(item.netSalary),
+            grossSalary: Value(item.grossSalary),
+            bonusNet: Value(item.bonusNet),
+            position: Value(item.position),
+            company: Value(item.company),
+            salaryComment: Value(item.salaryComment),
           ),
         );
   }
@@ -90,6 +96,12 @@ class CommentRepository {
       yearMonth: row.yearMonth,
       comment: row.comment,
       updatedAt: row.updatedAt,
+      netSalary: row.netSalary,
+      grossSalary: row.grossSalary,
+      bonusNet: row.bonusNet,
+      position: row.position,
+      company: row.company,
+      salaryComment: row.salaryComment,
     );
   }
 }

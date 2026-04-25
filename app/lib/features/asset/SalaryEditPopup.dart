@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../core/db/WealthtrackerRepository.dart';
-import '../../core/models/Salary.dart';
+import '../../core/models/Comment.dart';
 import '../../core/sync/WealthtrackerSync.dart' as WealthtrackerSync;
 import '../../l10n/l10n.dart';
 import '../Providers.dart';
@@ -12,7 +12,7 @@ import '../Providers.dart';
 class SalaryEditPopup extends StatefulWidget {
   final WidgetRef ref;
   final DateTime date;
-  final Salary? initialSalary;
+  final Comment? initialSalary;
 
   const SalaryEditPopup({
     super.key,
@@ -45,7 +45,7 @@ class _SalaryEditPopupState extends State<SalaryEditPopup> {
         text: s?.grossSalary != null ? s!.grossSalary.toString() : '');
     _bonusNetController = TextEditingController(
         text: s?.bonusNet != null ? s!.bonusNet.toString() : '');
-    _commentController = TextEditingController(text: s?.comment ?? '');
+    _commentController = TextEditingController(text: s?.salaryComment ?? '');
   }
 
   @override
@@ -62,10 +62,11 @@ class _SalaryEditPopupState extends State<SalaryEditPopup> {
   Future<void> _save() async {
     final repo = await widget.ref.read(wealthtrackerRepositoryProvider.future);
     final yearMonth = widget.date.year * 100 + widget.date.month;
-    final existing = await repo.salaries.loadByMonth(yearMonth);
-    final salary = Salary(
+    final existing = await repo.comments.loadByMonth(yearMonth);
+    final comment = Comment(
       id: existing?.id ?? WealthtrackerRepository.generateId(),
       yearMonth: yearMonth,
+      comment: existing?.comment ?? '',
       netSalary: double.tryParse(_netController.text),
       grossSalary: double.tryParse(_grossController.text),
       bonusNet: double.tryParse(_bonusNetController.text),
@@ -75,12 +76,12 @@ class _SalaryEditPopupState extends State<SalaryEditPopup> {
       company: _companyController.text.trim().isEmpty
           ? null
           : _companyController.text.trim(),
-      comment: _commentController.text.trim().isEmpty
+      salaryComment: _commentController.text.trim().isEmpty
           ? null
           : _commentController.text.trim(),
     );
-    await repo.salaries.save(salary);
-    WealthtrackerSync.uploadSalary(widget.ref, salary);
+    await repo.comments.save(comment);
+    WealthtrackerSync.uploadComment(widget.ref, comment);
     if (mounted) Navigator.pop(context, true);
   }
 
@@ -88,14 +89,21 @@ class _SalaryEditPopupState extends State<SalaryEditPopup> {
     final s = widget.initialSalary;
     if (s == null) return;
     final repo = await widget.ref.read(wealthtrackerRepositoryProvider.future);
-    await repo.salaries.delete(s.id);
+    // Clear salary fields, preserve comment text
+    final cleared = Comment(
+      id: s.id,
+      yearMonth: s.yearMonth,
+      comment: s.comment,
+    );
+    await repo.comments.save(cleared);
+    WealthtrackerSync.uploadComment(widget.ref, cleared);
     if (mounted) Navigator.pop(context, true);
   }
 
   @override
   Widget build(BuildContext context) {
     final formattedDate = DateFormat('MMMM yyyy').format(widget.date);
-    final hasExisting = widget.initialSalary != null;
+    final hasExisting = widget.initialSalary?.hasSalaryData == true;
 
     return AlertDialog(
       title: Text(context.l10n.salaryFor(formattedDate)),

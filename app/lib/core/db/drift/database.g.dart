@@ -837,334 +837,6 @@ class $CommentEntriesTable extends CommentEntries
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
-  @override
-  List<GeneratedColumn> get $columns => [
-    id,
-    yearMonth,
-    comment,
-    updatedAt,
-    syncedAt,
-  ];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'comment_entries';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<CommentEntry> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
-    }
-    if (data.containsKey('year_month')) {
-      context.handle(
-        _yearMonthMeta,
-        yearMonth.isAcceptableOrUnknown(data['year_month']!, _yearMonthMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_yearMonthMeta);
-    }
-    if (data.containsKey('comment')) {
-      context.handle(
-        _commentMeta,
-        comment.isAcceptableOrUnknown(data['comment']!, _commentMeta),
-      );
-    }
-    if (data.containsKey('updated_at')) {
-      context.handle(
-        _updatedAtMeta,
-        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
-      );
-    }
-    if (data.containsKey('synced_at')) {
-      context.handle(
-        _syncedAtMeta,
-        syncedAt.isAcceptableOrUnknown(data['synced_at']!, _syncedAtMeta),
-      );
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  CommentEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return CommentEntry(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}id'],
-      )!,
-      yearMonth: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}year_month'],
-      )!,
-      comment: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}comment'],
-      )!,
-      updatedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}updated_at'],
-      ),
-      syncedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}synced_at'],
-      ),
-    );
-  }
-
-  @override
-  $CommentEntriesTable createAlias(String alias) {
-    return $CommentEntriesTable(attachedDatabase, alias);
-  }
-}
-
-class CommentEntry extends DataClass implements Insertable<CommentEntry> {
-  final String id;
-  final int yearMonth;
-  final String comment;
-  final int? updatedAt;
-  final int? syncedAt;
-  const CommentEntry({
-    required this.id,
-    required this.yearMonth,
-    required this.comment,
-    this.updatedAt,
-    this.syncedAt,
-  });
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<String>(id);
-    map['year_month'] = Variable<int>(yearMonth);
-    map['comment'] = Variable<String>(comment);
-    if (!nullToAbsent || updatedAt != null) {
-      map['updated_at'] = Variable<int>(updatedAt);
-    }
-    if (!nullToAbsent || syncedAt != null) {
-      map['synced_at'] = Variable<int>(syncedAt);
-    }
-    return map;
-  }
-
-  CommentEntriesCompanion toCompanion(bool nullToAbsent) {
-    return CommentEntriesCompanion(
-      id: Value(id),
-      yearMonth: Value(yearMonth),
-      comment: Value(comment),
-      updatedAt: updatedAt == null && nullToAbsent
-          ? const Value.absent()
-          : Value(updatedAt),
-      syncedAt: syncedAt == null && nullToAbsent
-          ? const Value.absent()
-          : Value(syncedAt),
-    );
-  }
-
-  factory CommentEntry.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return CommentEntry(
-      id: serializer.fromJson<String>(json['id']),
-      yearMonth: serializer.fromJson<int>(json['yearMonth']),
-      comment: serializer.fromJson<String>(json['comment']),
-      updatedAt: serializer.fromJson<int?>(json['updatedAt']),
-      syncedAt: serializer.fromJson<int?>(json['syncedAt']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<String>(id),
-      'yearMonth': serializer.toJson<int>(yearMonth),
-      'comment': serializer.toJson<String>(comment),
-      'updatedAt': serializer.toJson<int?>(updatedAt),
-      'syncedAt': serializer.toJson<int?>(syncedAt),
-    };
-  }
-
-  CommentEntry copyWith({
-    String? id,
-    int? yearMonth,
-    String? comment,
-    Value<int?> updatedAt = const Value.absent(),
-    Value<int?> syncedAt = const Value.absent(),
-  }) => CommentEntry(
-    id: id ?? this.id,
-    yearMonth: yearMonth ?? this.yearMonth,
-    comment: comment ?? this.comment,
-    updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
-    syncedAt: syncedAt.present ? syncedAt.value : this.syncedAt,
-  );
-  CommentEntry copyWithCompanion(CommentEntriesCompanion data) {
-    return CommentEntry(
-      id: data.id.present ? data.id.value : this.id,
-      yearMonth: data.yearMonth.present ? data.yearMonth.value : this.yearMonth,
-      comment: data.comment.present ? data.comment.value : this.comment,
-      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
-      syncedAt: data.syncedAt.present ? data.syncedAt.value : this.syncedAt,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('CommentEntry(')
-          ..write('id: $id, ')
-          ..write('yearMonth: $yearMonth, ')
-          ..write('comment: $comment, ')
-          ..write('updatedAt: $updatedAt, ')
-          ..write('syncedAt: $syncedAt')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(id, yearMonth, comment, updatedAt, syncedAt);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is CommentEntry &&
-          other.id == this.id &&
-          other.yearMonth == this.yearMonth &&
-          other.comment == this.comment &&
-          other.updatedAt == this.updatedAt &&
-          other.syncedAt == this.syncedAt);
-}
-
-class CommentEntriesCompanion extends UpdateCompanion<CommentEntry> {
-  final Value<String> id;
-  final Value<int> yearMonth;
-  final Value<String> comment;
-  final Value<int?> updatedAt;
-  final Value<int?> syncedAt;
-  final Value<int> rowid;
-  const CommentEntriesCompanion({
-    this.id = const Value.absent(),
-    this.yearMonth = const Value.absent(),
-    this.comment = const Value.absent(),
-    this.updatedAt = const Value.absent(),
-    this.syncedAt = const Value.absent(),
-    this.rowid = const Value.absent(),
-  });
-  CommentEntriesCompanion.insert({
-    required String id,
-    required int yearMonth,
-    this.comment = const Value.absent(),
-    this.updatedAt = const Value.absent(),
-    this.syncedAt = const Value.absent(),
-    this.rowid = const Value.absent(),
-  }) : id = Value(id),
-       yearMonth = Value(yearMonth);
-  static Insertable<CommentEntry> custom({
-    Expression<String>? id,
-    Expression<int>? yearMonth,
-    Expression<String>? comment,
-    Expression<int>? updatedAt,
-    Expression<int>? syncedAt,
-    Expression<int>? rowid,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (yearMonth != null) 'year_month': yearMonth,
-      if (comment != null) 'comment': comment,
-      if (updatedAt != null) 'updated_at': updatedAt,
-      if (syncedAt != null) 'synced_at': syncedAt,
-      if (rowid != null) 'rowid': rowid,
-    });
-  }
-
-  CommentEntriesCompanion copyWith({
-    Value<String>? id,
-    Value<int>? yearMonth,
-    Value<String>? comment,
-    Value<int?>? updatedAt,
-    Value<int?>? syncedAt,
-    Value<int>? rowid,
-  }) {
-    return CommentEntriesCompanion(
-      id: id ?? this.id,
-      yearMonth: yearMonth ?? this.yearMonth,
-      comment: comment ?? this.comment,
-      updatedAt: updatedAt ?? this.updatedAt,
-      syncedAt: syncedAt ?? this.syncedAt,
-      rowid: rowid ?? this.rowid,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<String>(id.value);
-    }
-    if (yearMonth.present) {
-      map['year_month'] = Variable<int>(yearMonth.value);
-    }
-    if (comment.present) {
-      map['comment'] = Variable<String>(comment.value);
-    }
-    if (updatedAt.present) {
-      map['updated_at'] = Variable<int>(updatedAt.value);
-    }
-    if (syncedAt.present) {
-      map['synced_at'] = Variable<int>(syncedAt.value);
-    }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('CommentEntriesCompanion(')
-          ..write('id: $id, ')
-          ..write('yearMonth: $yearMonth, ')
-          ..write('comment: $comment, ')
-          ..write('updatedAt: $updatedAt, ')
-          ..write('syncedAt: $syncedAt, ')
-          ..write('rowid: $rowid')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class $SalaryEntriesTable extends SalaryEntries
-    with TableInfo<$SalaryEntriesTable, SalaryEntry> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $SalaryEntriesTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<String> id = GeneratedColumn<String>(
-    'id',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _yearMonthMeta = const VerificationMeta(
-    'yearMonth',
-  );
-  @override
-  late final GeneratedColumn<int> yearMonth = GeneratedColumn<int>(
-    'year_month',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
   static const VerificationMeta _netSalaryMeta = const VerificationMeta(
     'netSalary',
   );
@@ -1220,60 +892,39 @@ class $SalaryEntriesTable extends SalaryEntries
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
-  static const VerificationMeta _commentMeta = const VerificationMeta(
-    'comment',
+  static const VerificationMeta _salaryCommentMeta = const VerificationMeta(
+    'salaryComment',
   );
   @override
-  late final GeneratedColumn<String> comment = GeneratedColumn<String>(
-    'comment',
+  late final GeneratedColumn<String> salaryComment = GeneratedColumn<String>(
+    'salary_comment',
     aliasedName,
     true,
     type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
-    'updatedAt',
-  );
-  @override
-  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
-    'updated_at',
-    aliasedName,
-    true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _syncedAtMeta = const VerificationMeta(
-    'syncedAt',
-  );
-  @override
-  late final GeneratedColumn<int> syncedAt = GeneratedColumn<int>(
-    'synced_at',
-    aliasedName,
-    true,
-    type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
   @override
   List<GeneratedColumn> get $columns => [
     id,
     yearMonth,
+    comment,
+    updatedAt,
+    syncedAt,
     netSalary,
     grossSalary,
     bonusNet,
     position,
     company,
-    comment,
-    updatedAt,
-    syncedAt,
+    salaryComment,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'salary_entries';
+  static const String $name = 'comment_entries';
   @override
   VerificationContext validateIntegrity(
-    Insertable<SalaryEntry> instance, {
+    Insertable<CommentEntry> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -1290,6 +941,24 @@ class $SalaryEntriesTable extends SalaryEntries
       );
     } else if (isInserting) {
       context.missing(_yearMonthMeta);
+    }
+    if (data.containsKey('comment')) {
+      context.handle(
+        _commentMeta,
+        comment.isAcceptableOrUnknown(data['comment']!, _commentMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    if (data.containsKey('synced_at')) {
+      context.handle(
+        _syncedAtMeta,
+        syncedAt.isAcceptableOrUnknown(data['synced_at']!, _syncedAtMeta),
+      );
     }
     if (data.containsKey('net_salary')) {
       context.handle(
@@ -1324,22 +993,13 @@ class $SalaryEntriesTable extends SalaryEntries
         company.isAcceptableOrUnknown(data['company']!, _companyMeta),
       );
     }
-    if (data.containsKey('comment')) {
+    if (data.containsKey('salary_comment')) {
       context.handle(
-        _commentMeta,
-        comment.isAcceptableOrUnknown(data['comment']!, _commentMeta),
-      );
-    }
-    if (data.containsKey('updated_at')) {
-      context.handle(
-        _updatedAtMeta,
-        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
-      );
-    }
-    if (data.containsKey('synced_at')) {
-      context.handle(
-        _syncedAtMeta,
-        syncedAt.isAcceptableOrUnknown(data['synced_at']!, _syncedAtMeta),
+        _salaryCommentMeta,
+        salaryComment.isAcceptableOrUnknown(
+          data['salary_comment']!,
+          _salaryCommentMeta,
+        ),
       );
     }
     return context;
@@ -1348,9 +1008,9 @@ class $SalaryEntriesTable extends SalaryEntries
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  SalaryEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+  CommentEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return SalaryEntry(
+    return CommentEntry(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}id'],
@@ -1359,6 +1019,18 @@ class $SalaryEntriesTable extends SalaryEntries
         DriftSqlType.int,
         data['${effectivePrefix}year_month'],
       )!,
+      comment: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}comment'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      ),
+      syncedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}synced_at'],
+      ),
       netSalary: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
         data['${effectivePrefix}net_salary'],
@@ -1379,55 +1051,56 @@ class $SalaryEntriesTable extends SalaryEntries
         DriftSqlType.string,
         data['${effectivePrefix}company'],
       ),
-      comment: attachedDatabase.typeMapping.read(
+      salaryComment: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}comment'],
-      ),
-      updatedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}updated_at'],
-      ),
-      syncedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}synced_at'],
+        data['${effectivePrefix}salary_comment'],
       ),
     );
   }
 
   @override
-  $SalaryEntriesTable createAlias(String alias) {
-    return $SalaryEntriesTable(attachedDatabase, alias);
+  $CommentEntriesTable createAlias(String alias) {
+    return $CommentEntriesTable(attachedDatabase, alias);
   }
 }
 
-class SalaryEntry extends DataClass implements Insertable<SalaryEntry> {
+class CommentEntry extends DataClass implements Insertable<CommentEntry> {
   final String id;
   final int yearMonth;
+  final String comment;
+  final int? updatedAt;
+  final int? syncedAt;
   final double? netSalary;
   final double? grossSalary;
   final double? bonusNet;
   final String? position;
   final String? company;
-  final String? comment;
-  final int? updatedAt;
-  final int? syncedAt;
-  const SalaryEntry({
+  final String? salaryComment;
+  const CommentEntry({
     required this.id,
     required this.yearMonth,
+    required this.comment,
+    this.updatedAt,
+    this.syncedAt,
     this.netSalary,
     this.grossSalary,
     this.bonusNet,
     this.position,
     this.company,
-    this.comment,
-    this.updatedAt,
-    this.syncedAt,
+    this.salaryComment,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
     map['year_month'] = Variable<int>(yearMonth);
+    map['comment'] = Variable<String>(comment);
+    if (!nullToAbsent || updatedAt != null) {
+      map['updated_at'] = Variable<int>(updatedAt);
+    }
+    if (!nullToAbsent || syncedAt != null) {
+      map['synced_at'] = Variable<int>(syncedAt);
+    }
     if (!nullToAbsent || netSalary != null) {
       map['net_salary'] = Variable<double>(netSalary);
     }
@@ -1443,22 +1116,23 @@ class SalaryEntry extends DataClass implements Insertable<SalaryEntry> {
     if (!nullToAbsent || company != null) {
       map['company'] = Variable<String>(company);
     }
-    if (!nullToAbsent || comment != null) {
-      map['comment'] = Variable<String>(comment);
-    }
-    if (!nullToAbsent || updatedAt != null) {
-      map['updated_at'] = Variable<int>(updatedAt);
-    }
-    if (!nullToAbsent || syncedAt != null) {
-      map['synced_at'] = Variable<int>(syncedAt);
+    if (!nullToAbsent || salaryComment != null) {
+      map['salary_comment'] = Variable<String>(salaryComment);
     }
     return map;
   }
 
-  SalaryEntriesCompanion toCompanion(bool nullToAbsent) {
-    return SalaryEntriesCompanion(
+  CommentEntriesCompanion toCompanion(bool nullToAbsent) {
+    return CommentEntriesCompanion(
       id: Value(id),
       yearMonth: Value(yearMonth),
+      comment: Value(comment),
+      updatedAt: updatedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedAt),
+      syncedAt: syncedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncedAt),
       netSalary: netSalary == null && nullToAbsent
           ? const Value.absent()
           : Value(netSalary),
@@ -1474,34 +1148,29 @@ class SalaryEntry extends DataClass implements Insertable<SalaryEntry> {
       company: company == null && nullToAbsent
           ? const Value.absent()
           : Value(company),
-      comment: comment == null && nullToAbsent
+      salaryComment: salaryComment == null && nullToAbsent
           ? const Value.absent()
-          : Value(comment),
-      updatedAt: updatedAt == null && nullToAbsent
-          ? const Value.absent()
-          : Value(updatedAt),
-      syncedAt: syncedAt == null && nullToAbsent
-          ? const Value.absent()
-          : Value(syncedAt),
+          : Value(salaryComment),
     );
   }
 
-  factory SalaryEntry.fromJson(
+  factory CommentEntry.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return SalaryEntry(
+    return CommentEntry(
       id: serializer.fromJson<String>(json['id']),
       yearMonth: serializer.fromJson<int>(json['yearMonth']),
+      comment: serializer.fromJson<String>(json['comment']),
+      updatedAt: serializer.fromJson<int?>(json['updatedAt']),
+      syncedAt: serializer.fromJson<int?>(json['syncedAt']),
       netSalary: serializer.fromJson<double?>(json['netSalary']),
       grossSalary: serializer.fromJson<double?>(json['grossSalary']),
       bonusNet: serializer.fromJson<double?>(json['bonusNet']),
       position: serializer.fromJson<String?>(json['position']),
       company: serializer.fromJson<String?>(json['company']),
-      comment: serializer.fromJson<String?>(json['comment']),
-      updatedAt: serializer.fromJson<int?>(json['updatedAt']),
-      syncedAt: serializer.fromJson<int?>(json['syncedAt']),
+      salaryComment: serializer.fromJson<String?>(json['salaryComment']),
     );
   }
   @override
@@ -1510,44 +1179,52 @@ class SalaryEntry extends DataClass implements Insertable<SalaryEntry> {
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
       'yearMonth': serializer.toJson<int>(yearMonth),
+      'comment': serializer.toJson<String>(comment),
+      'updatedAt': serializer.toJson<int?>(updatedAt),
+      'syncedAt': serializer.toJson<int?>(syncedAt),
       'netSalary': serializer.toJson<double?>(netSalary),
       'grossSalary': serializer.toJson<double?>(grossSalary),
       'bonusNet': serializer.toJson<double?>(bonusNet),
       'position': serializer.toJson<String?>(position),
       'company': serializer.toJson<String?>(company),
-      'comment': serializer.toJson<String?>(comment),
-      'updatedAt': serializer.toJson<int?>(updatedAt),
-      'syncedAt': serializer.toJson<int?>(syncedAt),
+      'salaryComment': serializer.toJson<String?>(salaryComment),
     };
   }
 
-  SalaryEntry copyWith({
+  CommentEntry copyWith({
     String? id,
     int? yearMonth,
+    String? comment,
+    Value<int?> updatedAt = const Value.absent(),
+    Value<int?> syncedAt = const Value.absent(),
     Value<double?> netSalary = const Value.absent(),
     Value<double?> grossSalary = const Value.absent(),
     Value<double?> bonusNet = const Value.absent(),
     Value<String?> position = const Value.absent(),
     Value<String?> company = const Value.absent(),
-    Value<String?> comment = const Value.absent(),
-    Value<int?> updatedAt = const Value.absent(),
-    Value<int?> syncedAt = const Value.absent(),
-  }) => SalaryEntry(
+    Value<String?> salaryComment = const Value.absent(),
+  }) => CommentEntry(
     id: id ?? this.id,
     yearMonth: yearMonth ?? this.yearMonth,
+    comment: comment ?? this.comment,
+    updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
+    syncedAt: syncedAt.present ? syncedAt.value : this.syncedAt,
     netSalary: netSalary.present ? netSalary.value : this.netSalary,
     grossSalary: grossSalary.present ? grossSalary.value : this.grossSalary,
     bonusNet: bonusNet.present ? bonusNet.value : this.bonusNet,
     position: position.present ? position.value : this.position,
     company: company.present ? company.value : this.company,
-    comment: comment.present ? comment.value : this.comment,
-    updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
-    syncedAt: syncedAt.present ? syncedAt.value : this.syncedAt,
+    salaryComment: salaryComment.present
+        ? salaryComment.value
+        : this.salaryComment,
   );
-  SalaryEntry copyWithCompanion(SalaryEntriesCompanion data) {
-    return SalaryEntry(
+  CommentEntry copyWithCompanion(CommentEntriesCompanion data) {
+    return CommentEntry(
       id: data.id.present ? data.id.value : this.id,
       yearMonth: data.yearMonth.present ? data.yearMonth.value : this.yearMonth,
+      comment: data.comment.present ? data.comment.value : this.comment,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      syncedAt: data.syncedAt.present ? data.syncedAt.value : this.syncedAt,
       netSalary: data.netSalary.present ? data.netSalary.value : this.netSalary,
       grossSalary: data.grossSalary.present
           ? data.grossSalary.value
@@ -1555,25 +1232,26 @@ class SalaryEntry extends DataClass implements Insertable<SalaryEntry> {
       bonusNet: data.bonusNet.present ? data.bonusNet.value : this.bonusNet,
       position: data.position.present ? data.position.value : this.position,
       company: data.company.present ? data.company.value : this.company,
-      comment: data.comment.present ? data.comment.value : this.comment,
-      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
-      syncedAt: data.syncedAt.present ? data.syncedAt.value : this.syncedAt,
+      salaryComment: data.salaryComment.present
+          ? data.salaryComment.value
+          : this.salaryComment,
     );
   }
 
   @override
   String toString() {
-    return (StringBuffer('SalaryEntry(')
+    return (StringBuffer('CommentEntry(')
           ..write('id: $id, ')
           ..write('yearMonth: $yearMonth, ')
+          ..write('comment: $comment, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('syncedAt: $syncedAt, ')
           ..write('netSalary: $netSalary, ')
           ..write('grossSalary: $grossSalary, ')
           ..write('bonusNet: $bonusNet, ')
           ..write('position: $position, ')
           ..write('company: $company, ')
-          ..write('comment: $comment, ')
-          ..write('updatedAt: $updatedAt, ')
-          ..write('syncedAt: $syncedAt')
+          ..write('salaryComment: $salaryComment')
           ..write(')'))
         .toString();
   }
@@ -1582,122 +1260,131 @@ class SalaryEntry extends DataClass implements Insertable<SalaryEntry> {
   int get hashCode => Object.hash(
     id,
     yearMonth,
+    comment,
+    updatedAt,
+    syncedAt,
     netSalary,
     grossSalary,
     bonusNet,
     position,
     company,
-    comment,
-    updatedAt,
-    syncedAt,
+    salaryComment,
   );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is SalaryEntry &&
+      (other is CommentEntry &&
           other.id == this.id &&
           other.yearMonth == this.yearMonth &&
+          other.comment == this.comment &&
+          other.updatedAt == this.updatedAt &&
+          other.syncedAt == this.syncedAt &&
           other.netSalary == this.netSalary &&
           other.grossSalary == this.grossSalary &&
           other.bonusNet == this.bonusNet &&
           other.position == this.position &&
           other.company == this.company &&
-          other.comment == this.comment &&
-          other.updatedAt == this.updatedAt &&
-          other.syncedAt == this.syncedAt);
+          other.salaryComment == this.salaryComment);
 }
 
-class SalaryEntriesCompanion extends UpdateCompanion<SalaryEntry> {
+class CommentEntriesCompanion extends UpdateCompanion<CommentEntry> {
   final Value<String> id;
   final Value<int> yearMonth;
+  final Value<String> comment;
+  final Value<int?> updatedAt;
+  final Value<int?> syncedAt;
   final Value<double?> netSalary;
   final Value<double?> grossSalary;
   final Value<double?> bonusNet;
   final Value<String?> position;
   final Value<String?> company;
-  final Value<String?> comment;
-  final Value<int?> updatedAt;
-  final Value<int?> syncedAt;
+  final Value<String?> salaryComment;
   final Value<int> rowid;
-  const SalaryEntriesCompanion({
+  const CommentEntriesCompanion({
     this.id = const Value.absent(),
     this.yearMonth = const Value.absent(),
+    this.comment = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.syncedAt = const Value.absent(),
     this.netSalary = const Value.absent(),
     this.grossSalary = const Value.absent(),
     this.bonusNet = const Value.absent(),
     this.position = const Value.absent(),
     this.company = const Value.absent(),
-    this.comment = const Value.absent(),
-    this.updatedAt = const Value.absent(),
-    this.syncedAt = const Value.absent(),
+    this.salaryComment = const Value.absent(),
     this.rowid = const Value.absent(),
   });
-  SalaryEntriesCompanion.insert({
+  CommentEntriesCompanion.insert({
     required String id,
     required int yearMonth,
+    this.comment = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.syncedAt = const Value.absent(),
     this.netSalary = const Value.absent(),
     this.grossSalary = const Value.absent(),
     this.bonusNet = const Value.absent(),
     this.position = const Value.absent(),
     this.company = const Value.absent(),
-    this.comment = const Value.absent(),
-    this.updatedAt = const Value.absent(),
-    this.syncedAt = const Value.absent(),
+    this.salaryComment = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        yearMonth = Value(yearMonth);
-  static Insertable<SalaryEntry> custom({
+  static Insertable<CommentEntry> custom({
     Expression<String>? id,
     Expression<int>? yearMonth,
+    Expression<String>? comment,
+    Expression<int>? updatedAt,
+    Expression<int>? syncedAt,
     Expression<double>? netSalary,
     Expression<double>? grossSalary,
     Expression<double>? bonusNet,
     Expression<String>? position,
     Expression<String>? company,
-    Expression<String>? comment,
-    Expression<int>? updatedAt,
-    Expression<int>? syncedAt,
+    Expression<String>? salaryComment,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (yearMonth != null) 'year_month': yearMonth,
+      if (comment != null) 'comment': comment,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (syncedAt != null) 'synced_at': syncedAt,
       if (netSalary != null) 'net_salary': netSalary,
       if (grossSalary != null) 'gross_salary': grossSalary,
       if (bonusNet != null) 'bonus_net': bonusNet,
       if (position != null) 'position': position,
       if (company != null) 'company': company,
-      if (comment != null) 'comment': comment,
-      if (updatedAt != null) 'updated_at': updatedAt,
-      if (syncedAt != null) 'synced_at': syncedAt,
+      if (salaryComment != null) 'salary_comment': salaryComment,
       if (rowid != null) 'rowid': rowid,
     });
   }
 
-  SalaryEntriesCompanion copyWith({
+  CommentEntriesCompanion copyWith({
     Value<String>? id,
     Value<int>? yearMonth,
+    Value<String>? comment,
+    Value<int?>? updatedAt,
+    Value<int?>? syncedAt,
     Value<double?>? netSalary,
     Value<double?>? grossSalary,
     Value<double?>? bonusNet,
     Value<String?>? position,
     Value<String?>? company,
-    Value<String?>? comment,
-    Value<int?>? updatedAt,
-    Value<int?>? syncedAt,
+    Value<String?>? salaryComment,
     Value<int>? rowid,
   }) {
-    return SalaryEntriesCompanion(
+    return CommentEntriesCompanion(
       id: id ?? this.id,
       yearMonth: yearMonth ?? this.yearMonth,
+      comment: comment ?? this.comment,
+      updatedAt: updatedAt ?? this.updatedAt,
+      syncedAt: syncedAt ?? this.syncedAt,
       netSalary: netSalary ?? this.netSalary,
       grossSalary: grossSalary ?? this.grossSalary,
       bonusNet: bonusNet ?? this.bonusNet,
       position: position ?? this.position,
       company: company ?? this.company,
-      comment: comment ?? this.comment,
-      updatedAt: updatedAt ?? this.updatedAt,
-      syncedAt: syncedAt ?? this.syncedAt,
+      salaryComment: salaryComment ?? this.salaryComment,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1710,6 +1397,15 @@ class SalaryEntriesCompanion extends UpdateCompanion<SalaryEntry> {
     }
     if (yearMonth.present) {
       map['year_month'] = Variable<int>(yearMonth.value);
+    }
+    if (comment.present) {
+      map['comment'] = Variable<String>(comment.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (syncedAt.present) {
+      map['synced_at'] = Variable<int>(syncedAt.value);
     }
     if (netSalary.present) {
       map['net_salary'] = Variable<double>(netSalary.value);
@@ -1726,14 +1422,8 @@ class SalaryEntriesCompanion extends UpdateCompanion<SalaryEntry> {
     if (company.present) {
       map['company'] = Variable<String>(company.value);
     }
-    if (comment.present) {
-      map['comment'] = Variable<String>(comment.value);
-    }
-    if (updatedAt.present) {
-      map['updated_at'] = Variable<int>(updatedAt.value);
-    }
-    if (syncedAt.present) {
-      map['synced_at'] = Variable<int>(syncedAt.value);
+    if (salaryComment.present) {
+      map['salary_comment'] = Variable<String>(salaryComment.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -1743,17 +1433,18 @@ class SalaryEntriesCompanion extends UpdateCompanion<SalaryEntry> {
 
   @override
   String toString() {
-    return (StringBuffer('SalaryEntriesCompanion(')
+    return (StringBuffer('CommentEntriesCompanion(')
           ..write('id: $id, ')
           ..write('yearMonth: $yearMonth, ')
+          ..write('comment: $comment, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('syncedAt: $syncedAt, ')
           ..write('netSalary: $netSalary, ')
           ..write('grossSalary: $grossSalary, ')
           ..write('bonusNet: $bonusNet, ')
           ..write('position: $position, ')
           ..write('company: $company, ')
-          ..write('comment: $comment, ')
-          ..write('updatedAt: $updatedAt, ')
-          ..write('syncedAt: $syncedAt, ')
+          ..write('salaryComment: $salaryComment, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -1767,7 +1458,6 @@ abstract class _$WealthtrackerDatabase extends GeneratedDatabase {
   late final $MyConfEntriesTable myConfEntries = $MyConfEntriesTable(this);
   late final $AssetEntriesTable assetEntries = $AssetEntriesTable(this);
   late final $CommentEntriesTable commentEntries = $CommentEntriesTable(this);
-  late final $SalaryEntriesTable salaryEntries = $SalaryEntriesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1776,7 +1466,6 @@ abstract class _$WealthtrackerDatabase extends GeneratedDatabase {
     myConfEntries,
     assetEntries,
     commentEntries,
-    salaryEntries,
   ];
 }
 
@@ -2224,6 +1913,12 @@ typedef $$CommentEntriesTableCreateCompanionBuilder =
       Value<String> comment,
       Value<int?> updatedAt,
       Value<int?> syncedAt,
+      Value<double?> netSalary,
+      Value<double?> grossSalary,
+      Value<double?> bonusNet,
+      Value<String?> position,
+      Value<String?> company,
+      Value<String?> salaryComment,
       Value<int> rowid,
     });
 typedef $$CommentEntriesTableUpdateCompanionBuilder =
@@ -2233,6 +1928,12 @@ typedef $$CommentEntriesTableUpdateCompanionBuilder =
       Value<String> comment,
       Value<int?> updatedAt,
       Value<int?> syncedAt,
+      Value<double?> netSalary,
+      Value<double?> grossSalary,
+      Value<double?> bonusNet,
+      Value<String?> position,
+      Value<String?> company,
+      Value<String?> salaryComment,
       Value<int> rowid,
     });
 
@@ -2267,6 +1968,36 @@ class $$CommentEntriesTableFilterComposer
 
   ColumnFilters<int> get syncedAt => $composableBuilder(
     column: $table.syncedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get netSalary => $composableBuilder(
+    column: $table.netSalary,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get grossSalary => $composableBuilder(
+    column: $table.grossSalary,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get bonusNet => $composableBuilder(
+    column: $table.bonusNet,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get company => $composableBuilder(
+    column: $table.company,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get salaryComment => $composableBuilder(
+    column: $table.salaryComment,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -2304,6 +2035,36 @@ class $$CommentEntriesTableOrderingComposer
     column: $table.syncedAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<double> get netSalary => $composableBuilder(
+    column: $table.netSalary,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get grossSalary => $composableBuilder(
+    column: $table.grossSalary,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get bonusNet => $composableBuilder(
+    column: $table.bonusNet,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get company => $composableBuilder(
+    column: $table.company,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get salaryComment => $composableBuilder(
+    column: $table.salaryComment,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$CommentEntriesTableAnnotationComposer
@@ -2329,6 +2090,28 @@ class $$CommentEntriesTableAnnotationComposer
 
   GeneratedColumn<int> get syncedAt =>
       $composableBuilder(column: $table.syncedAt, builder: (column) => column);
+
+  GeneratedColumn<double> get netSalary =>
+      $composableBuilder(column: $table.netSalary, builder: (column) => column);
+
+  GeneratedColumn<double> get grossSalary => $composableBuilder(
+    column: $table.grossSalary,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get bonusNet =>
+      $composableBuilder(column: $table.bonusNet, builder: (column) => column);
+
+  GeneratedColumn<String> get position =>
+      $composableBuilder(column: $table.position, builder: (column) => column);
+
+  GeneratedColumn<String> get company =>
+      $composableBuilder(column: $table.company, builder: (column) => column);
+
+  GeneratedColumn<String> get salaryComment => $composableBuilder(
+    column: $table.salaryComment,
+    builder: (column) => column,
+  );
 }
 
 class $$CommentEntriesTableTableManager
@@ -2373,6 +2156,12 @@ class $$CommentEntriesTableTableManager
                 Value<String> comment = const Value.absent(),
                 Value<int?> updatedAt = const Value.absent(),
                 Value<int?> syncedAt = const Value.absent(),
+                Value<double?> netSalary = const Value.absent(),
+                Value<double?> grossSalary = const Value.absent(),
+                Value<double?> bonusNet = const Value.absent(),
+                Value<String?> position = const Value.absent(),
+                Value<String?> company = const Value.absent(),
+                Value<String?> salaryComment = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => CommentEntriesCompanion(
                 id: id,
@@ -2380,6 +2169,12 @@ class $$CommentEntriesTableTableManager
                 comment: comment,
                 updatedAt: updatedAt,
                 syncedAt: syncedAt,
+                netSalary: netSalary,
+                grossSalary: grossSalary,
+                bonusNet: bonusNet,
+                position: position,
+                company: company,
+                salaryComment: salaryComment,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -2389,6 +2184,12 @@ class $$CommentEntriesTableTableManager
                 Value<String> comment = const Value.absent(),
                 Value<int?> updatedAt = const Value.absent(),
                 Value<int?> syncedAt = const Value.absent(),
+                Value<double?> netSalary = const Value.absent(),
+                Value<double?> grossSalary = const Value.absent(),
+                Value<double?> bonusNet = const Value.absent(),
+                Value<String?> position = const Value.absent(),
+                Value<String?> company = const Value.absent(),
+                Value<String?> salaryComment = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => CommentEntriesCompanion.insert(
                 id: id,
@@ -2396,6 +2197,12 @@ class $$CommentEntriesTableTableManager
                 comment: comment,
                 updatedAt: updatedAt,
                 syncedAt: syncedAt,
+                netSalary: netSalary,
+                grossSalary: grossSalary,
+                bonusNet: bonusNet,
+                position: position,
+                company: company,
+                salaryComment: salaryComment,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -2427,313 +2234,6 @@ typedef $$CommentEntriesTableProcessedTableManager =
       CommentEntry,
       PrefetchHooks Function()
     >;
-typedef $$SalaryEntriesTableCreateCompanionBuilder =
-    SalaryEntriesCompanion Function({
-      required String id,
-      required int yearMonth,
-      Value<double?> netSalary,
-      Value<double?> grossSalary,
-      Value<double?> bonusNet,
-      Value<String?> position,
-      Value<String?> company,
-      Value<String?> comment,
-      Value<int?> updatedAt,
-      Value<int?> syncedAt,
-      Value<int> rowid,
-    });
-typedef $$SalaryEntriesTableUpdateCompanionBuilder =
-    SalaryEntriesCompanion Function({
-      Value<String> id,
-      Value<int> yearMonth,
-      Value<double?> netSalary,
-      Value<double?> grossSalary,
-      Value<double?> bonusNet,
-      Value<String?> position,
-      Value<String?> company,
-      Value<String?> comment,
-      Value<int?> updatedAt,
-      Value<int?> syncedAt,
-      Value<int> rowid,
-    });
-
-class $$SalaryEntriesTableFilterComposer
-    extends Composer<_$WealthtrackerDatabase, $SalaryEntriesTable> {
-  $$SalaryEntriesTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<String> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get yearMonth => $composableBuilder(
-    column: $table.yearMonth,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<double> get netSalary => $composableBuilder(
-    column: $table.netSalary,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<double> get grossSalary => $composableBuilder(
-    column: $table.grossSalary,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<double> get bonusNet => $composableBuilder(
-    column: $table.bonusNet,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get position => $composableBuilder(
-    column: $table.position,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get company => $composableBuilder(
-    column: $table.company,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get comment => $composableBuilder(
-    column: $table.comment,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get syncedAt => $composableBuilder(
-    column: $table.syncedAt,
-    builder: (column) => ColumnFilters(column),
-  );
-}
-
-class $$SalaryEntriesTableOrderingComposer
-    extends Composer<_$WealthtrackerDatabase, $SalaryEntriesTable> {
-  $$SalaryEntriesTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<String> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get yearMonth => $composableBuilder(
-    column: $table.yearMonth,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<double> get netSalary => $composableBuilder(
-    column: $table.netSalary,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<double> get grossSalary => $composableBuilder(
-    column: $table.grossSalary,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<double> get bonusNet => $composableBuilder(
-    column: $table.bonusNet,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get position => $composableBuilder(
-    column: $table.position,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get company => $composableBuilder(
-    column: $table.company,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get comment => $composableBuilder(
-    column: $table.comment,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get syncedAt => $composableBuilder(
-    column: $table.syncedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-}
-
-class $$SalaryEntriesTableAnnotationComposer
-    extends Composer<_$WealthtrackerDatabase, $SalaryEntriesTable> {
-  $$SalaryEntriesTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<String> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<int> get yearMonth =>
-      $composableBuilder(column: $table.yearMonth, builder: (column) => column);
-
-  GeneratedColumn<double> get netSalary =>
-      $composableBuilder(column: $table.netSalary, builder: (column) => column);
-
-  GeneratedColumn<double> get grossSalary => $composableBuilder(
-    column: $table.grossSalary,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<double> get bonusNet =>
-      $composableBuilder(column: $table.bonusNet, builder: (column) => column);
-
-  GeneratedColumn<String> get position =>
-      $composableBuilder(column: $table.position, builder: (column) => column);
-
-  GeneratedColumn<String> get company =>
-      $composableBuilder(column: $table.company, builder: (column) => column);
-
-  GeneratedColumn<String> get comment =>
-      $composableBuilder(column: $table.comment, builder: (column) => column);
-
-  GeneratedColumn<int> get updatedAt =>
-      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
-
-  GeneratedColumn<int> get syncedAt =>
-      $composableBuilder(column: $table.syncedAt, builder: (column) => column);
-}
-
-class $$SalaryEntriesTableTableManager
-    extends
-        RootTableManager<
-          _$WealthtrackerDatabase,
-          $SalaryEntriesTable,
-          SalaryEntry,
-          $$SalaryEntriesTableFilterComposer,
-          $$SalaryEntriesTableOrderingComposer,
-          $$SalaryEntriesTableAnnotationComposer,
-          $$SalaryEntriesTableCreateCompanionBuilder,
-          $$SalaryEntriesTableUpdateCompanionBuilder,
-          (
-            SalaryEntry,
-            BaseReferences<
-              _$WealthtrackerDatabase,
-              $SalaryEntriesTable,
-              SalaryEntry
-            >,
-          ),
-          SalaryEntry,
-          PrefetchHooks Function()
-        > {
-  $$SalaryEntriesTableTableManager(
-    _$WealthtrackerDatabase db,
-    $SalaryEntriesTable table,
-  ) : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$SalaryEntriesTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$SalaryEntriesTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$SalaryEntriesTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<String> id = const Value.absent(),
-                Value<int> yearMonth = const Value.absent(),
-                Value<double?> netSalary = const Value.absent(),
-                Value<double?> grossSalary = const Value.absent(),
-                Value<double?> bonusNet = const Value.absent(),
-                Value<String?> position = const Value.absent(),
-                Value<String?> company = const Value.absent(),
-                Value<String?> comment = const Value.absent(),
-                Value<int?> updatedAt = const Value.absent(),
-                Value<int?> syncedAt = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
-              }) => SalaryEntriesCompanion(
-                id: id,
-                yearMonth: yearMonth,
-                netSalary: netSalary,
-                grossSalary: grossSalary,
-                bonusNet: bonusNet,
-                position: position,
-                company: company,
-                comment: comment,
-                updatedAt: updatedAt,
-                syncedAt: syncedAt,
-                rowid: rowid,
-              ),
-          createCompanionCallback:
-              ({
-                required String id,
-                required int yearMonth,
-                Value<double?> netSalary = const Value.absent(),
-                Value<double?> grossSalary = const Value.absent(),
-                Value<double?> bonusNet = const Value.absent(),
-                Value<String?> position = const Value.absent(),
-                Value<String?> company = const Value.absent(),
-                Value<String?> comment = const Value.absent(),
-                Value<int?> updatedAt = const Value.absent(),
-                Value<int?> syncedAt = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
-              }) => SalaryEntriesCompanion.insert(
-                id: id,
-                yearMonth: yearMonth,
-                netSalary: netSalary,
-                grossSalary: grossSalary,
-                bonusNet: bonusNet,
-                position: position,
-                company: company,
-                comment: comment,
-                updatedAt: updatedAt,
-                syncedAt: syncedAt,
-                rowid: rowid,
-              ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
-              .toList(),
-          prefetchHooksCallback: null,
-        ),
-      );
-}
-
-typedef $$SalaryEntriesTableProcessedTableManager =
-    ProcessedTableManager<
-      _$WealthtrackerDatabase,
-      $SalaryEntriesTable,
-      SalaryEntry,
-      $$SalaryEntriesTableFilterComposer,
-      $$SalaryEntriesTableOrderingComposer,
-      $$SalaryEntriesTableAnnotationComposer,
-      $$SalaryEntriesTableCreateCompanionBuilder,
-      $$SalaryEntriesTableUpdateCompanionBuilder,
-      (
-        SalaryEntry,
-        BaseReferences<
-          _$WealthtrackerDatabase,
-          $SalaryEntriesTable,
-          SalaryEntry
-        >,
-      ),
-      SalaryEntry,
-      PrefetchHooks Function()
-    >;
 
 class $WealthtrackerDatabaseManager {
   final _$WealthtrackerDatabase _db;
@@ -2744,6 +2244,4 @@ class $WealthtrackerDatabaseManager {
       $$AssetEntriesTableTableManager(_db, _db.assetEntries);
   $$CommentEntriesTableTableManager get commentEntries =>
       $$CommentEntriesTableTableManager(_db, _db.commentEntries);
-  $$SalaryEntriesTableTableManager get salaryEntries =>
-      $$SalaryEntriesTableTableManager(_db, _db.salaryEntries);
 }

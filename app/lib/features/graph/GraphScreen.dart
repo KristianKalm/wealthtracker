@@ -6,7 +6,7 @@ import 'package:kryptic_core/kryptic_core.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 
 import '../../core/models/AssetGroup.dart';
-import '../../core/models/Salary.dart';
+import '../../core/models/Comment.dart';
 import '../../l10n/l10n.dart';
 import '../Providers.dart';
 import '../asset/AssetListScreen.dart';
@@ -43,7 +43,7 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
   List<AssetGroup> _allGroups = [];
 
   // Salary chart state
-  List<Salary> _salaryData = [];
+  List<Comment> _salaryData = [];
   static const int _birthYear = 1993; // Update to your actual birth year
 
   // Pie chart state
@@ -215,10 +215,11 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
 
   void _loadSalaryData() async {
     final repo = await ref.read(wealthtrackerRepositoryProvider.future);
-    final salaries = await repo.salaries.loadAll();
-    salaries.sort((a, b) => a.yearMonth.compareTo(b.yearMonth));
+    final comments = await repo.comments.loadAll();
+    final salaryComments = comments.where((c) => c.hasSalaryData).toList();
+    salaryComments.sort((a, b) => a.yearMonth.compareTo(b.yearMonth));
     if (mounted) {
-      setState(() => _salaryData = salaries);
+      setState(() => _salaryData = salaryComments);
     }
   }
 
@@ -424,7 +425,7 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
   Widget _buildSalaryTable(KrypticColors colors) {
     if (_salaryData.isEmpty) return const SizedBox.shrink();
 
-    final byYear = <int, List<Salary>>{};
+    final byYear = <int, List<Comment>>{};
     for (final s in _salaryData) {
       byYear.putIfAbsent(s.yearMonth ~/ 100, () => []).add(s);
     }

@@ -52,32 +52,41 @@ Future<(int, int)> _restoreAssetFile(
   }
 }
 
+
 Future<List<String>> restoreWealthtrackerData(WidgetRef ref, List<int> zipBytes) async {
   final wealthtrackerRepository = await ref.read(wealthtrackerRepositoryProvider.future);
   final archive = ZipDecoder().decodeBytes(zipBytes);
 
-  Logger.log("Restore", "Start");
+  final allFiles = archive.where((f) => f.isFile).toList();
+  Logger.log("Restore", "Start — ${allFiles.length} files in zip");
+
+  final byFolder = <String, int>{};
+  for (final f in allFiles) {
+    final folder = f.name.contains('/') ? f.name.split('/').first : '(root)';
+    byFolder[folder] = (byFolder[folder] ?? 0) + 1;
+  }
+  Logger.log("Restore", "Folders: ${byFolder.entries.map((e) => '${e.key}(${e.value})').join(', ')}");
 
   int assetsRestored = 0;
   int monthsAdded = 0;
   int commentsRestored = 0;
   int myConfRestored = 0;
 
-  for (final file in archive) {
-    if (file.isFile) {
-      if (file.name.startsWith("asset/")) {
-        final (entities, months) = await _restoreAssetFile(wealthtrackerRepository, file);
-        assetsRestored += entities;
-        monthsAdded += months;
-      } else if (file.name.startsWith("comment/")) {
-        commentsRestored += await _restoreEntityFile(wealthtrackerRepository, commentConfig, file);
-      } else if (file.name.startsWith("myconf/")) {
-        myConfRestored += await _restoreEntityFile(wealthtrackerRepository, myConfConfig, file);
-      }
+  for (final file in allFiles) {
+    if (file.name.startsWith("asset/")) {
+      final (entities, months) = await _restoreAssetFile(wealthtrackerRepository, file);
+      assetsRestored += entities;
+      monthsAdded += months;
+    } else if (file.name.startsWith("comment/")) {
+      commentsRestored += await _restoreEntityFile(wealthtrackerRepository, commentConfig, file);
+    } else if (file.name.startsWith("myconf/")) {
+      myConfRestored += await _restoreEntityFile(wealthtrackerRepository, myConfConfig, file);
+    } else {
+      Logger.log("Restore", "Skipped unknown file: ${file.name}");
     }
   }
 
-  Logger.log("Restore", "Done — assets: $assetsRestored, months added: $monthsAdded, comments: $commentsRestored, myconf: $myConfRestored");
+  Logger.log("Restore", "Done — assets: $assetsRestored (+$monthsAdded months), comments: $commentsRestored, myconf: $myConfRestored");
 
   return [];
 }

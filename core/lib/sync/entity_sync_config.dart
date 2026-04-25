@@ -7,6 +7,7 @@ class EntitySyncConfig<T, R> {
   final Future<T?> Function(R, String) loadEntity;
   final Future<List<T>> Function(R) loadUnsynced;
   final Future<void> Function(R, String) markSynced;
+  final Future<void> Function(R, String) deleteEntityById;
   final int? Function(T) getUpdatedAt;
 
   EntitySyncConfig({
@@ -18,6 +19,7 @@ class EntitySyncConfig<T, R> {
     required this.loadEntity,
     required this.loadUnsynced,
     required this.markSynced,
+    required this.deleteEntityById,
     required this.getUpdatedAt,
   });
 }

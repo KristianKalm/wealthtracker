@@ -8,8 +8,8 @@ import 'package:month_picker_dialog/month_picker_dialog.dart';
 import '../../core/db/WealthtrackerRepository.dart';
 import '../../core/models/AssetGroup.dart';
 import '../../core/models/AssetUiModel.dart';
+import '../../core/models/Comment.dart';
 import '../../core/models/MonthSummary.dart';
-import '../../core/models/Salary.dart';
 import '../../core/models/Tag.dart';
 import '../../core/sync/WealthtrackerSync.dart' as WealthtrackerSync;
 import '../../core/util/MoneyFormat.dart';
@@ -45,8 +45,8 @@ class _AssetListScreenState extends ConsumerState<AssetListScreen> {
   List<Tag> allTags = [];
   List<AssetGroup> allGroups = [];
   Set<String> selectedFilterTagIds = {};
-  Salary? _currentSalary;
-  Salary? _previousSalary;
+  Comment? _currentComment;
+  Comment? _previousComment;
 
   @override
   void initState() {
@@ -175,14 +175,14 @@ class _AssetListScreenState extends ConsumerState<AssetListScreen> {
     final prevDate = DateTime(date.year, date.month - 1);
     final prevYearMonth = prevDate.year * 100 + prevDate.month;
     final month = await dbToUiMonth(repo);
-    final salary = await repo.salaries.loadByMonth(yearMonth);
-    final prevSalary = await repo.salaries.loadByMonth(prevYearMonth);
+    final currentComment = await repo.comments.loadByMonth(yearMonth);
+    final prevComment = await repo.comments.loadByMonth(prevYearMonth);
     final myConf = await repo.conf.load();
     if (mounted) {
       setState(() {
         uiMonth = month;
-        _currentSalary = salary;
-        _previousSalary = prevSalary;
+        _currentComment = currentComment;
+        _previousComment = prevComment;
         allTags = myConf.tags;
         allGroups = myConf.assetGroups;
       });
@@ -190,23 +190,24 @@ class _AssetListScreenState extends ConsumerState<AssetListScreen> {
   }
 
   Future<void> _copyPreviousSalary() async {
-    final prev = _previousSalary;
-    if (prev == null) return;
+    final prev = _previousComment;
+    if (prev == null || !prev.hasSalaryData) return;
     final repo = await ref.read(wealthtrackerRepositoryProvider.future);
     final yearMonth = date.year * 100 + date.month;
-    final existing = await repo.salaries.loadByMonth(yearMonth);
-    final newSalary = Salary(
+    final existing = await repo.comments.loadByMonth(yearMonth);
+    final updated = Comment(
       id: existing?.id ?? WealthtrackerRepository.generateId(),
       yearMonth: yearMonth,
+      comment: existing?.comment ?? '',
       netSalary: prev.netSalary,
       grossSalary: prev.grossSalary,
       company: prev.company,
       bonusNet: prev.bonusNet,
       position: prev.position,
-      comment: prev.comment,
+      salaryComment: prev.salaryComment,
     );
-    await repo.salaries.save(newSalary);
-    WealthtrackerSync.uploadSalary(ref, newSalary);
+    await repo.comments.save(updated);
+    WealthtrackerSync.uploadComment(ref, updated);
     updateAssets();
   }
 
@@ -429,15 +430,15 @@ class _AssetListScreenState extends ConsumerState<AssetListScreen> {
   Widget _salaryCard(KrypticColors colors) {
     return SalaryCard(
       colors: colors,
-      salary: _currentSalary,
-      onCopyPreviousMonth: _previousSalary != null ? _copyPreviousSalary : null,
+      salary: _currentComment,
+      onCopyPreviousMonth: _previousComment?.hasSalaryData == true ? _copyPreviousSalary : null,
       onTap: () async {
         final changed = await showDialog<bool>(
           context: context,
           builder: (_) => SalaryEditPopup(
             ref: ref,
             date: date,
-            initialSalary: _currentSalary,
+            initialSalary: _currentComment,
           ),
         );
         if (changed == true) updateAssets();
