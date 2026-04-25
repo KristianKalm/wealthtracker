@@ -9,6 +9,7 @@ import '../../core/db/WealthtrackerRepository.dart';
 import '../../core/models/AssetGroup.dart';
 import '../../core/models/AssetUiModel.dart';
 import '../../core/models/MonthSummary.dart';
+import '../../core/models/Salary.dart';
 import '../../core/models/Tag.dart';
 import '../../core/sync/WealthtrackerSync.dart' as WealthtrackerSync;
 import '../../core/util/MoneyFormat.dart';
@@ -18,6 +19,8 @@ import '../Providers.dart';
 import '../navigation/WealthtrackerBottomNav.dart';
 import 'AssetEditPopup.dart';
 import 'CommentPopup.dart';
+import 'SalaryCard.dart';
+import 'SalaryEditPopup.dart';
 
 class _AssetGroupDisplay {
   final String? groupId;
@@ -41,6 +44,8 @@ class _AssetListScreenState extends ConsumerState<AssetListScreen> {
   List<Tag> allTags = [];
   List<AssetGroup> allGroups = [];
   Set<String> selectedFilterTagIds = {};
+  Salary? _currentSalary;
+  Salary? _previousSalary;
 
   @override
   void initState() {
@@ -164,15 +169,41 @@ class _AssetListScreenState extends ConsumerState<AssetListScreen> {
 
   void updateAssets() async {
     final repo = await ref.read(wealthtrackerRepositoryProvider.future);
-    var month = await dbToUiMonth(repo);
+    final yearMonth = date.year * 100 + date.month;
+    final prevDate = DateTime(date.year, date.month - 1);
+    final prevYearMonth = prevDate.year * 100 + prevDate.month;
+    final month = await dbToUiMonth(repo);
+    final salary = await repo.salaries.loadByMonth(yearMonth);
+    final prevSalary = await repo.salaries.loadByMonth(prevYearMonth);
     final myConf = await repo.conf.load();
     if (mounted) {
       setState(() {
         uiMonth = month;
+        _currentSalary = salary;
+        _previousSalary = prevSalary;
         allTags = myConf.tags;
         allGroups = myConf.assetGroups;
       });
     }
+  }
+
+  Future<void> _copyPreviousSalary() async {
+    final prev = _previousSalary;
+    if (prev == null) return;
+    final repo = await ref.read(wealthtrackerRepositoryProvider.future);
+    final yearMonth = date.year * 100 + date.month;
+    final existing = await repo.salaries.loadByMonth(yearMonth);
+    final newSalary = Salary(
+      id: existing?.id ?? WealthtrackerRepository.generateId(),
+      yearMonth: yearMonth,
+      netSalary: prev.netSalary,
+      grossSalary: prev.grossSalary,
+      position: prev.position,
+      comment: prev.comment,
+    );
+    await repo.salaries.save(newSalary);
+    WealthtrackerSync.uploadSalary(ref, newSalary);
+    updateAssets();
   }
 
   Future<void> openDetailView(BuildContext context, AssetUiModel? item) async {
@@ -223,7 +254,7 @@ class _AssetListScreenState extends ConsumerState<AssetListScreen> {
         onTitleTap: () {
           showMonthPicker(
             context: context,
-            firstDate: DateTime(DateTime.now().year - 10),
+            firstDate: DateTime(1990),
             lastDate: DateTime(DateTime.now().year + 1, 12),
             initialDate: date,
             confirmWidget: Text(context.l10n.ok),
@@ -261,26 +292,50 @@ class _AssetListScreenState extends ConsumerState<AssetListScreen> {
         tooltip: context.l10n.addAssetTooltip,
       ),
       bottomNavigation: WealthtrackerBottomNav(context, 0),
-      centerContent: uiMonth.assets.isEmpty,
-      content: uiMonth.assets.isEmpty
-          ? KrypticEmptyView(
+      centerContent: false,
+      content: Column(
+        children: [
+          if (uiMonth.assets.isEmpty) ...[
+            _salaryCard(colors),
+            const SizedBox(height: 16),
+            KrypticEmptyView(
               isEmpty: true,
               icon: Icons.account_balance_outlined,
               title: context.l10n.noAssets,
               subtitle: context.l10n.noAssetsSubtitle,
-            )
-          : Column(
-              children: [
-                _summaryCard(colors, formattedDate),
-                if (allTags.isNotEmpty) ...[
-                  const SizedBox(height: 8),
-                  _tagFilterBar(),
-                ],
-                const SizedBox(height: 8),
-                ..._buildGroupedList(colors),
-                const SizedBox(height: 100),
-              ],
             ),
+          ] else ...[
+            LayoutBuilder(
+              builder: (context, constraints) {
+                if (constraints.maxWidth >= 500) {
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(child: _summaryCard(colors, formattedDate)),
+                      const SizedBox(width: 8),
+                      Expanded(child: _salaryCard(colors)),
+                    ],
+                  );
+                }
+                return Column(
+                  children: [
+                    _summaryCard(colors, formattedDate),
+                    const SizedBox(height: 8),
+                    _salaryCard(colors),
+                  ],
+                );
+              },
+            ),
+            if (allTags.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              _tagFilterBar(),
+            ],
+            const SizedBox(height: 8),
+            ..._buildGroupedList(colors),
+            const SizedBox(height: 100),
+          ],
+        ],
+      ),
     );
   }
 
@@ -364,6 +419,25 @@ class _AssetListScreenState extends ConsumerState<AssetListScreen> {
           );
         }).toList(),
       ),
+    );
+  }
+
+  Widget _salaryCard(KrypticColors colors) {
+    return SalaryCard(
+      colors: colors,
+      salary: _currentSalary,
+      onCopyPreviousMonth: _previousSalary != null ? _copyPreviousSalary : null,
+      onTap: () async {
+        final changed = await showDialog<bool>(
+          context: context,
+          builder: (_) => SalaryEditPopup(
+            ref: ref,
+            date: date,
+            initialSalary: _currentSalary,
+          ),
+        );
+        if (changed == true) updateAssets();
+      },
     );
   }
 

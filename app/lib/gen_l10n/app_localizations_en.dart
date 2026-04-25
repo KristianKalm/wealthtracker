@@ -572,6 +572,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addComment => 'Add comment';
 
   @override
+  String get birthday => 'Birthday';
+
+  @override
   String get addTag => 'Add Tag';
 
   @override
@@ -716,6 +719,32 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String autofillMonthsApplied(int count) {
     return '$count months autofilled';
+  }
+
+  @override
+  String get salary => 'Salary';
+
+  @override
+  String get copyPreviousMonth => 'Copy previous month';
+
+  @override
+  String get netSalary => 'Net salary';
+
+  @override
+  String get bonusNet => 'Bonus (net)';
+
+  @override
+  String get grossSalary => 'Gross salary';
+
+  @override
+  String get position => 'Position';
+
+  @override
+  String get addSalary => 'Add salary';
+
+  @override
+  String salaryFor(String date) {
+    return 'Salary for $date';
   }
 
   @override

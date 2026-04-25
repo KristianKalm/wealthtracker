@@ -8,10 +8,12 @@ import 'drift/database.dart';
 import 'AssetRepository.dart';
 import 'CommentRepository.dart';
 import 'ConfRepository.dart';
+import 'SalaryRepository.dart';
 
 const TABLE_ASSET = "asset";
 const TABLE_COMMENT = "comment";
 const TABLE_CONF = "conf";
+const TABLE_SALARY = "salary";
 
 
 class WealthtrackerRepository {
@@ -19,12 +21,14 @@ class WealthtrackerRepository {
   final AssetRepository assets;
   final CommentRepository comments;
   final ConfRepository conf;
+  final SalaryRepository salaries;
 
   WealthtrackerRepository(WealthtrackerDatabase db)
       : _db = db,
         assets = AssetRepository(db),
         comments = CommentRepository(db),
-        conf = ConfRepository(db);
+        conf = ConfRepository(db),
+        salaries = SalaryRepository(db);
 
   static String generateId() {
     const chars =
@@ -49,6 +53,7 @@ class WealthtrackerRepository {
     await assets.clear();
     await comments.clear();
     await conf.clear();
+    await salaries.clear();
   }
 
   Future<void> deleteDatabase() async {
@@ -67,5 +72,6 @@ class WealthtrackerRepository {
     await assets.stampUnstamped();
     await comments.stampUnstamped();
     await conf.stampUnstamped();
+    await salaries.stampUnstamped();
   }
 }

@@ -573,6 +573,9 @@ class AppLocalizationsEt extends AppLocalizations {
   String get addComment => 'Lisa kommentaar';
 
   @override
+  String get birthday => 'Sünnipäev';
+
+  @override
   String get addTag => 'Lisa silt';
 
   @override
@@ -716,6 +719,32 @@ class AppLocalizationsEt extends AppLocalizations {
   @override
   String autofillMonthsApplied(int count) {
     return '$count kuud täidetud';
+  }
+
+  @override
+  String get salary => 'Palk';
+
+  @override
+  String get copyPreviousMonth => 'Kopeeri eelmine kuu';
+
+  @override
+  String get netSalary => 'Netopalk';
+
+  @override
+  String get bonusNet => 'Boonus (neto)';
+
+  @override
+  String get grossSalary => 'Brutopalk';
+
+  @override
+  String get position => 'Ametikoht';
+
+  @override
+  String get addSalary => 'Lisa palk';
+
+  @override
+  String salaryFor(String date) {
+    return 'Palk $date';
   }
 
   @override

@@ -1106,6 +1106,12 @@ abstract class AppLocalizations {
   /// **'Add comment'**
   String get addComment;
 
+  /// No description provided for @birthday.
+  ///
+  /// In en, this message translates to:
+  /// **'Birthday'**
+  String get birthday;
+
   /// No description provided for @addTag.
   ///
   /// In en, this message translates to:
@@ -1375,6 +1381,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} months autofilled'**
   String autofillMonthsApplied(int count);
+
+  /// No description provided for @salary.
+  ///
+  /// In en, this message translates to:
+  /// **'Salary'**
+  String get salary;
+
+  /// No description provided for @copyPreviousMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy previous month'**
+  String get copyPreviousMonth;
+
+  /// No description provided for @netSalary.
+  ///
+  /// In en, this message translates to:
+  /// **'Net salary'**
+  String get netSalary;
+
+  /// No description provided for @bonusNet.
+  ///
+  /// In en, this message translates to:
+  /// **'Bonus (net)'**
+  String get bonusNet;
+
+  /// No description provided for @grossSalary.
+  ///
+  /// In en, this message translates to:
+  /// **'Gross salary'**
+  String get grossSalary;
+
+  /// No description provided for @position.
+  ///
+  /// In en, this message translates to:
+  /// **'Position'**
+  String get position;
+
+  /// No description provided for @addSalary.
+  ///
+  /// In en, this message translates to:
+  /// **'Add salary'**
+  String get addSalary;
+
+  /// Dialog title for the salary popup
+  ///
+  /// In en, this message translates to:
+  /// **'Salary for {date}'**
+  String salaryFor(String date);
 
   /// No description provided for @serverNotFound.
   ///

@@ -18,8 +18,7 @@ class GlobalNotifier extends Notifier<ThemeMode> {
   void setThemeMode(ThemeMode value) {
     state = value;
     _saveTheme(value);
-  }
-
+  } 
   Future<void> _saveTheme(ThemeMode value) async {
     var prefs = WealthtrackerPrefs();
     await prefs.set("themeMode", value.name);

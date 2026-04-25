@@ -9,15 +9,21 @@ import 'tables.dart';
 
 part 'database.g.dart';
 
-@DriftDatabase(tables: [MyConfEntries, AssetEntries, CommentEntries])
+@DriftDatabase(tables: [MyConfEntries, AssetEntries, CommentEntries, SalaryEntries])
 class WealthtrackerDatabase extends _$WealthtrackerDatabase {
   WealthtrackerDatabase(super.e);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 3;
 
   @override
-  MigrationStrategy get migration => destructiveFallback;
+  MigrationStrategy get migration => MigrationStrategy(
+    onCreate: (m) => m.createAll(),
+    onUpgrade: (m, from, to) async {
+      if (from < 2) await m.createTable(salaryEntries);
+      if (from < 3) await m.addColumn(salaryEntries, salaryEntries.bonusNet);
+    },
+  );
 
   static Future<WealthtrackerDatabase> create(String? encryptionKey) async {
     final executor = await connection.createDatabaseConnection(encryptionKey, dbName: 'wealthtracker');

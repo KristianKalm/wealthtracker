@@ -359,6 +359,8 @@
   "commentLabel": "Comment",
   "addComment": "Add comment",
 
+  "birthday": "Birthday",
+
   "addTag": "Add Tag",
   "noTagsYet": "No Tags Yet",
   "noTagsSubtitle": "Create tags to organize and categorize your assets",
@@ -436,6 +438,21 @@
     "description": "Label shown on autofill button when months have been configured",
     "placeholders": {
       "count": {"type": "int"}
+    }
+  },
+
+  "salary": "Salary",
+  "copyPreviousMonth": "Copy previous month",
+  "netSalary": "Net salary",
+  "bonusNet": "Bonus (net)",
+  "grossSalary": "Gross salary",
+  "position": "Position",
+  "addSalary": "Add salary",
+  "salaryFor": "Salary for {date}",
+  "@salaryFor": {
+    "description": "Dialog title for the salary popup",
+    "placeholders": {
+      "date": {"type": "String"}
     }
   },
 

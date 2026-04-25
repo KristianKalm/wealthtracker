@@ -36,3 +36,19 @@ class CommentEntries extends Table {
   @override
   Set<Column> get primaryKey => {id};
 }
+
+@DataClassName('SalaryEntry')
+class SalaryEntries extends Table {
+  TextColumn get id => text()();
+  IntColumn get yearMonth => integer()();
+  RealColumn get netSalary => real().nullable()();
+  RealColumn get grossSalary => real().nullable()();
+  RealColumn get bonusNet => real().nullable()();
+  TextColumn get position => text().nullable()();
+  TextColumn get comment => text().nullable()();
+  IntColumn get updatedAt => integer().nullable()();
+  IntColumn get syncedAt => integer().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}

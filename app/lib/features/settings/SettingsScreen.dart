@@ -47,6 +47,7 @@ class _SettingsScreen extends ConsumerState<SettingsScreen> {
   int _debugTapCount = 0;
   bool _legacyImportHidden = false;
   String? _appVersion;
+  DateTime? _birthday;
 
   @override
   void initState() {
@@ -59,6 +60,7 @@ class _SettingsScreen extends ConsumerState<SettingsScreen> {
     _loadUsage();
     _loadLegacyImportHidden();
     _loadAppVersion();
+    _loadBirthday();
   }
 
   Future<void> _loadAppVersion() async {
@@ -253,6 +255,33 @@ class _SettingsScreen extends ConsumerState<SettingsScreen> {
     setState(() {
       _legacyImportHidden = !_legacyImportHidden;
     });
+  }
+
+  Future<void> _loadBirthday() async {
+    final repo = await ref.read(wealthtrackerRepositoryProvider.future);
+    final myConf = await repo.conf.load();
+    if (!mounted) return;
+    final birthdayStr = myConf.customConfigs['birthday'] as String?;
+    setState(() {
+      _birthday = birthdayStr != null ? DateTime.tryParse(birthdayStr) : null;
+    });
+  }
+
+  Future<void> _pickBirthday() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _birthday ?? DateTime(1990),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    if (picked == null || !mounted) return;
+    final repo = await ref.read(wealthtrackerRepositoryProvider.future);
+    final myConf = await repo.conf.load();
+    myConf.setCustomConfig('birthday', DateFormat('yyyy-MM-dd').format(picked));
+    await repo.conf.save(myConf);
+    WealthtrackerSync.uploadMyConf(ref);
+    if (!mounted) return;
+    setState(() => _birthday = picked);
   }
 
   void updateToken() {
@@ -891,6 +920,16 @@ class _SettingsScreen extends ConsumerState<SettingsScreen> {
                     builder: (context) => const AssetGroupListScreen(),
                   ),
                 ),
+              ),
+              _SettingsItem(
+                icon: Icons.cake_outlined,
+                title: context.l10n.birthday,
+                value: _birthday != null
+                    ? DateFormat('d MMMM yyyy').format(_birthday!)
+                    : null,
+                colors: colors,
+                showChevron: true,
+                onTap: _pickBirthday,
               ),
               if (!kIsWeb && _biometricAvailable && !_pinEnabled)
                 _SettingsItem(

@@ -179,6 +179,8 @@
   "commentLabel": "Kommentaar",
   "addComment": "Lisa kommentaar",
 
+  "birthday": "Sünnipäev",
+
   "addTag": "Lisa silt",
   "noTagsYet": "Silte pole veel",
   "noTagsSubtitle": "Loo silte varade organiseerimiseks ja kategoriseerimiseks",
@@ -228,6 +230,15 @@
   "autofillInitialAmount": "Algväärtus",
   "autofillNumberOfMonths": "Kuude arv",
   "autofillMonthsApplied": "{count} kuud täidetud",
+
+  "salary": "Palk",
+  "copyPreviousMonth": "Kopeeri eelmine kuu",
+  "netSalary": "Netopalk",
+  "bonusNet": "Boonus (neto)",
+  "grossSalary": "Brutopalk",
+  "position": "Ametikoht",
+  "addSalary": "Lisa palk",
+  "salaryFor": "Palk {date}",
 
   "serverNotFound": "Ei leitud",
   "serverVersionLabel": "Versioon {version}",

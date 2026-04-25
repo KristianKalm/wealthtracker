@@ -8,6 +8,7 @@ import '../db/WealthtrackerRepository.dart';
 import '../models/Asset.dart';
 import '../models/Comment.dart';
 import '../models/MyConf.dart';
+import '../models/Salary.dart';
 import '../prefs/WealthtrackerPrefs.dart';
 
 const LAST_DOWNLOAD_TIME = "LAST_DOWNLOAD_TIME";
@@ -39,6 +40,19 @@ final commentConfig = EntitySyncConfig<Comment, WealthtrackerRepository>(
   loadEntity: (box, id) => box.comments.load(id),
   loadUnsynced: (box) => box.comments.loadUnsynced(),
   markSynced: (box, id) => box.comments.markSynced(id),
+  getUpdatedAt: (e) => e.updatedAt,
+);
+
+final salaryConfig = EntitySyncConfig<Salary, WealthtrackerRepository>(
+  boxName: TABLE_SALARY,
+  logName: "Salary",
+  fromJson: (json) => Salary.fromJson(json),
+  saveEntity: (box, entity, {bool fromSync = false}) =>
+      box.salaries.save(entity, fromSync: fromSync),
+  loadEntityList: (box) => box.salaries.loadAll(),
+  loadEntity: (box, id) => box.salaries.load(id),
+  loadUnsynced: (box) => box.salaries.loadUnsynced(),
+  markSynced: (box, id) => box.salaries.markSynced(id),
   getUpdatedAt: (e) => e.updatedAt,
 );
 
@@ -195,6 +209,7 @@ Future<void> fullDownload(WidgetRef ref) async {
   await downloadAndSaveMyConf(ref);
   await downloadAndSaveEntityList(ref, assetConfig);
   await downloadAndSaveEntityList(ref, commentConfig);
+  await downloadAndSaveEntityList(ref, salaryConfig);
 
   try {
     final wealthtrackerRepository = await ref.read(wealthtrackerRepositoryProvider.future);
@@ -212,12 +227,14 @@ Future<void> downloadFrom(WidgetRef ref, int timestamp) async {
   await downloadAndSaveMyConf(ref);
   await downloadAndSaveEntityList(ref, assetConfig, newerThan: timestamp);
   await downloadAndSaveEntityList(ref, commentConfig, newerThan: timestamp);
+  await downloadAndSaveEntityList(ref, salaryConfig, newerThan: timestamp);
 }
 
 Future<void> fullUpload(WidgetRef ref) async {
   await uploadMyConf(ref);
   await uploadEntityList(ref, assetConfig);
   await uploadEntityList(ref, commentConfig);
+  await uploadEntityList(ref, salaryConfig);
 }
 
 // Upload unsynced entities (where syncedAt is null or updatedAt > syncedAt)
@@ -300,6 +317,7 @@ Future<void> uploadUnsynced(WidgetRef ref) async {
   await uploadUnsyncedMyConf(ref);
   await uploadUnsyncedEntityList(ref, assetConfig);
   await uploadUnsyncedEntityList(ref, commentConfig);
+  await uploadUnsyncedEntityList(ref, salaryConfig);
 }
 
 // Convenience wrappers for specific entity types
@@ -309,6 +327,9 @@ Future<void> uploadAsset(WidgetRef ref, Asset item) =>
 
 Future<void> uploadComment(WidgetRef ref, Comment item) =>
     uploadEntity(ref, commentConfig, item.id);
+
+Future<void> uploadSalary(WidgetRef ref, Salary item) =>
+    uploadEntity(ref, salaryConfig, item.id);
 
 // MyConf sync - single object (not a list)
 Future<void> downloadAndSaveMyConf(WidgetRef ref) async {
