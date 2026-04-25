@@ -32,7 +32,8 @@ class _AssetGroupDisplay {
 }
 
 class AssetListScreen extends ConsumerStatefulWidget {
-  const AssetListScreen({super.key});
+  final DateTime? initialDate;
+  const AssetListScreen({super.key, this.initialDate});
 
   @override
   ConsumerState<AssetListScreen> createState() => _AssetListScreenState();
@@ -40,7 +41,7 @@ class AssetListScreen extends ConsumerStatefulWidget {
 
 class _AssetListScreenState extends ConsumerState<AssetListScreen> {
   MonthSummary uiMonth = MonthSummary();
-  DateTime date = DateTime.now();
+  late DateTime date;
   List<Tag> allTags = [];
   List<AssetGroup> allGroups = [];
   Set<String> selectedFilterTagIds = {};
@@ -50,6 +51,7 @@ class _AssetListScreenState extends ConsumerState<AssetListScreen> {
   @override
   void initState() {
     super.initState();
+    date = widget.initialDate ?? DateTime.now();
     ServicesBinding.instance.keyboard.addHandler(_onKey);
     updateAssets();
     _syncIfStale();
@@ -198,6 +200,8 @@ class _AssetListScreenState extends ConsumerState<AssetListScreen> {
       yearMonth: yearMonth,
       netSalary: prev.netSalary,
       grossSalary: prev.grossSalary,
+      company: prev.company,
+      bonusNet: prev.bonusNet,
       position: prev.position,
       comment: prev.comment,
     );

@@ -9,6 +9,7 @@ import '../../core/models/AssetGroup.dart';
 import '../../core/models/Salary.dart';
 import '../../l10n/l10n.dart';
 import '../Providers.dart';
+import '../asset/AssetListScreen.dart';
 import '../navigation/WealthtrackerBottomNav.dart';
 
 const _chartColors = [
@@ -259,9 +260,14 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
       grossSpots.add(FlSpot(x, gross));
 
       if (!occupiedMonths.contains(m + 1)) {
-        netSpots.add(FlSpot(m + 1.0, 0));
-        netBonusSpots.add(FlSpot(m + 1.0, 0));
-        grossSpots.add(FlSpot(m + 1.0, 0));
+        final now = DateTime.now();
+        final currentMonthIdx = _toMonthIndex(now.year * 100 + now.month);
+        final trailingX = m + 1 <= currentMonthIdx ? m + 1 : currentMonthIdx;
+        if (trailingX > m) {
+          netSpots.add(FlSpot(trailingX.toDouble(), 0));
+          netBonusSpots.add(FlSpot(trailingX.toDouble(), 0));
+          grossSpots.add(FlSpot(trailingX.toDouble(), 0));
+        }
       }
     }
 
@@ -269,9 +275,11 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
     netBonusSpots.sort((a, b) => a.x.compareTo(b.x));
     grossSpots.sort((a, b) => a.x.compareTo(b.x));
 
+    final now = DateTime.now();
+    final currentMonthIdx = _toMonthIndex(now.year * 100 + now.month);
     final allX = _salaryData.map((s) => _toMonthIndex(s.yearMonth).toDouble()).toList();
     final minX = allX.first;
-    final maxX = allX.last;
+    final maxX = currentMonthIdx.toDouble();
     final range = (maxX - minX).clamp(1.0, double.infinity);
     final interval = (range / 6).ceilToDouble().clamp(1.0, double.infinity);
 
@@ -303,7 +311,7 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
           child: LineChart(
             LineChartData(
               minX: minX - 1,
-              maxX: maxX + 1,
+              maxX: maxX,
               lineBarsData: [
                 series(netSpots, netColor),
                 series(netBonusSpots, netBonusColor),
@@ -317,11 +325,21 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
                     interval: interval,
                     getTitlesWidget: (value, meta) {
                       final dt = _fromMonthIndex(value.round());
-                      return Padding(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: Text(
-                          DateFormat('MM/yy').format(dt),
-                          style: TextStyle(fontSize: 10, color: colors.secondaryText),
+                      return GestureDetector(
+                        onTap: () => Navigator.pushReplacement(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder: (_, __, ___) => AssetListScreen(initialDate: dt),
+                            transitionDuration: Duration.zero,
+                            reverseTransitionDuration: Duration.zero,
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: Text(
+                            DateFormat('MM/yy').format(dt),
+                            style: TextStyle(fontSize: 10, color: colors.secondaryText),
+                          ),
                         ),
                       );
                     },
@@ -347,6 +365,21 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
               ),
               borderData: FlBorderData(show: false),
               lineTouchData: LineTouchData(
+                touchCallback: (FlTouchEvent event, LineTouchResponse? response) {
+                  if (event is FlTapUpEvent &&
+                      response?.lineBarSpots != null &&
+                      response!.lineBarSpots!.isNotEmpty) {
+                    final dt = _fromMonthIndex(response.lineBarSpots!.first.x.round());
+                    Navigator.pushReplacement(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (_, __, ___) => AssetListScreen(initialDate: dt),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ),
+                    );
+                  }
+                },
                 touchTooltipData: LineTouchTooltipData(
                   getTooltipItems: (spots) {
                     final labels = ['Net', 'Net+Bonus', 'Gross'];
