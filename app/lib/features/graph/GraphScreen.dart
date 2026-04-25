@@ -397,32 +397,31 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
     }
     final years = byYear.keys.toList()..sort();
 
-    double? prevTotal;
+    double? prevYearly;
+    String? prevPosition;
     final rows = <DataRow>[];
 
     for (final year in years) {
-      final salaries = byYear[year]!;
+      final salaries = byYear[year]!..sort((a, b) => a.yearMonth.compareTo(b.yearMonth));
 
       final totalGross = salaries.fold(0.0, (sum, s) => sum + (s.grossSalary ?? 0));
 
-      final withGross = salaries.where((s) => (s.grossSalary ?? 0) != 0).toList()
-        ..sort((a, b) => a.yearMonth.compareTo(b.yearMonth));
+      final withGross = salaries.where((s) => (s.grossSalary ?? 0) != 0).toList();
       final yearly = withGross.isEmpty ? 0.0 : (withGross.last.grossSalary ?? 0) * 12;
 
       final age = year - _birthYear;
 
       Color? changeColor;
       String changeStr = '-';
-      if (prevTotal != null && prevTotal != 0) {
-        final pct = (totalGross - prevTotal!) / prevTotal! * 100;
+      if (prevYearly != null && prevYearly != 0) {
+        final pct = (yearly - prevYearly) / prevYearly * 100;
         changeStr = '${pct >= 0 ? '+' : ''}${pct.toStringAsFixed(1)}%';
         changeColor = pct >= 0 ? Colors.green : Colors.red;
       }
 
-      final comment = salaries
-          .where((s) => s.comment != null && s.comment!.isNotEmpty)
-          .map((s) => s.comment!)
-          .join('; ');
+      final position = salaries.lastWhere((s) => s.position != null && s.position!.isNotEmpty, orElse: () => salaries.last).position ?? '';
+      final positionLabel = position.isNotEmpty && position != prevPosition ? position : '';
+      if (position.isNotEmpty) prevPosition = position;
 
       rows.add(DataRow(cells: [
         DataCell(Text(year.toString(), style: TextStyle(color: colors.primaryText))),
@@ -433,12 +432,12 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
         DataCell(
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 160),
-            child: Text(comment, style: TextStyle(color: colors.secondaryText), overflow: TextOverflow.ellipsis),
+            child: Text(positionLabel, style: TextStyle(color: colors.secondaryText), overflow: TextOverflow.ellipsis),
           ),
         ),
       ]));
 
-      prevTotal = totalGross;
+      prevYearly = yearly;
     }
 
     return Column(
