@@ -1,4 +1,5 @@
 
+import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wealthtracker/core/db/WealthtrackerRepository.dart';
 
@@ -9,9 +10,22 @@ import '../core/prefs/WealthtrackerPrefs.dart';
 final wealthtrackerPrefsProvider = Provider((ref) => WealthtrackerPrefs());
 final biometricServiceProvider = Provider((ref) => KrypticBiometricService(localizedReason: 'Unlock Wealthtracker'));
 
+final _migrationStrategy = MigrationStrategy(
+  onCreate: (m) => m.createAll(),
+  onUpgrade: (m, from, to) async {
+    if (from < 2) {
+      await m.database.customStatement('ALTER TABLE comment_entries ADD COLUMN salary REAL');
+      await m.database.customStatement('ALTER TABLE comment_entries ADD COLUMN bonus REAL');
+      await m.database.customStatement('ALTER TABLE comment_entries ADD COLUMN position TEXT');
+      await m.database.customStatement('ALTER TABLE comment_entries ADD COLUMN company TEXT');
+      await m.database.customStatement('ALTER TABLE comment_entries ADD COLUMN salary_comment TEXT');
+    }
+  },
+);
+
 final wealthtrackerRepositoryProvider = FutureProvider((ref) async {
   final wealthtrackerPrefs = ref.read(wealthtrackerPrefsProvider);
-  return WealthtrackerRepository.initBox(wealthtrackerPrefs);
+  return WealthtrackerRepository.initBox(wealthtrackerPrefs, _migrationStrategy);
 });
 
 final wealthtrackerSessionApiProvider = FutureProvider((ref) async {

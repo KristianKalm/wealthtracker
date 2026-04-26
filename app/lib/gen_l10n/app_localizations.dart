@@ -1397,7 +1397,7 @@ abstract class AppLocalizations {
   /// No description provided for @bonus.
   ///
   /// In en, this message translates to:
-  /// **'Bonus (net)'**
+  /// **'Bonus'**
   String get bonus;
 
   /// No description provided for @position.

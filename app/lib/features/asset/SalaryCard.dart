@@ -38,21 +38,26 @@ class SalaryCard extends StatelessWidget {
   }
 
   Widget _emptyContent(BuildContext context) {
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(Icons.work_outline, size: 18, color: colors.secondaryText),
-        const SizedBox(width: 8),
-        Text(
-          context.l10n.addSalary,
-          style: TextStyle(color: colors.secondaryText, fontSize: 14),
+        Row(
+          children: [
+            Icon(Icons.work_outline, size: 18, color: colors.secondaryText),
+            const SizedBox(width: 8),
+            Text(
+              context.l10n.addSalary,
+              style: TextStyle(color: colors.secondaryText, fontSize: 14),
+            ),
+          ],
         ),
         if (onCopyPreviousMonth != null) ...[
-          const Spacer(),
+          const SizedBox(height: 8),
           TextButton(
             onPressed: onCopyPreviousMonth,
             style: TextButton.styleFrom(
               minimumSize: Size.zero,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
             child: Text(
@@ -96,23 +101,21 @@ class SalaryCard extends StatelessWidget {
                 style: TextStyle(color: colors.secondaryText, fontSize: 13),
               ),
             ],
-            if (onCopyPreviousMonth != null) ...[
-              const SizedBox(width: 8),
-              TextButton(
-                onPressed: onCopyPreviousMonth,
-                style: TextButton.styleFrom(
-                  minimumSize: Size.zero,
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
-                child: Text(
-                  context.l10n.copyPreviousMonth,
-                  style: const TextStyle(fontSize: 12),
-                ),
-              ),
-            ],
           ],
         ),
+        if (s.salary != null || s.bonus != null) ...[
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              if (s.salary != null) ...[
+                _salaryRow(context, context.l10n.salary, s.salary!),
+                if (s.bonus != null) const SizedBox(width: 24),
+              ],
+              if (s.bonus != null)
+                _salaryRow(context, context.l10n.bonus, s.bonus!),
+            ],
+          ),
+        ],
         if (s.salaryComment != null && s.salaryComment!.isNotEmpty) ...[
           const SizedBox(height: 6),
           Text(
@@ -120,6 +123,21 @@ class SalaryCard extends StatelessWidget {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(color: colors.secondaryText, fontSize: 13),
+          ),
+        ],
+        if (onCopyPreviousMonth != null) ...[
+          const SizedBox(height: 8),
+          TextButton(
+            onPressed: onCopyPreviousMonth,
+            style: TextButton.styleFrom(
+              minimumSize: Size.zero,
+              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            child: Text(
+              context.l10n.copyPreviousMonth,
+              style: const TextStyle(fontSize: 12),
+            ),
           ),
         ],
       ],

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 import '../prefs/WealthtrackerPrefs.dart';
@@ -33,7 +34,7 @@ class WealthtrackerRepository {
     return List.generate(12, (_) => chars[rand.nextInt(chars.length)]).join();
   }
 
-  static Future<WealthtrackerRepository> initBox(WealthtrackerPrefs prefs) async {
+  static Future<WealthtrackerRepository> initBox(WealthtrackerPrefs prefs, MigrationStrategy migrationStrategy) async {
     String? encryptionKey = await prefs.get("drift_encryption_key");
     if (encryptionKey == null) {
       final rand = Random.secure();
@@ -41,7 +42,7 @@ class WealthtrackerRepository {
       encryptionKey = base64Encode(keyBytes);
       await prefs.set("drift_encryption_key", encryptionKey);
     }
-    final db = await WealthtrackerDatabase.create(encryptionKey);
+    final db = await WealthtrackerDatabase.create(encryptionKey, migrationStrategy);
     return WealthtrackerRepository(db);
   }
 
