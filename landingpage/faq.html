@@ -10,15 +10,12 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #0d0f14;
-      --surface:   #161a22;
-      --border:    #252b38;
-      --accent:    #31c8c8;
-      --accent-hi: #31c8c8;
-      --text:      #e2e8f0;
-      --muted:     #7a8899;
-      --green:     #34d399;
-      --radius:    12px;
+      --bg:      #F9F8F6;
+      --surface: #EEECEA;
+      --border:  #DDDBD5;
+      --text:    #18180D;
+      --muted:   #75746A;
+      --radius:  4px;
     }
 
     html { scroll-behavior: smooth; }
@@ -27,7 +24,7 @@
       background: var(--bg);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      line-height: 1.6;
+      line-height: 1.65;
       min-height: 100vh;
     }
 
@@ -40,42 +37,40 @@
       border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
-      background: rgba(13, 15, 20, 0.85);
-      backdrop-filter: blur(10px);
+      background: var(--bg);
       z-index: 100;
     }
     .logo {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: 700;
       color: var(--text);
       text-decoration: none;
       letter-spacing: -0.02em;
     }
-    .logo span { color: var(--accent); }
-    .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+    .nav-links { display: flex; gap: 1.75rem; align-items: center; }
     .nav-links a {
       color: var(--muted);
       text-decoration: none;
-      font-size: 0.9rem;
-      transition: color 0.2s;
+      font-size: 0.88rem;
+      transition: color 0.15s;
     }
     .nav-links a:hover { color: var(--text); }
     .nav-links .btn-primary,
-    .nav-links .btn-primary:hover { color: #fff; }
+    .nav-links .btn-primary:hover { color: var(--bg); }
     .btn-primary {
       display: inline-flex;
       align-items: center;
-      gap: 0.6rem;
-      background: var(--accent);
-      color: #fff;
-      font-weight: 700;
-      padding: 0.55rem 1.1rem;
+      gap: 0.55rem;
+      background: var(--text);
+      color: var(--bg);
+      font-weight: 600;
+      padding: 0.5rem 1.1rem;
       border-radius: var(--radius);
       text-decoration: none;
-      font-size: 0.9rem;
-      transition: background 0.2s, transform 0.15s;
+      font-size: 0.88rem;
+      transition: opacity 0.15s;
     }
-    .btn-primary:hover { background: var(--accent-hi); transform: translateY(-1px); }
+    .btn-primary:hover { opacity: 0.8; }
 
     /* ── PAGE HEADER ── */
     .page-header {
@@ -83,53 +78,51 @@
       margin: 0 auto;
       padding: 5rem 2rem 3rem;
       text-align: center;
+      border-bottom: 1px solid var(--border);
     }
-    .page-header .hero-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 0.06em;
+    .page-tag {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--accent);
-      background: rgba(79, 142, 247, 0.1);
-      border: 1px solid rgba(79, 142, 247, 0.25);
-      padding: 0.3rem 0.8rem;
-      border-radius: 999px;
-      margin-bottom: 1.5rem;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 0.9rem;
     }
     .page-header h1 {
-      font-size: clamp(2rem, 5vw, 3rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.15;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: normal;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
       margin-bottom: 1rem;
+      color: var(--text);
     }
     .page-header p {
-      font-size: 1.05rem;
+      font-size: 1rem;
       color: var(--muted);
       max-width: 480px;
       margin: 0 auto;
+      line-height: 1.65;
     }
 
     /* ── FAQ ── */
     .faq-wrapper {
       max-width: 720px;
       margin: 0 auto;
-      padding: 1rem 2rem 6rem;
+      padding: 3rem 2rem 6rem;
     }
 
     .faq-category {
       margin-bottom: 3rem;
     }
     .faq-category-title {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       font-weight: 700;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--muted);
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
       padding-bottom: 0.6rem;
       border-bottom: 1px solid var(--border);
     }
@@ -137,11 +130,11 @@
     .faq-item {
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      margin-bottom: 0.65rem;
+      margin-bottom: 0.5rem;
       overflow: hidden;
-      transition: border-color 0.2s;
+      transition: border-color 0.15s;
     }
-    .faq-item.is-open { border-color: var(--accent); }
+    .faq-item.is-open { border-color: var(--text); }
 
     .faq-question {
       display: flex;
@@ -149,30 +142,30 @@
       justify-content: space-between;
       gap: 1rem;
       width: 100%;
-      background: var(--surface);
+      background: var(--bg);
       border: none;
       color: var(--text);
       font-family: inherit;
-      font-size: 0.975rem;
+      font-size: 0.95rem;
       font-weight: 600;
       text-align: left;
       padding: 1.1rem 1.4rem;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: background 0.15s;
     }
-    .faq-question:hover { background: rgba(49, 200, 200, 0.04); }
+    .faq-question:hover { background: var(--surface); }
     .faq-question-text { flex: 1; }
 
     .faq-chevron {
       flex-shrink: 0;
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
       color: var(--muted);
-      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.15s;
     }
     .faq-item.is-open .faq-chevron {
       transform: rotate(180deg);
-      color: var(--accent);
+      color: var(--text);
     }
 
     .faq-answer {
@@ -187,23 +180,24 @@
     }
     .faq-item.is-open .faq-answer-inner { padding: 0 1.4rem 1.25rem; }
     .faq-answer-inner p {
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       color: var(--muted);
       line-height: 1.7;
     }
     .faq-answer-inner p + p { margin-top: 0.75rem; }
     .faq-answer-inner a {
-      color: var(--accent);
-      text-decoration: none;
+      color: var(--text);
+      text-decoration: underline;
+      text-underline-offset: 2px;
     }
-    .faq-answer-inner a:hover { text-decoration: underline; }
+    .faq-answer-inner a:hover { opacity: 0.65; }
     .faq-answer-inner code {
-      background: rgba(49, 200, 200, 0.1);
-      border: 1px solid rgba(49, 200, 200, 0.2);
-      border-radius: 4px;
-      padding: 0.1em 0.45em;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0.1em 0.4em;
       font-size: 0.85em;
-      color: var(--accent);
+      color: var(--text);
     }
 
     /* ── FOOTER ── */
@@ -211,7 +205,7 @@
       border-top: 1px solid var(--border);
       padding: 2rem;
       text-align: center;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       color: var(--muted);
     }
     footer a { color: var(--muted); text-decoration: none; }
@@ -220,9 +214,9 @@
     /* ── RESPONSIVE ── */
     @media (max-width: 600px) {
       nav { padding: 1rem 1.25rem; }
-      .nav-links { gap: 0.75rem; }
+      .nav-links { gap: 1rem; }
       .page-header { padding: 3.5rem 1.25rem 2rem; }
-      .faq-wrapper { padding: 0.5rem 1.25rem 4rem; }
+      .faq-wrapper { padding: 1.5rem 1.25rem 4rem; }
     }
   </style>
 </head>
@@ -230,13 +224,13 @@
 
   <!-- NAV -->
   <nav>
-    <a href="index.html" class="logo">Wealth<span>Tracker</span></a>
+    <a href="index.html" class="logo">WealthTracker</a>
     <div class="nav-links">
       <a href="index.html#download">Apps</a>
       <a href="faq.html" style="color: var(--text);">FAQ</a>
       <a href="https://github.com/KristianKalm/wealthtracker" target="_blank" rel="noopener">GitHub</a>
       <a href="https://web.wealthtracker.app/" class="btn-primary">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.83824 18.4467C10.0103 18.7692 10.1826 19.0598 10.3473 19.3173C8.59745 18.9238 7.07906 17.9187 6.02838 16.5383C6.72181 16.1478 7.60995 15.743 8.67766 15.4468C8.98112 16.637 9.40924 17.6423 9.83824 18.4467ZM11.1618 17.7408C10.7891 17.0421 10.4156 16.1695 10.1465 15.1356C10.7258 15.0496 11.3442 15 12.0001 15C12.6559 15 13.2743 15.0496 13.8535 15.1355C13.5844 16.1695 13.2109 17.0421 12.8382 17.7408C12.5394 18.3011 12.2417 18.7484 12 19.0757C11.7583 18.7484 11.4606 18.3011 11.1618 17.7408ZM9.75 12C9.75 12.5841 9.7893 13.1385 9.8586 13.6619C10.5269 13.5594 11.2414 13.5 12.0001 13.5C12.7587 13.5 13.4732 13.5593 14.1414 13.6619C14.2107 13.1384 14.25 12.5841 14.25 12C14.25 11.4159 14.2107 10.8616 14.1414 10.3381C13.4732 10.4406 12.7587 10.5 12.0001 10.5C11.2414 10.5 10.5269 10.4406 9.8586 10.3381C9.7893 10.8615 9.75 11.4159 9.75 12ZM8.38688 10.0288C8.29977 10.6478 8.25 11.3054 8.25 12C8.25 12.6946 8.29977 13.3522 8.38688 13.9712C7.11338 14.3131 6.05882 14.7952 5.24324 15.2591C4.76698 14.2736 4.5 13.168 4.5 12C4.5 10.832 4.76698 9.72644 5.24323 8.74088C6.05872 9.20472 7.1133 9.68686 8.38688 10.0288ZM10.1465 8.86445C10.7258 8.95042 11.3442 9 12.0001 9C12.6559 9 13.2743 8.95043 13.8535 8.86447C13.5844 7.83055 13.2109 6.95793 12.8382 6.2592C12.5394 5.69894 12.2417 5.25156 12 4.92432C11.7583 5.25156 11.4606 5.69894 11.1618 6.25918C10.7891 6.95791 10.4156 7.83053 10.1465 8.86445ZM15.6131 10.0289C15.7002 10.6479 15.75 11.3055 15.75 12C15.75 12.6946 15.7002 13.3521 15.6131 13.9711C16.8866 14.3131 17.9412 14.7952 18.7568 15.2591C19.233 14.2735 19.5 13.1679 19.5 12C19.5 10.8321 19.233 9.72647 18.7568 8.74093C17.9413 9.20477 16.8867 9.6869 15.6131 10.0289ZM17.9716 7.46178C17.2781 7.85231 16.39 8.25705 15.3224 8.55328C15.0189 7.36304 14.5908 6.35769 14.1618 5.55332C13.9897 5.23077 13.8174 4.94025 13.6527 4.6827C15.4026 5.07623 16.921 6.08136 17.9716 7.46178ZM8.67765 8.55325C7.61001 8.25701 6.7219 7.85227 6.02839 7.46173C7.07906 6.08134 8.59745 5.07623 10.3472 4.6827C10.1826 4.94025 10.0103 5.23076 9.83823 5.5533C9.40924 6.35767 8.98112 7.36301 8.67765 8.55325ZM15.3224 15.4467C15.0189 16.637 14.5908 17.6423 14.1618 18.4467C13.9897 18.7692 13.8174 19.0598 13.6527 19.3173C15.4026 18.9238 16.921 17.9186 17.9717 16.5382C17.2782 16.1477 16.3901 15.743 15.3224 15.4467ZM12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z" fill="white"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.83824 18.4467C10.0103 18.7692 10.1826 19.0598 10.3473 19.3173C8.59745 18.9238 7.07906 17.9187 6.02838 16.5383C6.72181 16.1478 7.60995 15.743 8.67766 15.4468C8.98112 16.637 9.40924 17.6423 9.83824 18.4467ZM11.1618 17.7408C10.7891 17.0421 10.4156 16.1695 10.1465 15.1356C10.7258 15.0496 11.3442 15 12.0001 15C12.6559 15 13.2743 15.0496 13.8535 15.1355C13.5844 16.1695 13.2109 17.0421 12.8382 17.7408C12.5394 18.3011 12.2417 18.7484 12 19.0757C11.7583 18.7484 11.4606 18.3011 11.1618 17.7408ZM9.75 12C9.75 12.5841 9.7893 13.1385 9.8586 13.6619C10.5269 13.5594 11.2414 13.5 12.0001 13.5C12.7587 13.5 13.4732 13.5593 14.1414 13.6619C14.2107 13.1384 14.25 12.5841 14.25 12C14.25 11.4159 14.2107 10.8616 14.1414 10.3381C13.4732 10.4406 12.7587 10.5 12.0001 10.5C11.2414 10.5 10.5269 10.4406 9.8586 10.3381C9.7893 10.8615 9.75 11.4159 9.75 12ZM8.38688 10.0288C8.29977 10.6478 8.25 11.3054 8.25 12C8.25 12.6946 8.29977 13.3522 8.38688 13.9712C7.11338 14.3131 6.05882 14.7952 5.24324 15.2591C4.76698 14.2736 4.5 13.168 4.5 12C4.5 10.832 4.76698 9.72644 5.24323 8.74088C6.05872 9.20472 7.1133 9.68686 8.38688 10.0288ZM10.1465 8.86445C10.7258 8.95042 11.3442 9 12.0001 9C12.6559 9 13.2743 8.95043 13.8535 8.86447C13.5844 7.83055 13.2109 6.95793 12.8382 6.2592C12.5394 5.69894 12.2417 5.25156 12 4.92432C11.7583 5.25156 11.4606 5.69894 11.1618 6.25918C10.7891 6.95791 10.4156 7.83053 10.1465 8.86445ZM15.6131 10.0289C15.7002 10.6479 15.75 11.3055 15.75 12C15.75 12.6946 15.7002 13.3521 15.6131 13.9711C16.8866 14.3131 17.9412 14.7952 18.7568 15.2591C19.233 14.2735 19.5 13.1679 19.5 12C19.5 10.8321 19.233 9.72647 18.7568 8.74093C17.9413 9.20477 16.8867 9.6869 15.6131 10.0289ZM17.9716 7.46178C17.2781 7.85231 16.39 8.25705 15.3224 8.55328C15.0189 7.36304 14.5908 6.35769 14.1618 5.55332C13.9897 5.23077 13.8174 4.94025 13.6527 4.6827C15.4026 5.07623 16.921 6.08136 17.9716 7.46178ZM8.67765 8.55325C7.61001 8.25701 6.7219 7.85227 6.02839 7.46173C7.07906 6.08134 8.59745 5.07623 10.3472 4.6827C10.1826 4.94025 10.0103 5.23076 9.83823 5.5533C9.40924 6.35767 8.98112 7.36301 8.67765 8.55325ZM15.3224 15.4467C15.0189 16.637 14.5908 17.6423 14.1618 18.4467C13.9897 18.7692 13.8174 19.0598 13.6527 19.3173C15.4026 18.9238 16.921 17.9186 17.9717 16.5382C17.2782 16.1477 16.3901 15.743 15.3224 15.4467ZM12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z" fill="currentColor"/></svg>
         Open Web App
       </a>
     </div>
@@ -244,10 +238,7 @@
 
   <!-- PAGE HEADER -->
   <header class="page-header">
-    <div class="hero-tag">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-      Help &amp; FAQ
-    </div>
+    <span class="page-tag">Help &amp; FAQ</span>
     <h1>Frequently Asked Questions</h1>
     <p>Everything you need to know about WealthTracker — privacy, pricing, setup, and more.</p>
   </header>
@@ -493,13 +484,9 @@
   <!-- FOOTER -->
   <footer>
     <p>
-      &copy; 2026 WealthTracker &mdash;
-      <a href="privacy-policy.html">Privacy</a> &middot;
-      <a href="#">Terms</a> &middot;
-      <a href="faq.html">FAQ</a> &middot;
+      <a href="privacy-policy.html">Privacy Policy</a> &middot;
       <a href="https://github.com/KristianKalm/wealthtracker" target="_blank" rel="noopener">GitHub</a>
     </p>
-    <p style="margin-top: 0.4rem;">End-to-end encrypted &middot; Open source &middot; Self-hostable &middot; Built with &hearts; for your privacy</p>
   </footer>
 
   <script>
@@ -509,12 +496,10 @@
       var btn = item.querySelector('.faq-question');
       btn.addEventListener('click', function () {
         var isOpen = item.classList.contains('is-open');
-        // Close all
         items.forEach(function (i) {
           i.classList.remove('is-open');
           i.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
         });
-        // Toggle current
         if (!isOpen) {
           item.classList.add('is-open');
           btn.setAttribute('aria-expanded', 'true');

@@ -3,166 +3,247 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Privacy Policy – Wealthtracker</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <title>Privacy Policy — WealthTracker</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    :root {
+      --bg:      #F9F8F6;
+      --surface: #EEECEA;
+      --border:  #DDDBD5;
+      --text:    #18180D;
+      --muted:   #75746A;
+      --radius:  4px;
+    }
+
+    html { scroll-behavior: smooth; }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: #0f1117;
-      color: #e0e0e0;
-      line-height: 1.7;
-      padding: 2rem 1rem 4rem;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.65;
+      min-height: 100vh;
     }
 
-    .container {
-      max-width: 760px;
-      margin: 0 auto;
+    /* ── NAV ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 2rem;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 100;
     }
-
-    header {
-      text-align: center;
-      margin-bottom: 3rem;
-    }
-
-    header h1 {
-      font-size: 2rem;
+    .logo {
+      font-size: 1.1rem;
       font-weight: 700;
-      color: #ffffff;
-      margin-bottom: 0.4rem;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.02em;
     }
-
-    header p {
-      font-size: 0.9rem;
-      color: #888;
+    .nav-links { display: flex; gap: 1.75rem; align-items: center; }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      transition: color 0.15s;
     }
-
-    .badge {
+    .nav-links a:hover { color: var(--text); }
+    .nav-links .btn-primary,
+    .nav-links .btn-primary:hover { color: var(--bg); }
+    .btn-primary {
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
-      background: #1a2f1a;
-      border: 1px solid #2d5a2d;
-      color: #4caf50;
-      font-size: 0.8rem;
+      gap: 0.55rem;
+      background: var(--text);
+      color: var(--bg);
       font-weight: 600;
-      padding: 0.35rem 0.8rem;
-      border-radius: 999px;
-      margin-top: 1rem;
-      letter-spacing: 0.03em;
+      padding: 0.5rem 1.1rem;
+      border-radius: var(--radius);
+      text-decoration: none;
+      font-size: 0.88rem;
+      transition: opacity 0.15s;
+    }
+    .btn-primary:hover { opacity: 0.8; }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 5rem 2rem 3rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .page-tag {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-    }
-
-    .badge::before {
-      content: "🔒";
-      font-size: 0.9rem;
-    }
-
-    section {
-      background: #1a1d27;
-      border: 1px solid #2a2d3a;
-      border-radius: 12px;
-      padding: 1.75rem 2rem;
-      margin-bottom: 1.25rem;
-    }
-
-    section h2 {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #ffffff;
+      color: var(--muted);
+      display: block;
       margin-bottom: 0.9rem;
+    }
+    .page-header h1 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: normal;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 0.6rem;
+      color: var(--text);
+    }
+    .page-header .meta {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* ── CONTENT ── */
+    .content {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 2rem 6rem;
+    }
+
+    .policy-section {
+      padding: 2rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .policy-section:last-child {
+      border-bottom: none;
+    }
+
+    .policy-section h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.9rem;
+      color: var(--text);
       display: flex;
       align-items: center;
       gap: 0.5rem;
     }
 
-    section h2 .icon {
-      font-size: 1.2rem;
+    .policy-section p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.75;
+      margin-bottom: 0.75rem;
     }
-
-    p { margin-bottom: 0.75rem; color: #c0c0c0; }
-    p:last-child { margin-bottom: 0; }
+    .policy-section p:last-child { margin-bottom: 0; }
 
     ul {
       list-style: none;
       padding: 0;
       margin: 0.5rem 0 0;
     }
-
     ul li {
-      padding: 0.4rem 0 0.4rem 1.4rem;
+      padding: 0.35rem 0 0.35rem 1.5rem;
       position: relative;
-      color: #c0c0c0;
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.65;
     }
-
     ul li::before {
       content: "✓";
       position: absolute;
       left: 0;
-      color: #4caf50;
+      color: var(--text);
       font-weight: 700;
+      font-size: 0.8rem;
     }
 
-    .highlight-box {
-      background: #0f1f0f;
-      border: 1px solid #2d5a2d;
-      border-radius: 8px;
-      padding: 1rem 1.25rem;
-      margin-top: 0.75rem;
+    .callout {
+      background: var(--surface);
+      border-left: 3px solid var(--text);
+      padding: 0.9rem 1.1rem;
+      margin-top: 0.9rem;
+      border-radius: 0 var(--radius) var(--radius) 0;
     }
-
-    .highlight-box p {
-      color: #9ccc9c;
+    .callout p {
+      color: var(--muted);
       margin: 0;
-      font-size: 0.95rem;
+      font-size: 0.88rem;
     }
 
-    a { color: #7cb8f0; text-decoration: none; }
-    a:hover { text-decoration: underline; }
+    a { color: var(--text); text-decoration: underline; text-underline-offset: 2px; }
+    a:hover { opacity: 0.65; }
 
+    /* ── FOOTER ── */
     footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
       text-align: center;
-      margin-top: 2.5rem;
-      color: #555;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      nav { padding: 1rem 1.25rem; }
+      .nav-links { gap: 1rem; }
+      .page-header { padding: 3.5rem 1.25rem 2rem; }
+      .content { padding: 2rem 1.25rem 4rem; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>Privacy Policy</h1>
-      <p>Wealthtracker &mdash; Last updated: March 2, 2026</p>
-      <div class="badge">Zero Data Collection &middot; End-to-End Encrypted</div>
-    </header>
 
-    <section>
-      <h2><span class="icon">📋</span> Overview</h2>
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="logo">WealthTracker</a>
+    <div class="nav-links">
+      <a href="index.html#download">Apps</a>
+      <a href="faq.html">FAQ</a>
+      <a href="https://github.com/KristianKalm/wealthtracker" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://web.wealthtracker.app/" class="btn-primary">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.83824 18.4467C10.0103 18.7692 10.1826 19.0598 10.3473 19.3173C8.59745 18.9238 7.07906 17.9187 6.02838 16.5383C6.72181 16.1478 7.60995 15.743 8.67766 15.4468C8.98112 16.637 9.40924 17.6423 9.83824 18.4467ZM11.1618 17.7408C10.7891 17.0421 10.4156 16.1695 10.1465 15.1356C10.7258 15.0496 11.3442 15 12.0001 15C12.6559 15 13.2743 15.0496 13.8535 15.1355C13.5844 16.1695 13.2109 17.0421 12.8382 17.7408C12.5394 18.3011 12.2417 18.7484 12 19.0757C11.7583 18.7484 11.4606 18.3011 11.1618 17.7408ZM9.75 12C9.75 12.5841 9.7893 13.1385 9.8586 13.6619C10.5269 13.5594 11.2414 13.5 12.0001 13.5C12.7587 13.5 13.4732 13.5593 14.1414 13.6619C14.2107 13.1384 14.25 12.5841 14.25 12C14.25 11.4159 14.2107 10.8616 14.1414 10.3381C13.4732 10.4406 12.7587 10.5 12.0001 10.5C11.2414 10.5 10.5269 10.4406 9.8586 10.3381C9.7893 10.8615 9.75 11.4159 9.75 12ZM8.38688 10.0288C8.29977 10.6478 8.25 11.3054 8.25 12C8.25 12.6946 8.29977 13.3522 8.38688 13.9712C7.11338 14.3131 6.05882 14.7952 5.24324 15.2591C4.76698 14.2736 4.5 13.168 4.5 12C4.5 10.832 4.76698 9.72644 5.24323 8.74088C6.05872 9.20472 7.1133 9.68686 8.38688 10.0288ZM10.1465 8.86445C10.7258 8.95042 11.3442 9 12.0001 9C12.6559 9 13.2743 8.95043 13.8535 8.86447C13.5844 7.83055 13.2109 6.95793 12.8382 6.2592C12.5394 5.69894 12.2417 5.25156 12 4.92432C11.7583 5.25156 11.4606 5.69894 11.1618 6.25918C10.7891 6.95791 10.4156 7.83053 10.1465 8.86445ZM15.6131 10.0289C15.7002 10.6479 15.75 11.3055 15.75 12C15.75 12.6946 15.7002 13.3521 15.6131 13.9711C16.8866 14.3131 17.9412 14.7952 18.7568 15.2591C19.233 14.2735 19.5 13.1679 19.5 12C19.5 10.8321 19.233 9.72647 18.7568 8.74093C17.9413 9.20477 16.8867 9.6869 15.6131 10.0289ZM17.9716 7.46178C17.2781 7.85231 16.39 8.25705 15.3224 8.55328C15.0189 7.36304 14.5908 6.35769 14.1618 5.55332C13.9897 5.23077 13.8174 4.94025 13.6527 4.6827C15.4026 5.07623 16.921 6.08136 17.9716 7.46178ZM8.67765 8.55325C7.61001 8.25701 6.7219 7.85227 6.02839 7.46173C7.07906 6.08134 8.59745 5.07623 10.3472 4.6827C10.1826 4.94025 10.0103 5.23076 9.83823 5.5533C9.40924 6.35767 8.98112 7.36301 8.67765 8.55325ZM15.3224 15.4467C15.0189 16.637 14.5908 17.6423 14.1618 18.4467C13.9897 18.7692 13.8174 19.0598 13.6527 19.3173C15.4026 18.9238 16.921 17.9186 17.9717 16.5382C17.2782 16.1477 16.3901 15.743 15.3224 15.4467ZM12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z" fill="currentColor"/></svg>
+        Open Web App
+      </a>
+    </div>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <span class="page-tag">Legal</span>
+    <h1>Privacy Policy</h1>
+    <p class="meta">WealthTracker &mdash; Last updated: March 2, 2026</p>
+  </header>
+
+  <div class="content">
+
+    <div class="policy-section">
+      <h2>📋 Overview</h2>
       <p>
-        Wealthtracker is built on a simple principle: your financial data belongs to you and only you.
+        WealthTracker is built on a simple principle: your financial data belongs to you and only you.
         We have designed the app from the ground up so that we are technically incapable of accessing,
         reading, or selling your information.
       </p>
       <p>
         This policy describes what data exists, where it lives, and why we will never see it.
       </p>
-    </section>
+    </div>
 
-    <section>
-      <h2><span class="icon">🔒</span> End-to-End Encryption</h2>
+    <div class="policy-section">
+      <h2>🔒 End-to-End Encryption</h2>
       <p>
-        All data you enter into Wealthtracker is encrypted on your device before it ever leaves it.
+        All data you enter into WealthTracker is encrypted on your device before it ever leaves it.
         Encryption and decryption happen exclusively on your device using keys derived from your
         credentials. We never receive, store, or have any means to access your unencrypted data.
       </p>
-      <div class="highlight-box">
+      <div class="callout">
         <p>Even if our servers were compromised, an attacker would find only encrypted blobs that are
         mathematically infeasible to decrypt without your key.</p>
       </div>
-    </section>
+    </div>
 
-    <section>
-      <h2><span class="icon">👤</span> Identity &amp; Account Information</h2>
+    <div class="policy-section">
+      <h2>👤 Identity &amp; Account Information</h2>
       <p>
         We do not collect your name, email address, or any personally identifiable information.
         When you create an account, your username is <strong>hashed</strong> using a one-way
@@ -173,10 +254,10 @@
         <li>We cannot link your account to any real-world identity.</li>
         <li>We have no way to contact you, and no reason to.</li>
       </ul>
-    </section>
+    </div>
 
-    <section>
-      <h2><span class="icon">🗄️</span> Data We Do Not Collect</h2>
+    <div class="policy-section">
+      <h2>🗄️ Data We Do Not Collect</h2>
       <p>The following data is <strong>never</strong> collected, processed, or stored by us:</p>
       <ul>
         <li>Financial transactions, balances, or portfolio details</li>
@@ -186,10 +267,10 @@
         <li>Crash reports containing personal information</li>
         <li>Cookies or tracking pixels</li>
       </ul>
-    </section>
+    </div>
 
-    <section>
-      <h2><span class="icon">📦</span> Data Storage</h2>
+    <div class="policy-section">
+      <h2>📦 Data Storage</h2>
       <p>
         Your encrypted data may be stored on our servers solely for the purpose of syncing
         across your own devices. The stored ciphertext is meaningless without your key, which
@@ -199,45 +280,52 @@
         You can delete your account and all associated server-side data at any time from within
         the app. Upon deletion, everything is permanently removed with no retention period.
       </p>
-    </section>
+    </div>
 
-    <section>
-      <h2><span class="icon">🤝</span> Third-Party Sharing</h2>
+    <div class="policy-section">
+      <h2>🤝 Third-Party Sharing</h2>
       <p>
         We do not sell, rent, trade, or share your data with any third party — because we do not
         have your data to share. No advertising networks, analytics providers, or data brokers
         are involved in the operation of this app.
       </p>
-    </section>
+    </div>
 
-    <section>
-      <h2><span class="icon">👶</span> Children's Privacy</h2>
+    <div class="policy-section">
+      <h2>👶 Children's Privacy</h2>
       <p>
-        Wealthtracker is not directed at children under the age of 13. We do not knowingly
+        WealthTracker is not directed at children under the age of 13. We do not knowingly
         collect any information from children. Given our zero-collection architecture, no special
         risk exists, but we still encourage parents to supervise app usage.
       </p>
-    </section>
+    </div>
 
-    <section>
-      <h2><span class="icon">✏️</span> Changes to This Policy</h2>
+    <div class="policy-section">
+      <h2>✏️ Changes to This Policy</h2>
       <p>
         If we ever update this privacy policy, the revised version will be published at this URL
         with an updated date at the top. Because we collect no contact information, we cannot
         notify you directly — please check back periodically.
       </p>
-    </section>
+    </div>
 
-    <section>
-      <h2><span class="icon">📬</span> Contact</h2>
+    <div class="policy-section">
+      <h2>📬 Contact</h2>
       <p>
-        If you have questions about this policy or the security design of Wealthtracker, you can
-        reach us at:
-        <br><br>
-        <a href="mailto:info@kalm.ee">info@kalm.ee</a>
+        If you have questions about this policy or the security design of WealthTracker, you can
+        reach us at <a href="mailto:info@kalm.ee">info@kalm.ee</a>.
       </p>
-    </section>
+    </div>
 
   </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>
+      <a href="privacy-policy.html">Privacy Policy</a> &middot;
+      <a href="https://github.com/KristianKalm/wealthtracker" target="_blank" rel="noopener">GitHub</a>
+    </p>
+  </footer>
+
 </body>
 </html>
